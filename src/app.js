@@ -1,19 +1,16 @@
 const express = require("express");
 const app = express();
-const appSettings = require("../appsettings");
+const appSettings = require("../appSettings");
 
 app.use(express.static(appSettings.paths.public));
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
-  const userAgent = req.headers["user-agent"];
-  const isDiscordBot = userAgent.includes("Discordbot");
+  res.sendFile(appSettings.path.join(appSettings.paths.public, "tonee.mp4"));
+});
 
-  if (isDiscordBot) {
-    res.sendFile(appSettings.path.join(appSettings.paths.public, "tonee.gif"));
-  } else {
-    res.sendFile(appSettings.path.join(appSettings.paths.public, "tonee.mp4"));
-  }
+app.get("/tonee.gif", (req, res) => {
+  res.sendFile(appSettings.path.join(appSettings.paths.public, "tonee.gif"));
 });
 
 app.use((req, res, next ) => {
@@ -25,7 +22,7 @@ app.use((req, res, next ) => {
 app.use((err, req, res, next) => {
   const errorCode = err.status || 500;
   const errorMessage = err.message || "Internal Server Error";
-  res.status(errorCode).send(errorMessage);
+  res.status(errorCode).sendFile(appSettings.path.join(appSettings.paths.public, "tonee.gif"));
 });
 
 app.listen(appSettings.config.port);
