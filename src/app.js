@@ -1,16 +1,45 @@
+const shared = require("../shared");
+require(shared.setup);
 const express = require("express");
 const app = express();
-const appSettings = require("../appSettings");
 
-app.use(express.static(appSettings.paths.public));
+app.use(express.static(shared.paths.public));
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
-  res.sendFile(appSettings.path.join(appSettings.paths.public, "tonee.mp4"));
+  const publicPath = shared.paths.public;
+
+  shared.fs.readdir(publicPath, (err, files) => {
+    if (err) {
+      return res.status(500).send("Internal Server Error");
+    }
+    const fileList = files.map(file => {
+      const parts = file.split("_");
+      if (parts.length != 3) return;
+      if (parts[0] != "autoindex") return;
+      return `<li><a href="f/${parts[2]}">${parts[1].replace("-", " ")}</a></li>`
+    }).join("");
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Index of ${req.originalUrl}</title>
+      </head>
+      <body>
+        <h1>Index of ${req.originalUrl}</h1>
+        <ul>
+          ${fileList}
+        </ul>
+      </body>
+      </html>
+    `;
+    res.send(html);
+  });
 });
 
-app.get("/tonee.gif", (req, res) => {
-  res.sendFile(appSettings.path.join(appSettings.paths.public, "tonee.gif"));
+app.get("/f/:file", (req, res) => {
+  const file = req.params.file;
+  res.sendFile(file);
 });
 
 app.use((req, res, next ) => {
@@ -22,7 +51,7 @@ app.use((req, res, next ) => {
 app.use((err, req, res, next) => {
   const errorCode = err.status || 500;
   const errorMessage = err.message || "Internal Server Error";
-  res.status(errorCode).sendFile(appSettings.path.join(appSettings.paths.public, "tonee.gif"));
+  res.status(errorCode).send(errorMessage);
 });
 
-app.listen(appSettings.config.port);
+app.listen(shared.config.port);

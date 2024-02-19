@@ -1,3 +1,4 @@
 module.exports = {
-  port: 6974
+  port: 6975,
+  db: "app.db",
 };

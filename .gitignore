@@ -1,4 +1,6 @@
 package-lock.json
+data/
+public/
 
 # Logs
 logs
