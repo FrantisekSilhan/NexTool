@@ -1,5 +1,5 @@
 const shared = require("../shared");
-require(shared.setup);
+require(shared.files.setup);
 const express = require("express");
 const app = express();
 
@@ -44,13 +44,13 @@ app.get("/f/:file", (req, res) => {
 
 app.use((req, res, next ) => {
   const error = new Error("Not Found");
-  error.status = 404;
+  error.status = 404; 
   next(error);
 });
 
 app.use((err, req, res, next) => {
-  const errorCode = err.status || 500;
-  const errorMessage = err.message || "Internal Server Error";
+  const errorCode = err.status ?? 500;
+  const errorMessage = err.message ?? "Internal Server Error";
   res.status(errorCode).send(errorMessage);
 });
 

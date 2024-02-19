@@ -12,6 +12,7 @@ module.exports = {
   paths: paths,
   files: {
     setup: path.join(paths.src, "setup"),
+    database: path.join(paths.src, "db"),
   },
   config: require(path.join(paths.src, "config")),
 };
