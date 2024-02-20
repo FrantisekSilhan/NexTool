@@ -1,12 +1,24 @@
 :root {
   --text: 0 0% 0%;
-  --background: 0 100% 100%;
+  --background: 0 0% 100%;
   --primary: 0 0% 0%;
   --secondary: 0 0% 40%;
   --accent: 255 50% 50%;
 }
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text: 0 0% 100%;
+    --background: 0 0% 0%;
+    --primary: 0 0% 100%;
+    --secondary: 0 0% 60%;
+    --accent: 255 50% 50%;
+  }
+}
+
+
 html {
   background-color: hsl(var(--background));
   color: hsl(var(--text));
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
