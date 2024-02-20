@@ -1,17 +1,19 @@
 const shared = require("../shared");
 require(shared.files.setup);
 const express = require("express");
+const expressLayouts = require("express-ejs-layouts");
 const app = express();
 
+app.set("view engine", "ejs");
+app.set("views", shared.paths.views);
+app.set("layout", "layouts/layout");
 app.use(express.static(shared.paths.public));
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
-  const publicPath = shared.paths.public;
-
-  shared.fs.readdir(publicPath, (err, files) => {
+  shared.fs.readdir(shared.paths.files, (err, files) => {
     if (err) {
-      return res.status(500).send("Internal Server Error");
+      next(err);
     }
     const fileList = files.map(file => {
       const parts = file.split("_");

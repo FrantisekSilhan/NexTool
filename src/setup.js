@@ -10,10 +10,10 @@ const db = require(shared.files.database);
 
 db.serialize(() => {
   db.run(`
-    CREATE TABLE IF NOT EXISTS users (
+    CREATE TABLE IF NOT EXISTS files (
       id INTEGER PRIMARY KEY,
-      username TEXT NOT NULL UNIQUE,
-      password TEXT NOT NULL
+      name TEXT NOT NULL UNIQUE,
+      display TEXT NOT NULL
     )
   `);
 });

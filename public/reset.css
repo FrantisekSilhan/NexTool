@@ -1,0 +1,41 @@
+blockquote,body,dd,dl,fieldset,figure,form,h1,h2,h3,h4,h5,h6,hr,menu,ol,p,pre,ul {
+  margin: 0;
+}
+fieldset,legend,menu,ol,ul {
+  padding: 0;
+}
+address,b,cite,code,dfn,em,h1,h2,h3,h4,h5,h6,i,kbd,pre,samp,small,strong,sub,sup,th,var {
+  font: inherit;
+}
+body {
+  min-height: 100vh;
+  text-rendering: optimizeSpeed;
+  line-height: 1.5;
+}
+html:focus-within {
+  scroll-behavior: smooth;
+}
+a:not([class]) {
+  text-decoration-skip-ink: auto;
+}
+img,picture {
+  max-width: 100%;
+  display: block;
+}
+table {
+  border-collapse: collapse;
+}
+ul[role="list"],ol[role="list"] {
+  list-style: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  html:focus-within {
+   scroll-behavior: auto;
+  }
+  *,*::before,*::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

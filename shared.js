@@ -3,7 +3,9 @@ const fs = require("fs");
 const paths = {
   data: path.join(__dirname, "data"),
   public: path.join(__dirname, "public"),
+  files: path.join(__dirname, "files"),
   src: path.join(__dirname, "src"),
+  views: path.join(src, "views"),
 };
 
 module.exports = {
