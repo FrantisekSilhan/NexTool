@@ -1,11 +1,12 @@
 :root {
-  --text: 0, 0%, 0%;
-  --background: 240, 60%, 99%;
-  --primary: 0, 0%, 0%;
-  --secondary: 0, 0%, 40%;
-  --accent: 255, 58%, 58%;
+  --text: 0 0% 0%;
+  --background: 0 100% 100%;
+  --primary: 0 0% 0%;
+  --secondary: 0 0% 40%;
+  --accent: 255 50% 50%;
 }
 
 html {
   background-color: hsl(var(--background));
+  color: hsl(var(--text));
 }

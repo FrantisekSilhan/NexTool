@@ -1,0 +1,9 @@
+<h1>Files</h1>
+
+<ul>
+  <% files.forEach(file => { %>
+    <li>
+      <a href="/f/<%= file.fileName %>"><%= file.displayName %></a>
+    </li>
+  <% }) %>
+</ul>

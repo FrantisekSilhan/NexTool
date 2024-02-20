@@ -1,5 +1,5 @@
 {
-  "name": "tonee",
+  "name": "tools",
   "version": "1.0.0",
   "description": "",
   "main": "./src/app.js",
@@ -8,18 +8,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/FrantisekSilhan/tonee.git"
+    "url": "git+https://github.com/FrantisekSilhan/tools.git"
   },
   "author": "František Šilhán",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/FrantisekSilhan/tonee/issues"
+    "url": "https://github.com/FrantisekSilhan/tools/issues"
   },
-  "homepage": "https://github.com/FrantisekSilhan/tonee#readme",
+  "homepage": "https://github.com/FrantisekSilhan/tools#readme",
   "dependencies": {
     "ejs": "^3.1.9",
     "express": "^4.18.2",
     "express-ejs-layouts": "^2.5.1",
+    "express-fileupload": "^1.4.3",
     "sqlite3": "^5.1.7"
   }
 }

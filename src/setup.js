@@ -14,7 +14,8 @@ db.serialize(() => {
       id INTEGER PRIMARY KEY,
       fileName TEXT NOT NULL UNIQUE,
       displayName TEXT NOT NULL,
-      index BOOLEAN NOT NULL
+      downloadName TEXT NOT NULL,
+      indexFile BOOLEAN NOT NULL
     )
   `);
 });
