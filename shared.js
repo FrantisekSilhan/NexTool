@@ -1,20 +1,34 @@
+// Node package imports
 const path = require("path");
 const fs = require("fs");
+
+
+// Define paths
+const src = path.join(__dirname, "src");
+const views = path.join(src, "views");
 const paths = {
   data: path.join(__dirname, "data"),
   public: path.join(__dirname, "public"),
   files: path.join(__dirname, "files"),
-  src: path.join(__dirname, "src"),
-  views: path.join(src, "views"),
+  src: src,
+  views: views,
+  layouts: path.join(views, "layouts"),
 };
 
+
+// Define files
+files = {
+  setup: path.join(paths.src, "setup"),
+  database: path.join(paths.src, "db"),
+  mainLayout: path.join(paths.layouts, "main-layout"),
+};
+
+
+// Export shared module
 module.exports = {
   path: path,
   fs: fs,
   paths: paths,
-  files: {
-    setup: path.join(paths.src, "setup"),
-    database: path.join(paths.src, "db"),
-  },
+  files: files,
   config: require(path.join(paths.src, "config")),
 };

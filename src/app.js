@@ -6,9 +6,11 @@ const app = express();
 
 app.set("view engine", "ejs");
 app.set("views", shared.paths.views);
-app.set("layout", "layouts/layout");
+app.set("layout", shared.files.mainLayout);
+
 app.use(express.static(shared.paths.public));
 app.use(express.urlencoded({ extended: true }));
+app.use(expressLayouts);
 
 app.get("/", (req, res) => {
   shared.fs.readdir(shared.paths.files, (err, files) => {

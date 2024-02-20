@@ -12,8 +12,9 @@ db.serialize(() => {
   db.run(`
     CREATE TABLE IF NOT EXISTS files (
       id INTEGER PRIMARY KEY,
-      name TEXT NOT NULL UNIQUE,
-      display TEXT NOT NULL
+      fileName TEXT NOT NULL UNIQUE,
+      displayName TEXT NOT NULL,
+      index BOOLEAN NOT NULL
     )
   `);
 });
