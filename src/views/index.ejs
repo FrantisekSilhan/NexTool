@@ -3,7 +3,7 @@
 <ul>
   <% files.forEach(file => { %>
     <li>
-      <a href="/f/<%= file.fileName %>"><%= file.displayName %></a>
+      <p><a href="/f/<%= file.fileName %>"><%= file.displayName %></a> <%= file.fileSize %> <%= file.mimeType %> <%= file.md5 %></p>
     </li>
   <% }) %>
 </ul>

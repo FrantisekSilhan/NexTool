@@ -5,7 +5,8 @@ const expressLayouts = require("express-ejs-layouts");
 const expressFileUpload = require("express-fileupload");
 const app = express();
 
-const { generateRandomFileName, getFileNameExtension } = require(shared.files.files);
+const filesModule = require(shared.files.files);
+const crypto = require("crypto");
 
 app.set("view engine", "ejs");
 app.set("views", shared.paths.views);
@@ -19,18 +20,22 @@ app.use(expressFileUpload({
   abortOnLimit: true
 }));
 
-app.get("/", async (_, res) => {
+app.get("/", async (_, res, next) => {
   try {
     const db = require(shared.files.database);
     
     const files = await new Promise((resolve, reject) => {
-      db.all("SELECT fileName, displayName FROM files WHERE indexFile = 1",
+      db.all("SELECT fileName, displayName, fileSize, md5, mimeType FROM files WHERE indexFile = 1",
         (err, rows) => err ? reject(err) : resolve(rows)
       );
     });
 
-    res.render("index", { files });
+    const formattedFiles = files.map(file => ({
+      ...file,
+      fileSize: filesModule.formatFileSize(file.fileSize)
+    }));
 
+    res.render("index", { files: formattedFiles });
   } catch (err) {
     next(err);
   }
@@ -61,7 +66,7 @@ app.post("/upload", async (req, res, next) => {
       throw err;
     }
 
-    const fileName = await generateRandomFileName(require(shared.files.database), getFileNameExtension(file.name, true));
+    const fileName = await filesModule.generateRandomFileName(require(shared.files.database), filesModule.getFileNameExtension(file.name, true));
     const downloadName = req.body.downloadName.replace(/\s/g, "").length > 0 ? req.body.downloadName : fileName;
     const displayName = req.body.displayName.replace(/\s/g, "").length > 0 ? req.body.displayName : downloadName;
     const index = req.body.index !== undefined && req.body.index === "on";
@@ -84,8 +89,8 @@ app.post("/upload", async (req, res, next) => {
     });
 
     await new Promise((resolve, reject) => {
-      db.run("INSERT INTO files (fileName, displayName, downloadName, indexFile) VALUES (?, ?, ?, ?)",
-        [fileName, displayName, downloadName, index],
+      db.run("INSERT INTO files (fileName, displayName, downloadName, indexFile, fileSize, md5, mimeType) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        [fileName, displayName, downloadName, index, file.size, crypto.createHash("md5").update(file.data).digest("hex"), file.mimetype],
         (err) => err ? reject(err) : resolve()
       );
     });

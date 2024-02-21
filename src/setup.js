@@ -15,7 +15,12 @@ db.serialize(() => {
       fileName TEXT NOT NULL UNIQUE,
       displayName TEXT NOT NULL,
       downloadName TEXT NOT NULL,
-      indexFile BOOLEAN NOT NULL
+      indexFile BOOLEAN NOT NULL,
+
+      added DATETIME DEFAULT CURRENT_TIMESTAMP,
+      fileSize INTEGER NOT NULL,
+      md5 TEXT NOT NULL,
+      mimeType TEXT NOT NULL
     )
   `);
 });

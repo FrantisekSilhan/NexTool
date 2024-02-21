@@ -15,6 +15,15 @@ function getFileNameExtension(name, returnDot = false) {
   return name.substring(index + (returnDot ? 0 : 1));
 }
 
+function formatFileSize(bytes) {
+  bytes = parseInt(bytes);
+  if (bytes === 0) return "0b";
+  const k = 1024;
+  const sizes = ["B", "K", "M", "G", "T", "P", "E", "Z", "Y"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseInt(bytes / Math.pow(k, i)) + sizes[i];
+}
+
 async function isFileNameUnique(db, name) {
   return new Promise((resolve, reject) => {
     db.get("SELECT * FROM files WHERE fileName = ?", [name], (err, row) => {
@@ -51,4 +60,5 @@ async function generateRandomFileName(db, extension) {
 module.exports = {
   generateRandomFileName,
   getFileNameExtension,
+  formatFileSize,
 };
