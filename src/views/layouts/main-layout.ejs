@@ -9,5 +9,14 @@
 </head>
 <body>
   <%- body %>
+  <script>
+    let reload = false;
+
+    if (reload) {
+      window.setTimeout( function() {
+        window.location.reload();
+      }, 1500);
+    }
+  </script>
 </body>
 </html>

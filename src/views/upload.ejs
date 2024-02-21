@@ -1,15 +1,35 @@
-<form action="/upload" method="POST" enctype="multipart/form-data">
-  <label for="file">Select a file:</label>
-  <input type="file" id="file" name="file" accept="*" required>
+<form action="/upload" method="POST" enctype="multipart/form-data" class="form">
+  <div class="form__items">
+    <label class="form__label" for="file">Select a file:</label>
+    <div class="form__input">
+      <label class="btn" for="file">Browse</label>
+      <span id="fileName">No file selected.</span>
+      <input style="display: none;" type="file" id="file" name="file" accept="*" required>
+    </div>
 
-  <label for="downloadName">Download Name:</label>
-  <input type="text" id="downloadName" name="downloadName" maxlength="<%= DownloadLen %>" required>
+    <label class="form__label" for="downloadName">Download Name:</label>
+    <div class="form__input-wrapper">
+      <input class="form__input" placeholder="cat.png" type="text" id="downloadName" name="downloadName" maxlength="<%= DownloadLen %>" required>
+    </div>
 
-  <label for="displayName">Display Name:</label>
-  <input type="text" id="displayName" name="displayName" maxlength="<%= DisplayLen %>" required>
+    <label class="form__label" for="displayName">Display Name:</label>
+    <div class="form__input-wrapper">
+      <input class="form__input" placeholder="Cute cat" type="text" id="displayName" name="displayName" maxlength="<%= DisplayLen %>" required>
+    </div>
 
-  <label for="index">Index:</label>
-  <input type="checkbox" id="index" name="index">
+    <div class="form__checkbox-wrapper">
+      <label class="form__label" for="index">Include in index?</label>
+        <input class="form__checkbox" type="checkbox" id="index" name="index">
+    </div>
+  </div>
 
-  <button type="submit">Upload</button>
+  <button class="btn" type="submit">Upload</button>
 </form>
+
+<script>
+  document.getElementById("file").addEventListener("change", function() {
+    var fileName = this.files[0].name;
+    document.getElementById("fileName").textContent = fileName ?? "No file selected.";
+    document.getElementById("downloadName").value = fileName;
+  });
+</script>

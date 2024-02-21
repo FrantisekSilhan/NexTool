@@ -14,9 +14,12 @@ app.set("layout", shared.files.mainLayout);
 app.use(express.static(shared.paths.public));
 app.use(express.urlencoded({ extended: true }));
 app.use(expressLayouts);
-app.use(expressFileUpload());
+app.use(expressFileUpload({
+  limits: { fileSize: shared.config.upload.maximumFileSize },
+  abortOnLimit: true
+}));
 
-app.get("/", async (req, res) => {
+app.get("/", async (_, res) => {
   try {
     const db = require(shared.files.database);
     
@@ -40,7 +43,7 @@ app.get("/upload", (_, res) => {
   });
 });
 
-app.post("/upload", async (req, res) => {
+app.post("/upload", async (req, res, next) => {
   const db = require(shared.files.database);
 
   try {
@@ -102,11 +105,13 @@ app.post("/upload", async (req, res) => {
     res.redirect("/");
 
   } catch (err) {
-    await new Promise((_, reject) => {
-      db.run("ROLLBACK",
-        (rollbackErr) => rollbackErr ? console.error(rollbackErr) : reject(err)
-      );
-    });
+    if (err.status != 400) {
+      await new Promise((_, reject) => {
+        db.run("ROLLBACK",
+          (rollbackErr) => rollbackErr ? console.error(rollbackErr) : reject(err)
+        );
+      });
+    }
 
     next(err);
   }
