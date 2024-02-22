@@ -165,10 +165,10 @@ main.transform {
 }
 
 .list {
+  list-style: none;
 }
 
 .list__item {
-  list-style: none;
   margin: .25em 0;
 }
 
