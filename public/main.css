@@ -97,6 +97,19 @@ main.transform {
   outline-offset: 2px;
 }
 
+.btn--secondary {
+  background-color: hsl(var(--secondary));
+}
+
+.btn--secondary:hover, .btn--secondary:focus-visible {
+  background-color: hsl(var(--secondary) / .85);
+}
+
+.btn--secondary:focus-visible {
+  outline: 2px solid hsl(var(--secondary) / .85);
+  outline-offset: 2px;
+}
+
 .form {
   width: 100%;
   display: flex;
@@ -129,6 +142,9 @@ main.transform {
   border: none;
 
   border-radius: var(--border-radius);
+
+  background-color: hsl(var(--secondary) / .15);
+  color: hsl(var(--text));
 }
 
 .form__input-wrapper {
