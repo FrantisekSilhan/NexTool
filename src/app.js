@@ -154,8 +154,9 @@ app.use((_, __, next ) => {
 });
 
 app.use((err, _, res, __) => {
-  const errorCode = err.status ?? 500;
-  const errorMessage = err.message ?? "Internal Server Error";
+  console.error(err);
+  const errorCode = (err.status !== undefined && err.status >= 500 && err.status < 600) ? 500 : err.status ?? 500;
+  const errorMessage = (errorCode >= 500 && errorCode < 600) ? "Internal Server Error" : err.message ?? "Internal Server Error";
   res.status(errorCode).send(errorMessage);
 });
 
