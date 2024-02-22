@@ -6,7 +6,7 @@
   --accent: 280 56% 25%;
   --btn-text: 0 0% 100%;
 
-  --font: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --font: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   --border-radius: .25em;
 
   --font-scale: 1.25;
@@ -42,6 +42,16 @@ html {
 
 main {
   padding: 1em;
+  box-sizing: border-box;
+}
+
+main.center {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(calc(var(--font-h1) * -1));
 }
 
 .btn {
@@ -49,7 +59,7 @@ main {
   font-weight: 400;
   font-family: var(--font);
 
-  background-color: hsl(var(--primary));
+  background-color: hsl(var(--accent));
   color: hsl(var(--btn-text));
   padding: 0.5em 1em;
   border-radius: var(--border-radius);
@@ -60,11 +70,30 @@ main {
   box-sizing: border-box;
 }
 
-.btn:hover {
+.btn:hover, .btn:focus-visible {
+  background-color: hsl(var(--accent) / .85);
+}
+
+.btn:focus-visible {
+  outline: 2px solid hsl(var(--accent) / .85);
+  outline-offset: 2px;
+}
+
+.btn--primary {
+  background-color: hsl(var(--primary));
+}
+
+.btn--primary:hover, .btn--primary:focus-visible {
   background-color: hsl(var(--primary) / .85);
 }
 
+.btn--primary:focus-visible {
+  outline: 2px solid hsl(var(--primary) / .85);
+  outline-offset: 2px;
+}
+
 .form {
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 1em;
@@ -120,8 +149,14 @@ main {
   color: hsl(var(--accent));
 }
 
-.link:hover {
+.link:hover, .link:focus-visible {
   color: hsl(var(--accent) / .85);
+}
+
+.link:focus-visible {
+  outline: 2px solid hsl(var(--accent) / .85);
+  outline-offset: 2px;
+  border-radius: .25em;
 }
 
 .list {
@@ -135,4 +170,26 @@ main {
 .title {
   margin-bottom: .5em;
   font-size: var(--font-h1);
+}
+
+@media (max-width: 768px) {
+  .form__items {
+    grid-template-columns: 1fr;
+  }
+  .form__label {
+    grid-column: 1;
+  }
+
+  .form__input-wrapper {
+    grid-column: 1;
+  }
+
+  .form__checkbox-wrapper {
+    grid-column: 1;
+  }
+
+  main.center {
+    min-height: unset;
+    transform: none
+  }
 }

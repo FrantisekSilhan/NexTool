@@ -1,10 +1,12 @@
+<% mainClass = "class=center" %>
+
 <h1 class="title">Upload</h1>
 
 <form action="/upload" method="POST" enctype="multipart/form-data" class="form">
   <div class="form__items">
     <label class="form__label" for="file">Select a file:</label>
     <div class="form__input">
-      <label class="btn" for="file">Browse</label>
+      <label class="btn" for="file" tabIndex="0" role="button" aria-label="Browse files">Browse</label>
       <span id="fileName">No file selected.</span>
       <input style="display: none;" type="file" id="file" name="file" accept="*" required>
     </div>
@@ -25,13 +27,25 @@
     </div>
   </div>
 
-  <button class="btn" type="submit">Upload</button>
+  <button class="btn btn--primary" type="submit">Upload</button>
 </form>
 
 <script>
-  document.getElementById("file").addEventListener("change", function() {
+  const file = document.getElementById("file");
+  const btn = document.querySelector(".btn");
+
+  file.addEventListener("change", function() {
     var fileName = this.files[0].name;
     document.getElementById("fileName").textContent = fileName ?? "No file selected.";
     document.getElementById("downloadName").value = fileName;
+  });
+
+  btn.addEventListener("click", () => {
+    file.click();
+  });
+  btn.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      file.click();
+    }
   });
 </script>
