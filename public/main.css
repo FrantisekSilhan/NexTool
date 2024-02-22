@@ -3,20 +3,31 @@
   --background: 0 0% 100%;
   --primary: 0 0% 0%;
   --secondary: 0 0% 40%;
-  --accent: 255 50% 50%;
+  --accent: 280 56% 25%;
   --btn-text: 0 0% 100%;
 
   --font: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   --border-radius: .25em;
+
+  --font-scale: 1.25;
+  --font-r: 16px;
+  --font-h6: calc(var(--font-r) * var(--font-scale));
+  --font-h5: calc(var(--font-h6) * var(--font-scale));
+  --font-h4: calc(var(--font-h5) * var(--font-scale));
+  --font-h3: calc(var(--font-h4) * var(--font-scale));
+  --font-h2: calc(var(--font-h3) * var(--font-scale));
+  --font-h1: calc(var(--font-h2) * var(--font-scale));
+  --font-s: calc(var(--font-r) / var(--font-scale));
+  --font-xs: calc(var(--font-s) / var(--font-scale));
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --text: 0 0% 100%;
-    --background: 0 0% 0%;
+    --background: 0 0% 5%;
     --primary: 0 0% 100%;
     --secondary: 0 0% 60%;
-    --accent: 255 50% 50%;
+    --accent: 280 56% 75%;
     --btn-text: 0 0% 0%;
   }
 }
@@ -26,11 +37,15 @@ html {
   background-color: hsl(var(--background));
   color: hsl(var(--text));
   font-family: var(--font);
-  font-size: 16px;
+  font-size: var(--font-r);
+}
+
+main {
+  padding: 1em;
 }
 
 .btn {
-  font-size: 1rem;
+  font-size: var(--font-r);
   font-weight: 400;
   font-family: var(--font);
 
@@ -46,7 +61,7 @@ html {
 }
 
 .btn:hover {
-  background-color: hsl(var(--primary) / 0.7);
+  background-color: hsl(var(--primary) / .85);
 }
 
 .form {
@@ -99,4 +114,25 @@ html {
   margin: 0;
   width: 1rem;
   height: 1rem;
+}
+
+.link {
+  color: hsl(var(--accent));
+}
+
+.link:hover {
+  color: hsl(var(--accent) / .85);
+}
+
+.list {
+}
+
+.list__item {
+  list-style: none;
+  margin: .25em 0;
+}
+
+.title {
+  margin-bottom: .5em;
+  font-size: var(--font-h1);
 }

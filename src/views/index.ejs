@@ -1,9 +1,9 @@
-<h1>Files</h1>
+<h1 class="title">Files</h1>
 
-<ul>
+<ul class="list">
   <% files.forEach(file => { %>
-    <li>
-      <p><a href="/f/<%= file.fileName %>"><%= file.displayName %></a> <%= file.fileSize %> <%= file.mimeType %> <%= file.md5 %></p>
+    <li class="list__item">
+      <p><a class="link" target="_blank" href="/f/<%= file.fileName %>"><%= file.displayName %></a> <%= file.fileSize %> <%= file.mimeType %> <%= file.md5 %></p>
     </li>
   <% }) %>
 </ul>

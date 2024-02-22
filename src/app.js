@@ -122,7 +122,7 @@ app.post("/upload", async (req, res, next) => {
   }
 });
 
-app.get("/f/:file", async (req, res) => {
+app.get("/f/:file", async (req, res, next) => {
   const db = require(shared.files.database);
 
   try {
