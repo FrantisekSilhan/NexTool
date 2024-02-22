@@ -24,6 +24,36 @@ function formatFileSize(bytes) {
   return parseInt(bytes / Math.pow(k, i)) + sizes[i];
 }
 
+async function readFileLines(filePath, numLines, message = "") {
+  return new Promise((resolve, reject) => {
+    let lines = [];
+    let lineCount = 0;
+
+    const readStream = require("fs").createReadStream(filePath, { encoding: "utf-8" });
+
+    readStream.on("data", (chunk) => {
+      lines = lines.concat(chunk.split("\n"));
+      lineCount += chunk.split("\n").length;
+
+      if (lineCount >= numLines) {
+        readStream.close();
+      }
+    });
+
+    readStream.on("close", () => {
+      const truncatedLines = lines.slice(0, numLines);
+      if (lineCount > numLines) {
+        truncatedLines.push(message);
+      }
+      resolve(truncatedLines.join("\n"));
+    });
+
+    readStream.on("error", (err) => {
+      reject(err);
+    });
+  });
+}
+
 async function isFileNameUnique(db, name) {
   return new Promise((resolve, reject) => {
     db.get("SELECT * FROM files WHERE fileName = ?", [name], (err, row) => {
@@ -35,18 +65,7 @@ async function isFileNameUnique(db, name) {
   });
 }
 
-async function generateRandomFileName(db) {
-  const fileNameLength = 16;
-  let fileName = generateRandomString(fileNameLength);
-  let unique = await isFileNameUnique(db, fileName);
-  while (!unique) {
-    fileName = generateRandomString(fileNameLength);
-    unique = await isFileNameUnique(db, fileName);
-  }
-  return fileName;
-}
-
-async function generateRandomFileName(db, extension) {
+async function generateRandomFileName(db, extension = "") {
   const fileNameLength = 16;
   let fileName = generateRandomString(fileNameLength) + extension;
   let unique = await isFileNameUnique(db, fileName);
@@ -61,4 +80,5 @@ module.exports = {
   generateRandomFileName,
   getFileNameExtension,
   formatFileSize,
+  readFileLines,
 };

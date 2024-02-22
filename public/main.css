@@ -51,6 +51,9 @@ main.center {
   min-height: 100vh;
   align-items: center;
   justify-content: center;
+}
+
+main.transform {
   transform: translateY(calc(var(--font-h1) * -1));
 }
 
@@ -61,6 +64,8 @@ main.center {
 
   background-color: hsl(var(--accent));
   color: hsl(var(--btn-text));
+  text-decoration: none;
+
   padding: 0.5em 1em;
   border-radius: var(--border-radius);
   outline: none;
@@ -172,7 +177,62 @@ main.center {
   font-size: var(--font-h1);
 }
 
+.title--s1 {
+  font-size: var(--font-h1);
+}
+.title--s2 {
+  font-size: var(--font-h2);
+}
+.title--s3 {
+  font-size: var(--font-h3);
+}
+.title--s4 {
+  font-size: var(--font-h4);
+}
+.title--s5 {
+  font-size: var(--font-h5);
+}
+.title--s6 {
+  font-size: var(--font-h6);
+}
+
+.file-embed {
+  display: block;
+  margin-top: 1em;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.file-wrapper {
+  max-height: 100%;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.file-wrapper .title {
+  word-break: break-all
+}
+
+.file-embed .text-block {
+  background-color: hsl(var(--secondary) / .15);
+  padding: 1em;
+  border-radius: 1em;
+  max-width: 85ch;
+
+  text-align: left;
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  white-space: pre-line;
+  word-wrap: break-word;
+}
+
 @media (max-width: 768px) {
+  :root {
+    --font-r: 14px;
+    --font-scale: 1.15;
+  }
   .form__items {
     grid-template-columns: 1fr;
   }
