@@ -50,7 +50,7 @@ app.get("/", async (_, res, next) => {
   }
 });
 
-app.get("/upload", (_, res) => {
+app.get("/upload", (req, res) => {
   res.render("upload", {
     csrfToken: req.csrfToken(),
     DownloadLen: shared.config.upload.downloadLen,
