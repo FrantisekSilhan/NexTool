@@ -10,4 +10,35 @@ const db = new sqlite3.Database(dbPath, err => {
   console.log("Connected to the database.");
 });
 
-module.exports = db;
+const initialize = () => {
+  db.serialize(() => {
+    db.run(`
+      CREATE TABLE IF NOT EXISTS files (
+        id INTEGER PRIMARY KEY,
+        fileName TEXT NOT NULL UNIQUE,
+        displayName TEXT NOT NULL,
+        downloadName TEXT NOT NULL,
+        indexFile BOOLEAN NOT NULL,
+  
+        added DATETIME DEFAULT CURRENT_TIMESTAMP,
+        fileSize INTEGER NOT NULL,
+        md5 TEXT NOT NULL,
+        mimeType TEXT NOT NULL,
+
+        owner INTEGER NOT NULL
+      )
+    `);
+    db.run(`
+    CREATE TABLE IF NOT EXISTS users (
+      id INTEGER PRIMARY KEY,
+      userName TEXT NOT NULL UNIQUE,
+      password TEXT NOT NULL
+    )
+  `);
+  });  
+};
+
+module.exports = {
+  db,
+  initialize,
+};

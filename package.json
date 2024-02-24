@@ -17,10 +17,15 @@
   },
   "homepage": "https://github.com/FrantisekSilhan/tools#readme",
   "dependencies": {
+    "connect-sqlite3": "^0.9.13",
+    "cookie-parser": "^1.4.6",
+    "csurf": "^1.11.0",
+    "dotenv": "^16.4.5",
     "ejs": "^3.1.9",
     "express": "^4.18.2",
     "express-ejs-layouts": "^2.5.1",
     "express-fileupload": "^1.4.3",
+    "express-session": "^1.18.0",
     "sqlite3": "^5.1.7"
   }
 }

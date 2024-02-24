@@ -22,6 +22,7 @@ files = {
   database: path.join(paths.src, "db"),
   files: path.join(paths.src, "files"),
   mainLayout: path.join(paths.layouts, "main-layout"),
+  sessionMiddleware: path.join(paths.src, "sessionMiddleware"),
 };
 
 
