@@ -76,7 +76,7 @@ app.post("/upload", async (req, res, next) => {
       throw err;
     }
 
-    const fileName = await filesModule.generateRandomFileName(require(shared.files.database));
+    const fileName = await filesModule.generateRandomFileName(require(shared.files.database).db);
     const downloadName = req.body.downloadName.replace(/\s/g, "").length > 0 ? req.body.downloadName : fileName;
     const displayName = req.body.displayName.replace(/\s/g, "").length > 0 ? req.body.displayName : downloadName;
     const index = req.body.index !== undefined && req.body.index === "on";
@@ -120,6 +120,7 @@ app.post("/upload", async (req, res, next) => {
     res.redirect("/");
 
   } catch (err) {
+    console.error(err);
     if (err.status != 400) {
       await new Promise((_, reject) => {
         db.run("ROLLBACK",
