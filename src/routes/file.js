@@ -2,6 +2,8 @@ const shared = require("../../shared");
 const express = require("express");
 const router = express.Router();
 
+const { readFileLines } = require(shared.files.files);
+
 router.path = "/f";
 
 router.get("/:file", async (req, res, next) => {
@@ -24,7 +26,7 @@ router.get("/:file", async (req, res, next) => {
     }
 
     if (fileInfo.mimeType.startsWith("text")) {
-      const fileContent = await filesModule.readFileLines(shared.path.join(shared.paths.files, fileName), 10, "... (More content available)");
+      const fileContent = await readFileLines(shared.path.join(shared.paths.files, fileName), 10, "... (More content available)");
       res.render("file", { fileName, downloadName: fileInfo.downloadName, mimeType: fileInfo.mimeType, fileContent, renderNavbar: false});
       return;
     }

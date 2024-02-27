@@ -11,9 +11,14 @@ The project is a web application built using Node.js and Express framework. It p
 
 ### Todo
 
-- [ ] Create admin group for managing files, invite codes, etc.
-- [ ] Add groups for uploading bigger files, being able to generate invite codes.
+- [ ] Create admin group for managing files, invite codes, etc (manager all users: ban, unban, change groups; manage all files: remove files and change visibility; manage all invite codes: remove invite codes)
+- [ ] Add groups for uploading bigger files, being able to generate invite codes
 - [ ] Add option to make private file public by link or private (now it is public by link)
+- [ ] Create error page
+- [ ] Add option to convert images to gif (for discord)
+- [ ] Add option to delete a file
+- [ ] Add file embed for discord
+- [ ] Add image compression
 
 ## Getting Started
 
@@ -35,7 +40,7 @@ cd NexTool
 npm install
 ```
 
-3. Configure the application as needed, including setting up database connections and environment variables: Rename `env.example` to `.env`. Also check `shared.js` and `./src/config.js`.
+3. Configure the application as needed, including setting up database connections and environment variables: Rename `env.example` to `.env`. Also check `~/shared.js` and `~/src/config.js`.
 
 4. Run the application:
 
@@ -44,6 +49,8 @@ npm start
 ```
 
 5. Access NexTool in your web browser at [http://localhost:6975](http://localhost:6975).
+
+6. Create your first account using `00000000000-0000000000-00000000` invite code.
 
 ## Contributing
 
@@ -56,19 +63,21 @@ Contributions to NexTool are welcome! If you'd like to contribute, please follow
 git checkout -b feature/new-feature
 ```
 
-3. Commit your changes:
+3. Use 2 space indentation please.
+
+4. Commit your changes:
 
 ```
 git commit -am 'Add new feature'
 ```
 
-4. Push to the branch:
+5. Push to the branch:
 
 ```
 git push origin feature/new-feature
 ```
 
-5. Submit a pull request.
+6. Submit a pull request.
 
 ## License
 
