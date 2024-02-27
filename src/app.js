@@ -26,6 +26,11 @@ app.use(cookieParser());
 app.use(sessionMiddleware);
 app.use(csrfProtection);
 
+app.use((req, res, next) => {
+  res.locals.user = req.session.userId;
+  next();
+});
+
 shared.fs.readdirSync(shared.paths.routes).forEach(file => {
   if (file.endsWith(".js")) {
     const router = require(shared.path.join(shared.paths.routes, file));

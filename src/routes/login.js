@@ -69,6 +69,7 @@ router.post("/", isNotAuthenticated, async (req, res, next) => {
       throw err;
     } else {
       req.session.userId = user.id;
+      req.session.username = user.userName;
     }
 
     delete req.session.formData;

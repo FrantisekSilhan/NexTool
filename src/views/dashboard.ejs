@@ -1,0 +1,19 @@
+<% mainClass = "" %>
+
+<h1 class="title">Dashboard</h1>
+
+<div class="section">
+  <h2 class="title title--s4">Account</h2>
+  <p class="text">Username: <%= userName %> <a class="link" href="/logout">Sign out</a></p>
+</div>
+
+<div class="section">
+  <h2 class="title title--s4">Files</h2>
+  <ul class="list">
+    <% files.forEach(file => { %>
+      <li class="list__item">
+        <p><a class="link" target="_blank" href="/f/<%= file.fileName %>"><%= file.displayName %></a> <%= file.fileSize %> <%= file.mimeType %> <%= file.md5 %></p>
+      </li>
+    <% }) %>
+  </ul>
+</div>

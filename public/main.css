@@ -10,6 +10,8 @@
   --font: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   --border-radius: .25em;
 
+  --navbar-height: 3.5em;
+
   --font-scale: 1.25;
   --font-r: 16px;
   --font-h6: calc(var(--font-r) * var(--font-scale));
@@ -50,14 +52,15 @@ main {
 main.center {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: calc(100vh - var(--navbar-height) * 2);
   align-items: center;
   justify-content: center;
+  margin-bottom: var(--navbar-height);
 }
 
-main.transform {
-  transform: translateY(calc(var(--font-h1) * -1));
-}
+/*main.transform {
+  transform: translateY(calc((var(--font-h1) + var(--navbar-height)) * -1));
+}*/
 
 .btn {
   font-size: var(--font-r);
@@ -255,6 +258,52 @@ main.transform {
   text-align: center;
 }
 
+.section {
+  margin: 1em 0;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: var(--navbar-height);
+  position: relative;
+}
+
+.navbar::after {
+  content: "";
+  display: block;
+  height: 2px;
+  width: 100%;
+  background-color: hsl(var(--accent));
+  top: 100%;
+  position: absolute;
+}
+
+.navbar__menu {
+  display: flex;
+}
+
+.navbar__item {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar__link {
+  background-color: hsl(var(--secondary) / .1);
+  color: hsl(var(--text));
+  display: flex;
+  align-items: center;
+  padding: 0 1em;
+  height: var(--navbar-height);
+  text-decoration: none;
+}
+
+.navbar__link:hover, .navbar__link:focus-visible {
+  background-color: hsl(var(--secondary) / .15);
+}
+
 @media (max-width: 768px) {
   :root {
     --font-r: 14px;
@@ -277,6 +326,7 @@ main.transform {
 
   main.center {
     min-height: unset;
-    transform: none
+    transform: none;
+    margin: 0;
   }
 }
