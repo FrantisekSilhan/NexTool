@@ -1,5 +1,5 @@
 {
-  "name": "tools",
+  "name": "nextool",
   "version": "1.0.0",
   "description": "",
   "main": "./src/app.js",
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/FrantisekSilhan/tools.git"
+    "url": "git+https://github.com/FrantisekSilhan/NexTool.git"
   },
   "author": "František Šilhán",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/FrantisekSilhan/tools/issues"
+    "url": "https://github.com/FrantisekSilhan/NexTool/issues"
   },
-  "homepage": "https://github.com/FrantisekSilhan/tools#readme",
+  "homepage": "https://github.com/FrantisekSilhan/NexTool#readme",
   "dependencies": {
     "connect-sqlite3": "^0.9.13",
     "cookie-parser": "^1.4.6",
