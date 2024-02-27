@@ -10,10 +10,12 @@ router.path = "/dashboard";
 router.get("/", isAuthenticated, async (req, res, next) => {
   try {
     const { db } = require(shared.files.database);
+
+    const userId = req.session.userId;
     
     const files = await new Promise((resolve, reject) => {
       db.all("SELECT fileName, displayName, fileSize, md5, mimeType FROM files WHERE owner = ?",
-        [req.session.userId],
+        [userId],
         (err, rows) => err ? reject(err) : resolve(rows)
       );
     });
@@ -23,7 +25,7 @@ router.get("/", isAuthenticated, async (req, res, next) => {
       fileSize: formatFileSize(file.fileSize)
     }));
 
-    res.render("dashboard", { userName: req.session.username, files: formattedFiles});
+    res.render("dashboard", { userName: req.session.username, files: formattedFiles, userId });
   } catch (err) {
     next(err);
   }
