@@ -2,24 +2,31 @@
 
 <div class="file-wrapper">
   <h1 class="title title--s4"><%= downloadName %></h1>
-  
+
   <a href="/f/<%= fileName %>/<%= downloadName %>" class="btn btn--primary">Download</a>
-  
+
   <% if (mimeType.startsWith("image")) { %>
     <img src="/f/<%= fileName %>/<%= downloadName %>" alt="<%= downloadName %>" class="file-embed">
   <% } else if (mimeType.startsWith("audio")) { %>
     <audio controls class="file-embed">
-        <source src="/f/<%= fileName %>/<%= downloadName %>" type="<%= mimeType %>">
-        No audio with supported format and MIME type found.
+      <source src="/f/<%= fileName %>/<%= downloadName %>" type="<%= mimeType %>">
+      No audio with supported format and MIME type found.
     </audio>
   <% } else if (mimeType.startsWith("video")) { %>
     <video controls class="file-embed">
-        <source src="/f/<%= fileName %>/<%= downloadName %>" type="<%= mimeType %>">
-        No video with supported format and MIME type found.
+      <source src="/f/<%= fileName %>/<%= downloadName %>" type="<%= mimeType %>">
+      No video with supported format and MIME type found.
     </video>
+  <% } else if (language) {%>
+    <div class="file-embed">
+      <pre class="text-block"><code class="language-<%= language %>"><%= fileContent %></code></pre>
+    </div>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
   <% } else if (mimeType.startsWith("text")) { %>
     <div class="file-embed">
-        <pre class="text-block"><% const lines = fileContent.split("\n");%><% lines.forEach(line => { %><%= line %><% }); %></pre>
+      <pre class="text-block"><% const lines = fileContent.split("\n");%><% lines.forEach(line => { %><%= line %><% }); %></pre>
     </div>
   <% } else { %>
     <p class="file-embed">Preview not available for this type of file.</p>

@@ -13,7 +13,7 @@ router.get("/:file", async (req, res, next) => {
     const fileName = req.params.file;
 
     const fileInfo = await new Promise((resolve, reject) => {
-      db.get("SELECT downloadName, mimeType FROM files WHERE fileName = ?",
+      db.get("SELECT downloadName, mimeType, language FROM files WHERE fileName = ?",
         [fileName],
         (err, row) => err ? reject(err) : resolve(row)
       );
@@ -25,9 +25,9 @@ router.get("/:file", async (req, res, next) => {
       throw err;
     }
 
-    if (fileInfo.mimeType.startsWith("text")) {
-      const fileContent = await readFileLines(shared.path.join(shared.paths.files, fileName), 10, "... (More content available)");
-      res.render("file", { fileName, downloadName: fileInfo.downloadName, mimeType: fileInfo.mimeType, fileContent, renderNavbar: false});
+    if (fileInfo.mimeType.startsWith("text") || fileInfo.language !== null) {
+      const fileContent = await readFileLines(shared.path.join(shared.paths.files, fileName), fileInfo.language !== null ? 0 : 10, "... (More content available)");
+      res.render("file", { fileName, downloadName: fileInfo.downloadName, language: fileInfo.language, mimeType: fileInfo.mimeType, fileContent, renderNavbar: false});
       return;
     }
 

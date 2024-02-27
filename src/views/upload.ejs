@@ -1,4 +1,4 @@
-<% mainClass = "class=center" %>
+<% mainClass="class=center" %>
 
 <h1 class="title">Upload</h1>
 
@@ -13,35 +13,85 @@
 
     <label class="form__label" for="downloadName">Download Name:</label>
     <div class="form__input-wrapper">
-      <input class="form__input" autocomplete="off" placeholder="cat.png" type="text" id="downloadName" name="downloadName" maxlength="<%= DownloadLen %>" value="<%= formData.downloadName %>" required>
+      <input class="form__input" autocomplete="off" placeholder="cat.png" type="text" id="downloadName"
+        name="downloadName" maxlength="<%= DownloadLen %>" value="<%= formData.downloadName %>" required>
     </div>
 
     <label class="form__label" for="displayName">Display Name:</label>
     <div class="form__input-wrapper">
-      <input class="form__input" autocomplete="off" placeholder="Cute cat" type="text" id="displayName" name="displayName" maxlength="<%= DisplayLen %>" value="<%= formData.displayName %>" required>
+      <input class="form__input" autocomplete="off" placeholder="Cute cat" type="text" id="displayName"
+        name="displayName" maxlength="<%= DisplayLen %>" value="<%= formData.displayName %>" required>
+    </div>
+
+    <label class="form__label" for="languageSelect">Language Select:</label>
+    <div class="form__input-wrapper">
+      <select class="form__input" id="languageSelect" name="language"></select>
     </div>
 
     <div class="form__checkbox-wrapper">
       <label class="form__label" for="index">Include in index?</label>
-        <input class="form__checkbox" type="checkbox" id="index" name="index">
+      <input class="form__checkbox" type="checkbox" id="index" name="index">
     </div>
   </div>
 
   <input type="hidden" name="_csrf" value="<%= csrfToken %>">
   <% if(errorMessage) { %>
-    <p class="error"><%= errorMessage %></p>
-  <% } %>
-  <button class="btn" type="submit">Upload</button>
+    <p class="error">
+      <%= errorMessage %>
+    </p>
+    <% } %>
+      <button class="btn" type="submit">Upload</button>
 </form>
 
 <script>
+  const languages = [
+    { name: "None", value: "none", exts: [] },
+    { name: "C#", value: "cs", exts: ["cs"] },
+    { name: "C", value: "c", exts: ["c"] },
+    { name: "C++", value: "cpp", exts: ["cpp", "cc", "cxx", "c++"] },
+    { name: "CSS", value: "css", exts: ["css"] },
+    { name: "Go", value: "go", exts: ["go"] },
+    { name: "HTML", value: "html", exts: ["html", "htm"] },
+    { name: "Java", value: "java", exts: ["java"] },
+    { name: "JavaScript", value: "js", exts: ["js", "jsx"] },
+    { name: "JSON", value: "json", exts: ["json"] },
+    { name: "Kotlin", value: "kt", exts: ["kt"] },
+    { name: "Lua", value: "lua", exts: ["lua"] },
+    { name: "Markdown", value: "md", exts: ["md"] },
+    { name: "PowerShell", value: "ps1", exts: ["ps1"] },
+    { name: "Python", value: "py", exts: ["py"] },
+    { name: "Ruby", value: "rb", exts: ["rb"] },
+    { name: "Rust", value: "rs", exts: ["rs"] },
+    { name: "Shell", value: "sh", exts: ["sh"] },
+    { name: "SQL", value: "sql", exts: ["sql"] },
+    { name: "TypeScript", value: "ts", exts: ["ts", "tsx"] },
+    { name: "YAML", value: "yaml", exts: ["yaml", "yml"] },
+  ]
+
   const file = document.getElementById("file");
   const btn = document.querySelector(".btn");
+  const language = document.getElementById("languageSelect");
 
-  file.addEventListener("change", function() {
+  languages.forEach((lang) => {
+    const option = document.createElement("option");
+    option.value = lang.value;
+    option.textContent = lang.name;
+    language.appendChild(option);
+  });
+
+
+  file.addEventListener("change", function () {
     var fileName = this.files[0].name;
     document.getElementById("fileName").textContent = fileName ?? "No file selected.";
     document.getElementById("downloadName").value = fileName;
+
+    const ext = fileName.split(".").pop();
+    const lang = languages.find((l) => l.exts.includes(ext));
+    if (lang) {
+      language.value = lang.value;
+    } else {
+      language.value = "none";
+    }
   });
 
   btn.addEventListener("click", () => {
