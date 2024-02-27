@@ -7,8 +7,33 @@ const { generateInviteCode } = require(shared.files.invites);
 
 router.path = "/invite";
 
-router.get("/", isAuthenticated, async (req, res) => {
-  res.render("invite", { csrfToken: req.csrfToken() });
+router.get("/", isAuthenticated, async (req, res, next) => {
+  const { db } = require(shared.files.database);
+
+  let isTransactionActive = false;
+
+  try {
+    const userId = req.session.userId;
+
+    const invites = await new Promise((resolve, reject) => {
+      db.run("SELECT * FROM invites WHERE createdBy = ? AND usedBy IS NULL",
+        [userId],
+        (err, row) => err ? reject(err) : resolve(row)
+      );
+    });
+
+    res.render("invite", { csrfToken: req.csrfToken(), invites });
+  } catch (err) {
+    if (isTransactionActive) {
+      await new Promise((resolve, _) => {
+        db.run("ROLLBACK",
+          (rollbackErr) => rollbackErr ? console.error(rollbackErr) : resolve(err)
+        );
+      });
+    }
+
+    next(err);
+  }
 });
 
 router.post("/", isAuthenticated, async (req, res, next) => {

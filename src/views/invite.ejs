@@ -2,6 +2,16 @@
 
 <h1 class="title">Create Invite Code</h1>
 
+<h2 class="title title--s4">Unused Invite Codes</h2>
+
+<ul class="list">
+  <% invites.forEach(invite => { %>
+    <li class="list__item">
+      <p><%= invite.invite %></p>
+    </li>
+  <% }) %>
+</ul>
+
 <form action="/invite" method="POST" class="form">
   <input type="hidden" name="_csrf" value="<%= csrfToken %>">
   <button class="btn" type="submit">Create</button>
