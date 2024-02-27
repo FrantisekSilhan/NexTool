@@ -8,6 +8,7 @@
   --error: 3 82% 51%;
 
   --font: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  --monospace: "Courier New", Courier, monospace;
   --border-radius: .25em;
 
   --navbar-height: 3.5em;
@@ -188,6 +189,7 @@ main.center {
 
 .list {
   list-style: none;
+  margin-bottom: 1em;
 }
 
 .list__item {
@@ -302,6 +304,11 @@ main.center {
 
 .navbar__link:hover, .navbar__link:focus-visible {
   background-color: hsl(var(--secondary) / .15);
+}
+
+.invite-code {
+  font-family: var(--monospace);
+  user-select: all;
 }
 
 @media (max-width: 768px) {

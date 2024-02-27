@@ -16,7 +16,7 @@ router.get("/", isAuthenticated, async (req, res, next) => {
     const userId = req.session.userId;
 
     const invites = await new Promise((resolve, reject) => {
-      db.run("SELECT * FROM invites WHERE createdBy = ? AND usedBy IS NULL",
+      db.all("SELECT * FROM invites WHERE createdBy = ? AND usedBy IS NULL",
         [userId],
         (err, row) => err ? reject(err) : resolve(row)
       );

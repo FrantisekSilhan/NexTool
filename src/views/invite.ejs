@@ -5,12 +5,19 @@
 <h2 class="title title--s4">Unused Invite Codes</h2>
 
 <ul class="list">
-  <% invites.forEach(invite => { %>
+  <% if (invites && invites.length > 0) { %>
+    <% invites.forEach(invite => { %>
+      <li class="list__item">
+        <p class="invite-code"><%= invite.invite %></p>
+      </li>
+    <% }) %>
+  <% } else { %>
     <li class="list__item">
-      <p><%= invite.invite %></p>
+      <p>No invite codes</p>
     </li>
-  <% }) %>
+  <% } %>
 </ul>
+
 
 <form action="/invite" method="POST" class="form">
   <input type="hidden" name="_csrf" value="<%= csrfToken %>">
