@@ -25,11 +25,11 @@ router.get("/:file", async (req, res, next) => {
 
     if (fileInfo.mimeType.startsWith("text")) {
       const fileContent = await filesModule.readFileLines(shared.path.join(shared.paths.files, fileName), 10, "... (More content available)");
-      res.render("file", { fileName, downloadName: fileInfo.downloadName, mimeType: fileInfo.mimeType, fileContent });
+      res.render("file", { fileName, downloadName: fileInfo.downloadName, mimeType: fileInfo.mimeType, fileContent, renderNavbar: false});
       return;
     }
 
-    res.render("file", { fileName, downloadName: fileInfo.downloadName, mimeType: fileInfo.mimeType })
+    res.render("file", { fileName, downloadName: fileInfo.downloadName, mimeType: fileInfo.mimeType, renderNavbar: false })
   } catch (err) {
     next(err);
   }

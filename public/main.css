@@ -222,7 +222,7 @@ main.center {
   display: block;
   margin: 1em auto 0 auto;
   max-width: 100%;
-  max-height: 100%;
+  max-height: calc(100vh - var(--navbar-height) - var(--font-h1) * 2);
 }
 
 .file-wrapper {
