@@ -63,19 +63,21 @@ Contributions to NexTool are welcome! If you'd like to contribute, please follow
 git checkout -b feature/new-feature
 ```
 
-3. Commit your changes:
+3. Use 2 space indentation please.
+
+4. Commit your changes:
 
 ```
 git commit -am 'Add new feature'
 ```
 
-4. Push to the branch:
+5. Push to the branch:
 
 ```
 git push origin feature/new-feature
 ```
 
-5. Submit a pull request.
+6. Submit a pull request.
 
 ## License
 
