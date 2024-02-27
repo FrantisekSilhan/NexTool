@@ -18,6 +18,7 @@ The project is a web application built using Node.js and Express framework. It p
 - [ ] Add option to convert images to gif (for discord)
 - [ ] Add option to delete a file
 - [ ] Add file embed for discord
+- [ ] Add image compression
 
 ## Getting Started
 
