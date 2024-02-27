@@ -11,9 +11,10 @@ The project is a web application built using Node.js and Express framework. It p
 
 ### Todo
 
-- [ ] Create admin group for managing files, invite codes, etc.
-- [ ] Add groups for uploading bigger files, being able to generate invite codes.
+- [ ] Create admin group for managing files, invite codes, etc
+- [ ] Add groups for uploading bigger files, being able to generate invite codes
 - [ ] Add option to make private file public by link or private (now it is public by link)
+- [ ] Create error page
 
 ## Getting Started
 
