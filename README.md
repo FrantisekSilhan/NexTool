@@ -11,7 +11,7 @@ The project is a web application built using Node.js and Express framework. It p
 
 ### Todo
 
-- [ ] Create admin group for managing files, invite codes, etc (manager all users: ban, promote; manage all files: remove files and change visibility; manage all invite codes: remove invite codes)
+- [ ] Create admin group for managing files, invite codes, etc (manager all users: ban, unban, change groups; manage all files: remove files and change visibility; manage all invite codes: remove invite codes)
 - [ ] Add groups for uploading bigger files, being able to generate invite codes
 - [ ] Add option to make private file public by link or private (now it is public by link)
 - [ ] Create error page
@@ -39,7 +39,7 @@ cd NexTool
 npm install
 ```
 
-3. Configure the application as needed, including setting up database connections and environment variables: Rename `env.example` to `.env`. Also check `shared.js` and `./src/config.js`.
+3. Configure the application as needed, including setting up database connections and environment variables: Rename `env.example` to `.env`. Also check `~/shared.js` and `~/src/config.js`.
 
 4. Run the application:
 
