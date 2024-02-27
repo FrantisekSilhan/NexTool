@@ -4,6 +4,8 @@ const router = express.Router();
 const { isAuthenticated } = require(shared.files.middlewares);
 const crypto = require("crypto");
 
+const { generateRandomFileName } = require(shared.files.files);
+
 router.path = "/upload";
 
 router.get("/", isAuthenticated, (req, res) => {
@@ -46,7 +48,7 @@ router.post("/", isAuthenticated, async (req, res, next) => {
       throw err;
     }
 
-    const fileName = await filesModule.generateRandomFileName(require(shared.files.database).db);
+    const fileName = await generateRandomFileName(require(shared.files.database).db);
     const downloadName = req.body.downloadName.replace(/\s/g, "").length > 0 ? req.body.downloadName : fileName;
     const displayName = req.body.displayName.replace(/\s/g, "").length > 0 ? req.body.displayName : downloadName;
     const index = req.body.index !== undefined && req.body.index === "on";
