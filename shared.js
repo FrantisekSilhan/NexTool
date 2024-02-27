@@ -6,12 +6,14 @@ const fs = require("fs");
 // Define paths
 const src = path.join(__dirname, "src");
 const views = path.join(src, "views");
+const routes = path.join(src, "routes");
 const paths = {
   data: path.join(__dirname, "data"),
   public: path.join(__dirname, "public"),
   files: path.join(__dirname, "files"),
   src: src,
   views: views,
+  routes: routes,
   layouts: path.join(views, "layouts"),
 };
 
@@ -23,7 +25,7 @@ files = {
   files: path.join(paths.src, "files"),
   invites: path.join(paths.src, "invites"),
   mainLayout: path.join(paths.layouts, "main-layout"),
-  sessionMiddleware: path.join(paths.src, "sessionMiddleware"),
+  middlewares: path.join(paths.src, "middlewares"),
 };
 
 

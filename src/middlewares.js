@@ -16,4 +16,24 @@ const sessionMiddleware = session({
   },
 });
 
-module.exports = { sessionMiddleware };
+const isAuthenticated = (req, res, next) => {
+  if (req.session.userId) {
+    next();
+  } else {
+    res.redirect("/login");
+  }
+};
+
+const isNotAuthenticated = (req, res, next) => {
+  if (req.session.userId) {
+    res.redirect("/");
+  } else {
+    next();
+  }
+};
+
+module.exports = {
+  sessionMiddleware,
+  isAuthenticated,
+  isNotAuthenticated,
+};

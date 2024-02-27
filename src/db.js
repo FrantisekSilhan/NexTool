@@ -45,7 +45,7 @@ const initialize = () => {
       )
     `);
     db.run(`
-      INSERT INTO invites (createdBy, invite) VALUES (0, "00000000000-0000000000--00000000")
+      INSERT INTO invites (createdBy, invite) SELECT 0, "00000000000-0000000000--00000000" WHERE NOT EXISTS (SELECT 1 FROM invites)
     `);
   });  
 };
