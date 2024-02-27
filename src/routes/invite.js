@@ -11,7 +11,7 @@ router.get("/", isAuthenticated, async (req, res) => {
   res.render("invite", { csrfToken: req.csrfToken() });
 });
 
-router.post("/", isAuthenticated, async (_, res, next) => {
+router.post("/", isAuthenticated, async (req, res, next) => {
   const { db } = require(shared.files.database);
 
   let isTransactionActive = false;

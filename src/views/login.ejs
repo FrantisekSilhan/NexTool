@@ -9,7 +9,7 @@
       <input class="form__input" type="text" id="userName" name="userName" maxlength="<%= UserNameLen %>" value="<%= formData.userName %>" required>
     </div>
 
-    <label class="form__label" for="displayName">password:</label>
+    <label class="form__label" for="displayName">Password:</label>
     <div class="form__input-wrapper">
       <input class="form__input" type="password" id="password" name="password" maxlength="<%= PasswordLen %>" required>
     </div>
@@ -21,3 +21,5 @@
   <% } %>
   <button class="btn" type="submit">Login</button>
 </form>
+
+<p>Don't have an account? <a class="link" href="/register">Register</a></p>

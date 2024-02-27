@@ -118,6 +118,7 @@ main.transform {
   flex-direction: column;
   gap: 1em;
   max-width: 32em;
+  margin-bottom: 1em;
 }
 
 .form__items {
