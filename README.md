@@ -9,6 +9,12 @@ The project is a web application built using Node.js and Express framework. It p
 3. File Sharing: Access and download stored files.
 4. Database Interaction: Interacts with a database for user and file management.
 
+### Todo
+
+- [ ] Create admin group for managing files, invite codes, etc.
+- [ ] Add groups for uploading bigger files, being able to generate invite codes.
+- [ ] Add option to make private file public by link or private (now it is public by link)
+
 ## Getting Started
 
 To get started with NexTool, follow these steps:
