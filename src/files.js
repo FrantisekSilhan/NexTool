@@ -35,9 +35,13 @@ async function readFileLines(filePath, numLines, message = "") {
       lines = lines.concat(chunk.split("\n"));
       lineCount += chunk.split("\n").length;
 
-      if (lineCount >= numLines) {
+      if (numLines !== 0 && lineCount >= numLines) {
         readStream.close();
       }
+    });
+
+    readStream.on("end", () => {
+      resolve(lines.join("\n"));
     });
 
     readStream.on("close", () => {

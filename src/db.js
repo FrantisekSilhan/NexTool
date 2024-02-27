@@ -24,6 +24,7 @@ const initialize = () => {
         fileSize INTEGER NOT NULL,
         md5 TEXT NOT NULL,
         mimeType TEXT NOT NULL,
+        language TEXT,
 
         owner INTEGER NOT NULL
       )
@@ -47,7 +48,7 @@ const initialize = () => {
     db.run(`
       INSERT INTO invites (createdBy, invite) SELECT 0, "00000000000-0000000000--00000000" WHERE NOT EXISTS (SELECT 1 FROM invites)
     `);
-  });  
+  });
 };
 
 module.exports = {
