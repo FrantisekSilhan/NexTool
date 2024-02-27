@@ -1,0 +1,8 @@
+<% mainClass = "class=center" %>
+
+<h1 class="title">Create Invite Code</h1>
+
+<form action="/invite" method="POST" class="form">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <button class="btn" type="submit">Create</button>
+</form>

@@ -21,6 +21,7 @@ files = {
   setup: path.join(paths.src, "setup"),
   database: path.join(paths.src, "db"),
   files: path.join(paths.src, "files"),
+  invites: path.join(paths.src, "invites"),
   mainLayout: path.join(paths.layouts, "main-layout"),
   sessionMiddleware: path.join(paths.src, "sessionMiddleware"),
 };

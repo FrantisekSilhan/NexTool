@@ -1,8 +1,8 @@
 <% mainClass = "class=center" %>
 
-<h1 class="title">Register</h1>
+<h1 class="title">Login</h1>
 
-<form action="/register" method="POST" class="form">
+<form action="/login" method="POST" class="form">
   <div class="form__items">
     <label class="form__label" for="downloadName">Username:</label>
     <div class="form__input-wrapper">
@@ -13,16 +13,11 @@
     <div class="form__input-wrapper">
       <input class="form__input" type="password" id="password" name="password" maxlength="<%= PasswordLen %>" required>
     </div>
-
-    <label class="form__label" for="displayName">Invite code:</label>
-    <div class="form__input-wrapper">
-      <input class="form__input" autocomplete="off" type="text" id="inviteCode" name="inviteCode" maxlength="<%= InviteCodeLen %>" value="<%= formData.inviteCode %>" required>
-    </div>
   </div>
 
   <input type="hidden" name="_csrf" value="<%= csrfToken %>">
   <% if(errorMessage) { %>
     <p class="error"><%= errorMessage %></p>
   <% } %>
-  <button class="btn" type="submit">Register</button>
+  <button class="btn" type="submit">Login</button>
 </form>

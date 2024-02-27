@@ -29,12 +29,24 @@ const initialize = () => {
       )
     `);
     db.run(`
-    CREATE TABLE IF NOT EXISTS users (
-      id INTEGER PRIMARY KEY,
-      userName TEXT NOT NULL UNIQUE,
-      password TEXT NOT NULL
-    )
-  `);
+      CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY,
+        userName TEXT NOT NULL UNIQUE,
+        password TEXT NOT NULL,
+        salt TEXT NOT NULL
+      )
+    `);
+    db.run(`
+      CREATE TABLE IF NOT EXISTS invites (
+        id INTEGER PRIMARY KEY,
+        createdBy INTEGER NOT NULL,
+        invite TEXT NOT NULL UNIQUE,
+        usedBy INTEGER NULL
+      )
+    `);
+    db.run(`
+      INSERT INTO invites (createdBy, invite) VALUES (0, "00000000000-0000000000--00000000")
+    `);
   });  
 };
 

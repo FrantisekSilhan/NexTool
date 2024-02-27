@@ -5,6 +5,7 @@
   --secondary: 0 0% 40%;
   --accent: 280 56% 25%;
   --btn-text: 0 0% 100%;
+  --error: 3 82% 51%;
 
   --font: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   --border-radius: .25em;
@@ -29,6 +30,7 @@
     --secondary: 0 0% 60%;
     --accent: 280 56% 75%;
     --btn-text: 0 0% 0%;
+    --error: 3 82% 49%;
   }
 }
 
@@ -242,6 +244,14 @@ main.transform {
   white-space: -o-pre-wrap;
   white-space: pre-line;
   word-wrap: break-word;
+}
+
+.error {
+  font-size: var(--font-s);
+  color: hsl(var(--error));
+  margin: 1em 0;
+  width: 100%;
+  text-align: center;
 }
 
 @media (max-width: 768px) {

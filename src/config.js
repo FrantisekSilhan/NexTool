@@ -9,7 +9,7 @@ module.exports = {
   },
   user: {
     userNameLen: 32,
-    passwordLen: 128,
+    passwordLen: 64,
     inviteCodeLen: 32,
   }
 };

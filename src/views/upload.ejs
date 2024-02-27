@@ -13,12 +13,12 @@
 
     <label class="form__label" for="downloadName">Download Name:</label>
     <div class="form__input-wrapper">
-      <input class="form__input" autocomplete="off" placeholder="cat.png" type="text" id="downloadName" name="downloadName" maxlength="<%= DownloadLen %>" required>
+      <input class="form__input" autocomplete="off" placeholder="cat.png" type="text" id="downloadName" name="downloadName" maxlength="<%= DownloadLen %>" value="<%= formData.downloadName %>" required>
     </div>
 
     <label class="form__label" for="displayName">Display Name:</label>
     <div class="form__input-wrapper">
-      <input class="form__input" autocomplete="off" placeholder="Cute cat" type="text" id="displayName" name="displayName" maxlength="<%= DisplayLen %>" required>
+      <input class="form__input" autocomplete="off" placeholder="Cute cat" type="text" id="displayName" name="displayName" maxlength="<%= DisplayLen %>" value="<%= formData.displayName %>" required>
     </div>
 
     <div class="form__checkbox-wrapper">
@@ -28,6 +28,9 @@
   </div>
 
   <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <% if(errorMessage) { %>
+    <p class="error"><%= errorMessage %></p>
+  <% } %>
   <button class="btn" type="submit">Upload</button>
 </form>
 
