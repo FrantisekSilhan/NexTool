@@ -58,8 +58,9 @@ router.post("/", isNotAuthenticated, async (req, res, next) => {
       throw err;
     }
     
-    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()-_+=]).{8,}$/g.test(password)) {
-      const err = new Error("Password must pass this regex: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()-_+=]).{8,}$/g");
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()-_+=]).{8,}$/g
+    if (!regex.test(password)) {
+      const err = new Error(`Password must pass this regex: ${regex}`);
       err.status = 400;
       redirectBack = true;
       throw err;
