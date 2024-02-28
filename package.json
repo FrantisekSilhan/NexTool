@@ -27,6 +27,7 @@
     "express-ejs-layouts": "^2.5.1",
     "express-fileupload": "^1.4.3",
     "express-session": "^1.18.0",
+    "sharp": "^0.33.2",
     "sqlite3": "^5.1.7"
   }
 }
