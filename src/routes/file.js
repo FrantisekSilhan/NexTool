@@ -29,11 +29,11 @@ router.get("/:file", async (req, res, next) => {
 
     if (fileInfo.mimeType.startsWith("text") || fileInfo.language !== null) {
       const fileContent = await readFileLines(shared.path.join(shared.paths.files, fileName), 0);
-      res.render("file", { fileName, downloadName: fileInfo.downloadName, language: fileInfo.language, mimeType: fileInfo.mimeType, fileContent, renderNavbar: false, user: userId, isOwner: fileInfo.owner === userId });
+      res.render(shared.path.join(shared.paths.layouts, "file"), { fileName, downloadName: fileInfo.downloadName, language: fileInfo.language, mimeType: fileInfo.mimeType, fileContent, layout: "file", user: userId, isOwner: fileInfo.owner === userId, owner: fileInfo.owner });
       return;
     }
 
-    res.render("file", { fileName, downloadName: fileInfo.downloadName, language: undefined, mimeType: fileInfo.mimeType, renderNavbar: false, user: userId, isOwner: fileInfo.owner === userId })
+    res.render("file", { fileName, downloadName: fileInfo.downloadName, language: undefined, mimeType: fileInfo.mimeType, layout: shared.path.join(shared.paths.layouts, "file"), user: userId, isOwner: fileInfo.owner === userId, owner: fileInfo.owner })
   } catch (err) {
     next(err);
   }

@@ -1,6 +1,7 @@
 module.exports = {
   port: 6975,
   site: "NexTool",
+  siteUrl: "https://tools.slhn.cz",
   dbPath: "app.db",
   sessionDbPath: "sessions.db",
   upload: {

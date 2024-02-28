@@ -17,7 +17,7 @@ The project is a web application built using Node.js and Express framework. It p
 - [x] Create error page
 - [ ] Add option to convert images to gif (for discord)
 - [x] Add option to delete a file
-- [ ] Add file embed for discord
+- [x] Add file embed for discord
 - [x] Add image compression
 - [x] Add syntax highlighting
 - [ ] Add responsive navbar style for mobile
