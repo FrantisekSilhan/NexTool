@@ -69,6 +69,7 @@ main.center {
 }
 
 .btn {
+  display: inline-block;
   font-size: var(--font-r);
   font-weight: 400;
   font-family: var(--font);
@@ -82,8 +83,6 @@ main.center {
   outline: none;
   border: none;
   cursor: pointer;
-
-  box-sizing: border-box;
 }
 
 .btn:hover, .btn:focus-visible {
@@ -166,6 +165,11 @@ main.center {
 .form__select {
   background-color: hsl(var(--focus));
   padding: .4em;
+}
+
+.form__select--outside {
+  display: inline;
+  width: unset;
 }
 
 .form__select option {
@@ -371,6 +375,27 @@ span.hljs-string, span.hljs-attr {
 
 .delete-btns--open {
   width: 3.5em;
+}
+
+.file-title {
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  gap: 1em;
+
+  grid-template-columns: 1fr auto 1fr;
+}
+
+.file-title > .icon {
+  justify-self: end;
+}
+
+.file-title .title {
+  margin: 0;
+}
+
+.file-title .icon {
+  margin-top: 3px;
 }
 
 @media (max-width: 768px) {

@@ -21,7 +21,7 @@
             </svg>
           </a>
           <div class="delete-btns">
-            <a class="icon icon--success" href="/d/<%= file.fileName %>">
+            <a class="icon icon--success" data-href="<%= file.fileName %>">
               <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 512 512">
                 <path d="M432 64l-240 240-112-112-80 80 192 192 320-320z"></path>
               </svg>
@@ -52,4 +52,19 @@
       btn.parentElement.classList.remove("delete-btns--open");
     });
   });
+
+  document.querySelectorAll(".icon--success").forEach(deleteBtn => {
+    deleteBtn.addEventListener("click", (event) => {
+      event.preventDefault();
+      fetch(`/f/${deleteBtn.dataset.href}`, {
+        method: "DELETE",
+        headers: {
+          "X-CSRF-Token": "<%= csrfToken %>"
+        },
+      }).then(() => {
+        window.location.reload();
+      });
+    });
+  });
+  
 </script>
