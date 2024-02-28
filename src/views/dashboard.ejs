@@ -61,9 +61,11 @@
         headers: {
           "X-CSRF-Token": "<%= csrfToken %>"
         },
-      }).then(() => {
-        window.location.reload();
-      });
+      }).then((response) => {
+          if (response.ok) {
+            deleteBtn.closest(".list__item").remove();
+          }
+        });
     });
   });
   
