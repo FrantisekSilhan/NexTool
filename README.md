@@ -89,3 +89,7 @@ This project is licensed under the GNU General Public License v3.0 - see the [LI
 ## Support
 
 For any questions, issues, or feedback, please [Open an issue](https://github.com/FrantisekSilhan/NexTool/issues) or contact me at frantisek@slhn.cz
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=FrantisekSilhan/NexTool&type=Date)](https://star-history.com/#FrantisekSilhan/NexTool)
