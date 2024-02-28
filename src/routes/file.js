@@ -15,7 +15,7 @@ router.get("/:file", async (req, res, next) => {
     const userId = req.session.userId;
 
     const fileInfo = await new Promise((resolve, reject) => {
-      db.get("SELECT downloadName, mimeType, language FROM files WHERE fileName = ?",
+      db.get("SELECT downloadName, mimeType, language, owner FROM files WHERE fileName = ?",
         [fileName],
         (err, row) => err ? reject(err) : resolve(row)
       );
@@ -29,11 +29,11 @@ router.get("/:file", async (req, res, next) => {
 
     if (fileInfo.mimeType.startsWith("text") || fileInfo.language !== null) {
       const fileContent = await readFileLines(shared.path.join(shared.paths.files, fileName), 0);
-      res.render("file", { fileName, downloadName: fileInfo.downloadName, language: fileInfo.language, mimeType: fileInfo.mimeType, fileContent, renderNavbar: false, user: userId });
+      res.render("file", { fileName, downloadName: fileInfo.downloadName, language: fileInfo.language, mimeType: fileInfo.mimeType, fileContent, renderNavbar: false, user: userId, isOwner: fileInfo.owner === userId });
       return;
     }
 
-    res.render("file", { fileName, downloadName: fileInfo.downloadName, language: undefined, mimeType: fileInfo.mimeType, renderNavbar: false, user: userId })
+    res.render("file", { fileName, downloadName: fileInfo.downloadName, language: undefined, mimeType: fileInfo.mimeType, renderNavbar: false, user: userId, isOwner: fileInfo.owner === userId })
   } catch (err) {
     next(err);
   }
