@@ -10,7 +10,7 @@
   --focus: 0 0% 91%;
 
   --font: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  --monospace: "Courier New", Courier, monospace;
+  --monospace: "Consolas" ,"Courier New", Courier, monospace;
   --border-radius: .25em;
 
   --navbar-height: 3.5em;
@@ -353,7 +353,7 @@ span.hljs-string, span.hljs-attr {
   background-color: hsl(var(--secondary) / .15);
 }
 
-.invite-code {
+.mono-select-all {
   font-family: var(--monospace);
   user-select: all;
 }
