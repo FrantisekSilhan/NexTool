@@ -22,7 +22,7 @@ router.get("/", isAuthenticated, async (req, res, next) => {
       );
     });
 
-    res.render("invite", { csrfToken: req.csrfToken(), invites });
+    res.render("invite", { invites });
   } catch (err) {
     if (isTransactionActive) {
       await new Promise((resolve, _) => {

@@ -12,7 +12,7 @@ router.get("/", isNotAuthenticated, async (req, res) => {
   delete req.session.formData;
   delete req.session.errorMessage;
 
-  res.render("register", { csrfToken: req.csrfToken(), UserNameLen: shared.config.user.userNameLen, PasswordLen: shared.config.user.passwordLen, InviteCodeLen: shared.config.user.inviteCodeLen, formData, errorMessage });
+  res.render("register", { UserNameLen: shared.config.user.userNameLen, PasswordLen: shared.config.user.passwordLen, InviteCodeLen: shared.config.user.inviteCodeLen, formData, errorMessage });
 });
 
 router.post("/", isNotAuthenticated, async (req, res, next) => {
