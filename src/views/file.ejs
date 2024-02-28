@@ -21,7 +21,7 @@
     <div class="file-embed">
       <pre class="text-block"><code class="language-<%= language %>"><%= fileContent %></code></pre>
     </div>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <link id="highlightStyle" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <script>hljs.highlightAll();</script>
   <% } else if (mimeType.startsWith("text")) { %>
@@ -31,4 +31,10 @@
   <% } else { %>
     <p class="file-embed">Preview not available for this type of file.</p>
   <% } %>
+  <script>
+    const prefersLightColorScheme = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
+    if (prefersLightColorScheme) {
+      document.getElementById("highlightStyle").href = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css";
+    }
+  </script>
 </div>
