@@ -38,7 +38,7 @@ router.post("/", isAuthenticated, async (req, res, next) => {
       redirectBack = true;
       throw err;
     }
-  
+
     const file = req.files.file;
 
     if (file.size > shared.config.upload.maximumFileSize) {
@@ -52,7 +52,8 @@ router.post("/", isAuthenticated, async (req, res, next) => {
     const downloadName = req.body.downloadName.replace(/\s/g, "").length > 0 ? req.body.downloadName : fileName;
     const displayName = req.body.displayName.replace(/\s/g, "").length > 0 ? req.body.displayName : downloadName;
     const index = req.body.index !== undefined && req.body.index === "on";
-  
+    const language = req.body.language !== undefined && req.body.language === "none" ? null : req.body.language;
+
     if (downloadName.length > shared.config.upload.downloadLen) {
       const err = new Error("Download name too long");
       err.status = 400;
@@ -65,7 +66,7 @@ router.post("/", isAuthenticated, async (req, res, next) => {
       redirectBack = true;
       throw err;
     }
-  
+
     await new Promise((resolve, reject) => {
       db.run("BEGIN TRANSACTION",
         (err) => err ? reject(err) : resolve(isTransactionActive = true)
@@ -73,8 +74,8 @@ router.post("/", isAuthenticated, async (req, res, next) => {
     });
 
     await new Promise((resolve, reject) => {
-      db.run("INSERT INTO files (fileName, displayName, downloadName, indexFile, fileSize, md5, mimeType, owner) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-        [fileName, displayName, downloadName, index, file.size, crypto.createHash("md5").update(file.data).digest("hex"), file.mimetype, req.session.userId],
+      db.run("INSERT INTO files (fileName, displayName, downloadName, indexFile, fileSize, md5, mimeType, language, owner) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        [fileName, displayName, downloadName, index, file.size, crypto.createHash("md5").update(file.data).digest("hex"), file.mimetype, language, req.session.userId],
         (err) => err ? reject(err) : resolve()
       );
     });
@@ -84,7 +85,7 @@ router.post("/", isAuthenticated, async (req, res, next) => {
         (err) => err ? reject(err) : resolve()
       );
     });
-    
+
     await new Promise((resolve, reject) => {
       db.run("COMMIT",
         (err) => err ? reject(err) : resolve(isTransactionActive = false)
