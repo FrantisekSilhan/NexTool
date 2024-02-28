@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta content="noindex, nofollow" name="robots">
+
+  <meta content="<%= site %>" property="og:site_name">
+  <meta content="<%= owner %> | <%= site %>" property="og:title">
+  <meta content="<%= downloadName %>" property="og:description">
+  <% if (mimeType.startsWith("image")) { %>
+    <meta content="<%= siteUrl %>/f/<%= fileName %>/<%= downloadName %>" property="og:image">
+    <meta content="<%= siteUrl %>/f/<%= fileName %>/<%= downloadName %>" property="twitter:image">
+    <meta content="summary_large_image" name="twitter:card">
+    <meta content="summary_large_image" name="og:type">
+  <% } else if (mimeType.startsWith("video")) { %>
+    <meta content="<%= siteUrl %>/f/<%= fileName %>/<%= downloadName %>" property="og:video">
+    <meta content="<%= siteUrl %>/f/<%= fileName %>/<%= downloadName %>" property="og:video:url">
+    <meta content="<%= siteUrl %>/f/<%= fileName %>/<%= downloadName %>" property="og:video:secure_url">
+    <meta content="<%= siteUrl %>/f/<%= fileName %>/<%= downloadName %>" property="twitter:player:stream">
+    <meta content="player" name="twitter:card">
+    <meta content="player" name="og:type">
+    <% } %>
+  <meta content="#4c1c63" name="theme-color">
+
+  <link rel="stylesheet" href="/style.css">
+  <title><%= page %> | <%= site %></title>
+</head>
+<body>
+  <main <%= mainClass %>>
+    <%- body %>
+  </main>
+</body>
+</html>

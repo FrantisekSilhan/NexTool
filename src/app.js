@@ -46,6 +46,7 @@ app.use(csrfProtection);
 app.use((req, res, next) => {
   res.locals.user = req.session.userId;
   res.locals.site = shared.config.site;
+  res.locals.siteUrl = shared.config.siteUrl;
   res.locals.csrfToken = req.csrfToken();
   next();
 });
