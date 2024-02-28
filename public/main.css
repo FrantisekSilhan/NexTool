@@ -238,9 +238,12 @@ main.center {
 }
 
 .file-embed .text-block {
+  max-height: calc(100vh - var(--navbar-height) - var(--font-h1) * 2);
+  overflow-y: scroll;
+
   background-color: hsl(var(--secondary) / .15);
-  padding: 1em;
-  border-radius: 1em;
+  padding: 0.5em;
+  border-radius: 1.5em;
   max-width: 85ch;
 
   text-align: left;
@@ -250,6 +253,11 @@ main.center {
   white-space: -o-pre-wrap;
   white-space: pre-line;
   word-wrap: break-word;
+  box-sizing: border-box;
+}
+
+.text-block code {
+  border-radius: 1em;
 }
 
 .error {
