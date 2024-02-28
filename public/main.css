@@ -6,6 +6,7 @@
   --accent: 280 56% 25%;
   --btn-text: 0 0% 100%;
   --error: 3 82% 51%;
+  --success: 123 82% 51%;
   --focus: 0 0% 91%;
 
   --font: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
@@ -35,6 +36,7 @@
     --accent: 280 56% 75%;
     --btn-text: 0 0% 0%;
     --error: 3 82% 49%;
+    --success: 123 82% 49%;
     --focus: 0 0% 13%;
   }
 }
@@ -48,7 +50,7 @@ html {
 }
 
 body {
-  max-width: 1920px;
+  max-width: 2560px;
   margin: 0 auto;
 }
 
@@ -65,10 +67,6 @@ main.center {
   justify-content: center;
   margin-bottom: var(--navbar-height);
 }
-
-/*main.transform {
-  transform: translateY(calc((var(--font-h1) + var(--navbar-height)) * -1));
-}*/
 
 .btn {
   font-size: var(--font-r);
@@ -218,7 +216,9 @@ main.center {
 }
 
 .list__item {
+  display: flex;
   margin: .25em 0;
+  gap: .5em;
 }
 
 .title {
@@ -351,6 +351,22 @@ span.hljs-string, span.hljs-attr {
 .invite-code {
   font-family: var(--monospace);
   user-select: all;
+}
+
+.delete-btns, .delete-btns-wrapper {
+  display: flex;
+  gap: .5em;
+  align-items: center;
+  user-select: none;
+  transition: width .2s ease-in-out;
+}
+
+.delete-btns {
+  width: 0px;
+}
+
+.delete-btns--open {
+  width: 3.5em;
 }
 
 @media (max-width: 768px) {
