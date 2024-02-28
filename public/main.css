@@ -392,6 +392,7 @@ span.hljs-string, span.hljs-attr {
 
 .file-title .title {
   margin: 0;
+  grid-column: 2;
 }
 
 .file-title .icon {
