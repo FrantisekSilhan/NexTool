@@ -1,3 +1,4 @@
-@layer reset, main;
+@layer reset, main, components, utilities;
 @import url("./reset.css") layer(reset);
 @import url("./main.css") layer(main);
+@import url("./icon.css") layer(components);

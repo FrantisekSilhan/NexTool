@@ -1,0 +1,33 @@
+.icon {
+  display: block;
+  width: 1.5em;
+  height: 1.5em;
+  overflow: hidden;
+  cursor: pointer;
+
+  fill: hsl(var(--text));
+}
+
+.icon:hover, .icon:focus-visible {
+  fill: hsl(var(--text) / .75);
+}
+
+.icon--error {
+  fill: hsl(var(--error));
+}
+
+.icon--error:hover, .icon--error:focus-visible {
+  fill: hsl(var(--error) / .75);
+}
+
+.icon--success {
+  fill: hsl(var(--success));
+}
+
+.icon--success:hover, .icon--success:focus-visible {
+  fill: hsl(var(--success) / .75);
+}
+
+.icon__path {
+  fill: inherit;
+}
