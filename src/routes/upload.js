@@ -16,7 +16,6 @@ router.get("/", isAuthenticated, (req, res) => {
   delete req.session.errorMessage;
 
   res.render("upload", {
-    csrfToken: req.csrfToken(),
     DownloadLen: shared.config.upload.downloadLen,
     DisplayLen: shared.config.upload.displayLen,
     formData,
