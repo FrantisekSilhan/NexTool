@@ -47,6 +47,11 @@ html {
   font-size: var(--font-r);
 }
 
+body {
+  max-width: 1920px;
+  margin: 0 auto;
+}
+
 main {
   padding: 1em;
   box-sizing: border-box;
@@ -306,7 +311,6 @@ span.hljs-string, span.hljs-attr {
   justify-content: space-between;
   align-items: center;
   height: var(--navbar-height);
-  position: relative;
 }
 
 .navbar::after {
@@ -315,7 +319,8 @@ span.hljs-string, span.hljs-attr {
   height: 2px;
   width: 100%;
   background-color: hsl(var(--accent));
-  top: 100%;
+  top: var(--navbar-height);
+  left: 0;
   position: absolute;
 }
 
@@ -372,5 +377,23 @@ span.hljs-string, span.hljs-attr {
     min-height: unset;
     transform: none;
     margin: 0;
+  }
+}
+
+@media (min-width: 1921px) {
+  :root {
+    --font-r: 18px;
+  }
+}
+
+@media (min-width: 2561px ) {
+  :root {
+    --font-r: 20px;
+  }
+}
+
+@media (min-width: 3841px ) {
+  :root {
+    --font-r: 24px;
   }
 }

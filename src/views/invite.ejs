@@ -8,9 +8,7 @@
 <ul class="list">
   <% if (invites && invites.length > 0) { %>
     <% invites.forEach(invite => { %>
-      <li class="list__item">
-        <p class="invite-code"><%= invite.invite %></p>
-      </li>
+      <li class="list__item"><p class="invite-code"><%= invite.invite %></p></li>
     <% }) %>
   <% } else { %>
     <li class="list__item">

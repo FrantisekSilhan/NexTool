@@ -47,8 +47,8 @@ router.post("/", isNotAuthenticated, async (req, res, next) => {
     }
 
     const user = await new Promise((resolve, reject) => {
-      db.get("SELECT * FROM users WHERE userName = ?",
-        [userName],
+      db.get("SELECT * FROM users WHERE LOWER(userName) = ?",
+        [userName.toLowerCase()],
         (err, row) => err ? reject(err) : resolve(row)
       );
     });
