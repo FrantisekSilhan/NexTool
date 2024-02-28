@@ -26,7 +26,7 @@
     <script>hljs.highlightAll();</script>
   <% } else if (mimeType.startsWith("text")) { %>
     <div class="file-embed">
-      <pre class="text-block"><% const lines = fileContent.split("\n");%><% lines.forEach(line => { %><%= line %><% }); %></pre>
+      <pre class="text-block"><%= fileContent %></pre>
     </div>
   <% } else { %>
     <p class="file-embed">Preview not available for this type of file.</p>
