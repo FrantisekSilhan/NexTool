@@ -14,12 +14,13 @@ The project is a web application built using Node.js and Express framework. It p
 - [ ] Create admin group for managing files, invite codes, etc (manager all users: ban, unban, change groups; manage all files: remove files and change visibility; manage all invite codes: remove invite codes)
 - [ ] Add groups for uploading bigger files, being able to generate invite codes
 - [ ] Add option to make private file public by link or private (now it is public by link)
-- [ ] Create error page
+- [x] Create error page
 - [ ] Add option to convert images to gif (for discord)
 - [ ] Add option to delete a file
 - [ ] Add file embed for discord
 - [ ] Add image compression
 - [x] Add syntax highlighting
+- [ ] Add responsive navbar style for mobile
 
 ## Getting Started
 

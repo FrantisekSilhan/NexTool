@@ -28,6 +28,7 @@ app.use(csrfProtection);
 
 app.use((req, res, next) => {
   res.locals.user = req.session.userId;
+  res.locals.site = shared.config.site;
   next();
 });
 
@@ -48,7 +49,7 @@ app.use((err, _, res, __) => {
   console.error(err);
   const errorCode = (err.status !== undefined && err.status >= 500 && err.status < 600) ? 500 : err.status ?? 500;
   const errorMessage = (errorCode >= 500 && errorCode < 600) ? "Internal Server Error" : err.message ?? "Internal Server Error";
-  res.status(errorCode).send(errorMessage);
+  res.status(errorCode).render("error", { errorCode, errorMessage });
 });
 
 app.listen(shared.config.port);
