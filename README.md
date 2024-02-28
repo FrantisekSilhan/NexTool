@@ -53,7 +53,7 @@ npm start
 
 5. Access NexTool in your web browser at [http://localhost:6975](http://localhost:6975).
 
-6. Create your first account using `00000000000-0000000000-00000000` invite code.
+6. Create your first account using `00000000000-0000000000--00000000` invite code.
 
 ## Contributing
 
