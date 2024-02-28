@@ -1,5 +1,6 @@
 const shared = require("../shared");
 const sqlite3 = require("sqlite3").verbose();
+// const migrationScripts = require("./migrations/migration-add-language");
 
 const dbPath = shared.path.join(shared.paths.data, shared.config.dbPath);
 
@@ -8,6 +9,14 @@ const db = new sqlite3.Database(dbPath, err => {
     console.error("Error opening database: ", err.message);
   }
   console.log("Connected to the database.");
+
+  // db.exec(migrationScripts.up, err => {
+  //   if (err) {
+  //     console.error("Error applying migration: ", err.message);
+  //   } else {
+  //     console.log("Migration applied successful.");
+  //   }
+  // });
 });
 
 const initialize = () => {
@@ -24,7 +33,7 @@ const initialize = () => {
         fileSize INTEGER NOT NULL,
         md5 TEXT NOT NULL,
         mimeType TEXT NOT NULL,
-        language TEXT,
+        language TEXT NULL,
 
         owner INTEGER NOT NULL
       )
