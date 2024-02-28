@@ -5,6 +5,7 @@ const { isAuthenticated } = require(shared.files.middlewares);
 const crypto = require("crypto");
 
 const { generateRandomFileName } = require(shared.files.files);
+const sharp = require("sharp");
 
 router.path = "/upload";
 
@@ -38,7 +39,7 @@ router.post("/", isAuthenticated, async (req, res, next) => {
       throw err;
     }
 
-    const file = req.files.file;
+    let file = req.files.file;
 
     if (file.size > shared.config.upload.maximumFileSize) {
       const err = new Error("File too large");
@@ -48,7 +49,7 @@ router.post("/", isAuthenticated, async (req, res, next) => {
     }
 
     const fileName = await generateRandomFileName(require(shared.files.database).db);
-    const downloadName = req.body.downloadName.replace(/\s/g, "").length > 0 ? req.body.downloadName : fileName;
+    let downloadName = req.body.downloadName.replace(/\s/g, "").length > 0 ? req.body.downloadName : fileName;
     const displayName = req.body.displayName.replace(/\s/g, "").length > 0 ? req.body.displayName : downloadName;
     const index = req.body.index !== undefined && req.body.index === "on";
     const language = req.body.language !== undefined && req.body.language === "none" ? null : req.body.language;
@@ -73,14 +74,37 @@ router.post("/", isAuthenticated, async (req, res, next) => {
     });
 
     await new Promise((resolve, reject) => {
-      db.run("INSERT INTO files (fileName, displayName, downloadName, indexFile, fileSize, md5, mimeType, language, owner) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-        [fileName, displayName, downloadName, index, file.size, crypto.createHash("md5").update(file.data).digest("hex"), file.mimetype, language, req.session.userId],
-        (err) => err ? reject(err) : resolve()
-      );
+      if (file.mimetype.startsWith("image/")) {
+        sharp(file.data)
+          .webp()
+          .toBuffer((err, buffer, info) => {
+            if (err) {
+              console.error(err);
+              file.mv(shared.path.join(shared.paths.files, fileName),
+                (err) => err ? reject(err) : resolve()
+              );
+              resolve();
+            } else {
+              file = {
+                data: buffer,
+                size: buffer.length,
+                mimetype: "image/webp"
+              };
+              downloadName = downloadName.split(".")[0] + ".webp";
+              shared.fs.writeFileSync(shared.path.join(shared.paths.files, fileName), buffer);
+              resolve();
+            }
+          })
+      } else {
+        file.mv(shared.path.join(shared.paths.files, fileName),
+          (err) => err ? reject(err) : resolve()
+        );
+      }
     });
 
     await new Promise((resolve, reject) => {
-      file.mv(shared.path.join(shared.paths.files, fileName),
+      db.run("INSERT INTO files (fileName, displayName, downloadName, indexFile, fileSize, md5, mimeType, language, owner) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        [fileName, displayName, downloadName, index, file.size, crypto.createHash("md5").update(file.data).digest("hex"), file.mimetype, language, req.session.userId],
         (err) => err ? reject(err) : resolve()
       );
     });
