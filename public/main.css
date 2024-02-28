@@ -218,7 +218,12 @@ main.center {
 .list__item {
   display: flex;
   margin: .25em 0;
-  gap: .5em;
+  gap: 0px;
+  transition: gap .2s linear;
+}
+
+.list__item--fgap {
+  gap: 1em;
 }
 
 .title {

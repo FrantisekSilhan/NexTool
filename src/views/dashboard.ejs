@@ -43,6 +43,7 @@
   document.querySelectorAll(".icon--action-delete-open").forEach(btn => {
     btn.addEventListener("click", () => {
       btn.nextElementSibling.classList.toggle("delete-btns--open");
+      btn.parentElement.parentElement.classList.toggle("list__item--fgap");
     });
   });
 
