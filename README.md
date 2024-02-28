@@ -16,7 +16,7 @@ The project is a web application built using Node.js and Express framework. It p
 - [ ] Add option to make private file public by link or private (now it is public by link)
 - [x] Create error page
 - [ ] Add option to convert images to gif (for discord)
-- [ ] Add option to delete a file
+- [x] Add option to delete a file
 - [ ] Add file embed for discord
 - [ ] Add image compression
 - [x] Add syntax highlighting
