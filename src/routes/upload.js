@@ -52,6 +52,7 @@ router.post("/", isAuthenticated, async (req, res, next) => {
     let downloadName = req.body.downloadName.replace(/\s/g, "").length > 0 ? req.body.downloadName : fileName;
     const displayName = req.body.displayName.replace(/\s/g, "").length > 0 ? req.body.displayName : downloadName;
     const index = req.body.index !== undefined && req.body.index === "on";
+    const gif = req.body.gif !== undefined;
     const language = req.body.language !== undefined && req.body.language === "none" ? null : req.body.language;
 
     if (downloadName.length > shared.config.upload.downloadLen) {
@@ -73,8 +74,30 @@ router.post("/", isAuthenticated, async (req, res, next) => {
       );
     });
 
-    await new Promise((resolve, reject) => {
-      if (file.mimetype.startsWith("image/")) {
+    await new Promise(async (resolve, reject) => {
+      if (gif) {
+        if (!file.mimetype.startsWith("image/")) {
+          const err = new Error("Invalid file type");
+          err.status = 400;
+          reject(err);
+        }
+        await sharp(file.data).resize(320, 320, {fit: "inside"}).gif().toBuffer((err, buffer, info) => {
+          if (err) {
+            console.error(err);
+            reject(err);
+          }
+
+          file = {
+            data: buffer,
+            size: buffer.length,
+            mimetype: "image/gif"
+          };
+          downloadName = downloadName.split(".")[0] + ".gif";
+          shared.fs.writeFileSync(shared.path.join(shared.paths.files, fileName), buffer);
+
+          resolve();
+        });
+      } else if (file.mimetype.startsWith("image/")) {
         sharp(file.data)
           .webp()
           .toBuffer((err, buffer, info) => {
