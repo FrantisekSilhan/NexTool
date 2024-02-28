@@ -6,6 +6,7 @@
   --accent: 280 56% 25%;
   --btn-text: 0 0% 100%;
   --error: 3 82% 51%;
+  --focus: 0 0% 91%;
 
   --font: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   --monospace: "Courier New", Courier, monospace;
@@ -34,6 +35,7 @@
     --accent: 280 56% 75%;
     --btn-text: 0 0% 0%;
     --error: 3 82% 49%;
+    --focus: 0 0% 13%;
   }
 }
 
@@ -154,6 +156,24 @@ main.center {
   color: hsl(var(--text));
 }
 
+.form__input:focus-visible {
+  background-color: hsl(var(--secondary) / .25);
+}
+
+.form__select {
+  background-color: hsl(var(--focus));
+  padding: .4em;
+}
+
+.form__select option {
+  background-color: hsl(var(--background));
+  color: hsl(var(--text));
+}
+
+.form__select option:hover {
+  background-color: hsl(var(--background) / .25);
+}
+
 .form__input-wrapper {
   grid-column: 2;
   box-sizing: border-box;
@@ -238,9 +258,12 @@ main.center {
 }
 
 .file-embed .text-block {
+  max-height: calc(100vh - var(--navbar-height) - var(--font-h1) * 2);
+  overflow-y: scroll;
+
   background-color: hsl(var(--secondary) / .15);
-  padding: 1em;
-  border-radius: 1em;
+  padding: 0.5em;
+  border-radius: 1.5em;
   max-width: 85ch;
 
   text-align: left;
@@ -250,6 +273,20 @@ main.center {
   white-space: -o-pre-wrap;
   white-space: pre-line;
   word-wrap: break-word;
+  box-sizing: border-box;
+}
+
+.text-block code {
+  border-radius: 1em;
+  white-space: pre;
+}
+
+span.hljs-string, span.hljs-attr {
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  white-space: pre-line;
 }
 
 .error {
