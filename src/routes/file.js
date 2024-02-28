@@ -26,7 +26,7 @@ router.get("/:file", async (req, res, next) => {
     }
 
     if (fileInfo.mimeType.startsWith("text") || fileInfo.language !== null) {
-      const fileContent = await readFileLines(shared.path.join(shared.paths.files, fileName), fileInfo.language !== null ? 0 : 10, "... (More content available)");
+      const fileContent = await readFileLines(shared.path.join(shared.paths.files, fileName), 0);
       res.render("file", { fileName, downloadName: fileInfo.downloadName, language: fileInfo.language, mimeType: fileInfo.mimeType, fileContent, renderNavbar: false});
       return;
     }
