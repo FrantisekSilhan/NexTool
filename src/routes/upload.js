@@ -93,8 +93,11 @@ router.post("/", isAuthenticated, async (req, res, next) => {
     });
 
     delete req.session.formData;
-    res.redirect("/");
-
+    if (index) {
+      res.redirect("/");
+    } else {
+      res.redirect("/dashboard");
+    }
   } catch (err) {
     if (redirectBack) {
       req.session.errorMessage = err.message;

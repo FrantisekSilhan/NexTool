@@ -21,6 +21,7 @@ The project is a web application built using Node.js and Express framework. It p
 - [ ] Add image compression
 - [x] Add syntax highlighting
 - [ ] Add responsive navbar style for mobile
+- [ ] Add files filter (mimeType, file name, size, ...)
 
 ## Getting Started
 
@@ -88,3 +89,7 @@ This project is licensed under the GNU General Public License v3.0 - see the [LI
 ## Support
 
 For any questions, issues, or feedback, please [Open an issue](https://github.com/FrantisekSilhan/NexTool/issues) or contact me at frantisek@slhn.cz
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=FrantisekSilhan/NexTool&type=Date)](https://star-history.com/#FrantisekSilhan/NexTool)
