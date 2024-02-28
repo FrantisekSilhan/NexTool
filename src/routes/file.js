@@ -31,7 +31,7 @@ router.get("/:file", async (req, res, next) => {
       return;
     }
 
-    res.render("file", { fileName, downloadName: fileInfo.downloadName, mimeType: fileInfo.mimeType, renderNavbar: false })
+    res.render("file", { fileName, downloadName: fileInfo.downloadName, language: undefined, mimeType: fileInfo.mimeType, renderNavbar: false })
   } catch (err) {
     next(err);
   }
