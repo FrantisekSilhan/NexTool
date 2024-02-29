@@ -92,7 +92,7 @@ router.post("/", isAuthenticated, async (req, res, next) => {
             redirectBack = true;
             reject(err);
           } else {
-            if (metadata.format.duration > 15) {
+            if (metadata.format.duration > shared.config.upload.maximumVideoConvertTime) {
               shared.fs.unlinkSync(name);
               err = new Error("Video too long");
               err.status = 400;
