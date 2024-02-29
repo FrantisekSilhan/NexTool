@@ -84,7 +84,8 @@ let callback = (entries, observer) => {
       .then(data => {
         let list = document.querySelector('.list');
         filesLength += data.length;
-        data.map(file => {
+        document.querySelector('.scroll').remove();
+        data.map((file, index) => {
           let li = document.createElement('li');
           li.classList.add('list__item');
           li.innerHTML = `<div class="delete-btns-wrapper">
@@ -109,6 +110,12 @@ let callback = (entries, observer) => {
   </div>
   <p><a class="link" target="_blank" href="/f/${file.fileName}">${file.displayName}</a> ${file.fileSize} ${file.mimeType} ${file.md5}</p>`
           list.appendChild(li);
+          if (index === data.length - 6) {
+            let scroll = document.createElement('li');
+            scroll.classList.add('scroll');
+            list.appendChild(scroll);
+            observer.observe(scroll);
+          }
         });
       })
       .catch(error => console.error(error));
