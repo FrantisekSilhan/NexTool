@@ -12,9 +12,9 @@ router.get("/", isAuthenticated, async (req, res, next) => {
     const { db } = require(shared.files.database);
 
     const userId = req.session.userId;
-    
+
     const files = await new Promise((resolve, reject) => {
-      db.all("SELECT fileName, displayName, fileSize, md5, mimeType FROM files WHERE owner = ?",
+      db.all("SELECT fileName, displayName, fileSize, md5, mimeType FROM files WHERE owner = ? ORDER BY added DESC",
         [userId],
         (err, rows) => err ? reject(err) : resolve(rows)
       );
