@@ -82,12 +82,12 @@ let callback = (entries, observer) => {
     fetch(`/api/files?offset=${filesLength}&isOwner=true`)
       .then(response => response.json())
       .then(data => {
-        let list = document.querySelector('.list');
+        let list = document.querySelector(".list");
         filesLength += data.length;
-        document.querySelector('.scroll').remove();
+        document.querySelector(".scroll").remove();
         data.map((file, index) => {
-          let li = document.createElement('li');
-          li.classList.add('list__item');
+          let li = document.createElement("li");
+          li.classList.add("list__item");
           li.innerHTML = `<div class="delete-btns-wrapper">
     <a class="icon icon--action-delete-open" tabIndex="0" role="button" aria-label="Delete file">
       <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 512 512">
@@ -111,8 +111,8 @@ let callback = (entries, observer) => {
   <p><a class="link" target="_blank" href="/f/${file.fileName}">${file.displayName}</a> ${file.fileSize} ${file.mimeType} ${file.md5}</p>`
           list.appendChild(li);
           if (index === data.length - 6) {
-            let scroll = document.createElement('li');
-            scroll.classList.add('scroll');
+            let scroll = document.createElement("li");
+            scroll.classList.add("scroll");
             list.appendChild(scroll);
             observer.observe(scroll);
           }
@@ -131,8 +131,8 @@ function createObserver() {
   };
 
   observer = new IntersectionObserver(callback, options);
-  observer.observe(document.querySelector('.scroll'));
+  observer.observe(document.querySelector(".scroll"));
 }
 
-window.addEventListener('load', createObserver, false);
+window.addEventListener("load", createObserver, false);
 </script>
