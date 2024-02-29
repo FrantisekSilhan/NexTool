@@ -181,11 +181,6 @@ main.center {
   background-color: hsl(var(--background) / .25);
 }
 
-.form__input-wrapper {
-  grid-column: 2;
-  box-sizing: border-box;
-}
-
 .form__checkbox-wrapper {
   grid-column: span 2;
   display: flex;
@@ -411,7 +406,7 @@ span.hljs-string, span.hljs-attr {
     grid-column: 1;
   }
 
-  .form__input-wrapper {
+  .form__input {
     grid-column: 1;
   }
 

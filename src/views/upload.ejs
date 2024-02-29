@@ -13,21 +13,15 @@
     </div>
 
     <label class="form__label" for="downloadName">Download Name:</label>
-    <div class="form__input-wrapper">
-      <input class="form__input" autocomplete="off" placeholder="cat.png" type="text" id="downloadName"
-        name="downloadName" maxlength="<%= DownloadLen %>" value="<%= formData.downloadName %>" required>
-    </div>
+    <input class="form__input" autocomplete="off" placeholder="cat.png" type="text" id="downloadName"
+      name="downloadName" maxlength="<%= DownloadLen %>" value="<%= formData.downloadName %>" required>
 
     <label class="form__label" for="displayName">Display Name:</label>
-    <div class="form__input-wrapper">
-      <input class="form__input" autocomplete="off" placeholder="Cute cat" type="text" id="displayName"
-        name="displayName" maxlength="<%= DisplayLen %>" value="<%= formData.displayName %>" required>
-    </div>
+    <input class="form__input" autocomplete="off" placeholder="Cute cat" type="text" id="displayName"
+      name="displayName" maxlength="<%= DisplayLen %>" value="<%= formData.displayName %>" required>
 
     <label class="form__label" for="languageSelect">Language Select:</label>
-    <div class="form__input-wrapper">
-      <select class="form__input form__select" id="languageSelect" name="language"></select>
-    </div>
+    <select class="form__input form__select" id="languageSelect" name="language"></select>
 
     <div class="form__checkbox-wrapper">
       <label class="form__label" for="gif">Convert to 560px GIF</label>
