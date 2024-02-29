@@ -27,13 +27,26 @@ router.get("/:file", async (req, res, next) => {
       throw err;
     }
 
+    const userInfo = await new Promise((resolve, reject) => {
+      db.get("SELECT username FROM users WHERE id = ?",
+        [fileInfo.owner],
+        (err, row) => err ? reject(err) : resolve(row)
+      );
+    })
+
+    if (!userInfo) {
+      const err = new Error("User not found");
+      err.status = 500;
+      throw err;
+    }
+
     if (fileInfo.mimeType.startsWith("text") || fileInfo.language !== null) {
       const fileContent = await readFileLines(shared.path.join(shared.paths.files, fileName), 0);
-      res.render("file", { fileName, downloadName: fileInfo.downloadName, language: fileInfo.language, mimeType: fileInfo.mimeType, fileContent, layout: shared.path.join(shared.paths.layouts, "file"), user: userId, isOwner: fileInfo.owner === userId, owner: fileInfo.owner });
+      res.render("file", { fileName, downloadName: fileInfo.downloadName, language: fileInfo.language, mimeType: fileInfo.mimeType, fileContent, layout: shared.path.join(shared.paths.layouts, "file"), user: userId, isOwner: fileInfo.owner === userId, owner: userInfo.userName });
       return;
     }
 
-    res.render("file", { fileName, downloadName: fileInfo.downloadName, language: undefined, mimeType: fileInfo.mimeType, layout: shared.path.join(shared.paths.layouts, "file"), user: userId, isOwner: fileInfo.owner === userId, owner: fileInfo.owner })
+    res.render("file", { fileName, downloadName: fileInfo.downloadName, language: undefined, mimeType: fileInfo.mimeType, layout: shared.path.join(shared.paths.layouts, "file"), user: userId, isOwner: fileInfo.owner === userId, owner: userInfo.userName })
   } catch (err) {
     next(err);
   }
