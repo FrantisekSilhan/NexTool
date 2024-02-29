@@ -134,5 +134,7 @@ function createObserver() {
   observer.observe(document.querySelector(".scroll"));
 }
 
-window.addEventListener("load", createObserver, false);
+if (document.querySelector(".scroll")) {
+  window.addEventListener("load", createObserver, false);
+}
 </script>
