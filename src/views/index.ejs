@@ -4,9 +4,48 @@
 <h1 class="title">Files</h1>
 
 <ul class="list">
-  <% files.forEach(file => { %>
+  <% files.map((file, index) => { %>
     <li class="list__item">
       <p><a class="link" target="_blank" href="/f/<%= file.fileName %>"><%= file.displayName %></a> <%= file.fileSize %> <%= file.mimeType %> <%= file.md5 %></p>
     </li>
+    <% if (index === 30) {%>
+      <li class="scroll"></li>
+    <% } %>
   <% }) %>
 </ul>
+
+<script>
+let filesLength = <%= files.length %>;
+let callback = (entries, observer) => {
+    if (entries[0].isIntersecting) {
+        fetch(`/api/files?offset=${filesLength}`)
+            .then(response => response.json())
+            .then(data => {
+                let list = document.querySelector('.list');
+                filesLength += data.length;
+                data.map(file => {
+                    let li = document.createElement('li');
+                    li.classList.add('list__item');
+                    li.innerHTML = `<p><a class="link" target="_blank" href="/f/${file.fileName}">${file.displayName}</a> ${file.fileSize} ${file.mimeType} ${file.md5}</p>`;
+                    list.appendChild(li);
+                });
+            })
+            .catch(error => console.error(error));
+    }
+}
+
+function createObserver() {
+    let observer;
+    let options = {
+        root: null,
+        rootMargin: "0px",
+        threshold: 1.0
+    };
+
+    observer = new IntersectionObserver(callback, options);
+    observer.observe(document.querySelector('.scroll'));
+}
+
+window.addEventListener('load', createObserver, false);
+
+</script>
