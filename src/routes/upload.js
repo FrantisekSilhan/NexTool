@@ -6,6 +6,7 @@ const crypto = require("crypto");
 
 const { generateRandomFileName } = require(shared.files.files);
 const sharp = require("sharp");
+const ffmpeg = require("fluent-ffmpeg");
 
 router.path = "/upload";
 
@@ -52,6 +53,7 @@ router.post("/", isAuthenticated, async (req, res, next) => {
     let downloadName = req.body.downloadName.replace(/\s/g, "").length > 0 ? req.body.downloadName : fileName;
     const displayName = req.body.displayName.replace(/\s/g, "").length > 0 ? req.body.displayName : downloadName;
     const index = req.body.index !== undefined && req.body.index === "on";
+    const gif = req.body.gif !== undefined;
     const language = req.body.language !== undefined && req.body.language === "none" ? null : req.body.language;
 
     if (downloadName.length > shared.config.upload.downloadLen) {
@@ -73,15 +75,74 @@ router.post("/", isAuthenticated, async (req, res, next) => {
       );
     });
 
-    await new Promise((resolve, reject) => {
-      if (file.mimetype.startsWith("image/")) {
-        sharp(file.data)
-          .webp()
+    await new Promise(async (resolve, reject) => {
+      if (gif && file.mimetype.startsWith("video/")) {
+        const name = shared.path.join(shared.paths.files, fileName + ".orig");
+        shared.fs.writeFileSync(name, file.data);
+
+        // TODO: Consider adding max size or length for videos
+
+        ffmpeg(name)
+          .videoFilters(["scale=320:-1:flags=lanczos", "split[s0][s1];[s0]palettegen=max_colors=256[p];[s1][p]paletteuse=dither=bayer:bayer_scale=5"])
+          .outputOptions(["-f", "gif"])
+          .on("end", () => {
+            file = {
+              data: shared.fs.readFileSync(shared.path.join(shared.paths.files, fileName)),
+              size: shared.fs.statSync(shared.path.join(shared.paths.files, fileName)).size,
+              mimetype: "image/gif"
+            };
+            downloadName = downloadName.split(".")[0] + ".gif";
+            shared.fs.unlinkSync(name);
+            if (file.size > shared.config.upload.maximumFileSize) {
+              shared.fs.unlinkSync(shared.path.join(shared.paths.files, fileName));
+              const err = new Error("File too large");
+              err.status = 400;
+              reject(err);
+            } else {
+              resolve();
+            }
+          })
+          .on("error", (err) => {
+            console.error(err);
+            reject(err);
+          })
+          .save(shared.path.join(shared.paths.files, fileName));
+      } else if (gif && file.mimetype.startsWith("image/")) {
+        await sharp(file.data)
+          .resize( 320, 320, {fit: "inside"})
+          .gif({colors: 256, dither: 1.0})
           .toBuffer((err, buffer, info) => {
             if (err) {
               console.error(err);
+              reject(err);
+            }
+
+            file = {
+              data: buffer,
+              size: buffer.length,
+              mimetype: "image/gif"
+            };
+            downloadName = downloadName.split(".")[0] + ".gif";
+
+            if (file.size > shared.config.upload.maximumFileSize) {
+              const err = new Error("File too large");
+              err.status = 400;
+              reject(err);
+            } else {
+              shared.fs.writeFileSync(shared.path.join(shared.paths.files, fileName), buffer);
+              resolve();
+            }
+        });
+      } else if (gif) {
+        reject(new Error("File is not an image or a video"));
+      } else if (file.mimetype.startsWith("image/")) {
+        sharp(file.data)
+          .webp()
+          .toBuffer((err, buffer, info) => {
+            if (err || buffer.length > file.size) {
+              // console.error(err);
               file.mv(shared.path.join(shared.paths.files, fileName),
-                (err) => err ? reject(err) : resolve()
+                  (err) => err ? reject(err) : resolve()
               );
               resolve();
             } else {
@@ -96,7 +157,7 @@ router.post("/", isAuthenticated, async (req, res, next) => {
             }
           })
       } else {
-        file.mv(shared.path.join(shared.paths.files, fileName),
+        await file.mv(shared.path.join(shared.paths.files, fileName),
           (err) => err ? reject(err) : resolve()
         );
       }
