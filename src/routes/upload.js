@@ -69,12 +69,6 @@ router.post("/", isAuthenticated, async (req, res, next) => {
       throw err;
     }
 
-    await new Promise((resolve, reject) => {
-      db.run("BEGIN TRANSACTION",
-        (err) => err ? reject(err) : resolve(isTransactionActive = true)
-      );
-    });
-
     await new Promise(async (resolve, reject) => {
       if (gif && file.mimetype.startsWith("video/")) {
         const name = shared.path.join(shared.paths.files, fileName + ".orig");
@@ -166,6 +160,12 @@ router.post("/", isAuthenticated, async (req, res, next) => {
           (err) => err ? reject(err) : resolve()
         );
       }
+    });
+
+    await new Promise((resolve, reject) => {
+      db.run("BEGIN TRANSACTION",
+          (err) => err ? reject(err) : resolve(isTransactionActive = true)
+      );
     });
 
     await new Promise((resolve, reject) => {
