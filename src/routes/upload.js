@@ -6,6 +6,7 @@ const crypto = require("crypto");
 
 const { generateRandomFileName } = require(shared.files.files);
 const sharp = require("sharp");
+const ffmpeg = require("fluent-ffmpeg");
 
 router.path = "/upload";
 
@@ -75,13 +76,30 @@ router.post("/", isAuthenticated, async (req, res, next) => {
     });
 
     await new Promise(async (resolve, reject) => {
-      if (gif) {
-        if (!file.mimetype.startsWith("image/")) {
-          const err = new Error("Invalid file type");
-          err.status = 400;
-          reject(err);
-        }
-        await sharp(file.data).resize(320, 320, {fit: "inside"}).gif().toBuffer((err, buffer, info) => {
+      if (gif && file.mimetype.startsWith("video/")) {
+        const name = shared.path.join(shared.paths.files, fileName + ".orig");
+        shared.fs.writeFileSync(name, file.data);
+
+        ffmpeg(name)
+          .videoFilters(["scale=320:-1:flags=lanczos", "split[s0][s1];[s0]palettegen=max_colors=256[p];[s1][p]paletteuse=dither=bayer:bayer_scale=5"])
+          .outputOptions(["-f", "gif"])
+          .on("end", () => {
+            file = {
+              data: shared.fs.readFileSync(shared.path.join(shared.paths.files, fileName)),
+              size: shared.fs.statSync(shared.path.join(shared.paths.files, fileName)).size,
+              mimetype: "image/gif"
+            };
+            downloadName = downloadName.split(".")[0] + ".gif";
+            shared.fs.unlinkSync(name);
+            resolve();
+          })
+          .on("error", (err) => {
+            console.error(err);
+            reject(err);
+          })
+          .save(shared.path.join(shared.paths.files, fileName));
+      } else if (gif && file.mimetype.startsWith("image/")) {
+        await sharp(file.data).resize( 320, 320, {fit: "inside"}).gif({colors: 256, dither: 1.0}).toBuffer((err, buffer, info) => {
           if (err) {
             console.error(err);
             reject(err);
@@ -104,7 +122,7 @@ router.post("/", isAuthenticated, async (req, res, next) => {
             if (err) {
               console.error(err);
               file.mv(shared.path.join(shared.paths.files, fileName),
-                (err) => err ? reject(err) : resolve()
+                  (err) => err ? reject(err) : resolve()
               );
               resolve();
             } else {
@@ -118,8 +136,10 @@ router.post("/", isAuthenticated, async (req, res, next) => {
               resolve();
             }
           })
+      } else if (gif) {
+        reject(new Error("File is not an image"));
       } else {
-        file.mv(shared.path.join(shared.paths.files, fileName),
+        await file.mv(shared.path.join(shared.paths.files, fileName),
           (err) => err ? reject(err) : resolve()
         );
       }
