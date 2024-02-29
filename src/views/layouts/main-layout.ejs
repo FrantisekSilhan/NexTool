@@ -8,10 +8,7 @@
   <title><%= page %> | <%= site %></title>
 </head>
 <body>
-  <% renderNavbar = typeof renderNavbar === 'undefined' ? true : renderNavbar; %>
-  <% if (renderNavbar) { %>
-    <%- include("navbar.ejs", { user }) %>
-  <% } %>
+  <%- include("navbar.ejs", { user }) %>
   <main <%= mainClass %>>
     <%- body %>
   </main>
