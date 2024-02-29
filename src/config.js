@@ -6,6 +6,8 @@ module.exports = {
   sessionDbPath: "sessions.db",
   upload: {
     maximumFileSize: 67108864,
+    maximumVideoConvertSize: 25165824,
+    maximumVideoConvertTime: 15,
     downloadLen: 128,
     displayLen: 128,
   },

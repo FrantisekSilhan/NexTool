@@ -15,7 +15,7 @@ The project is a web application built using Node.js and Express framework. It p
 - [ ] Add groups for uploading bigger files, being able to generate invite codes
 - [ ] Add option to make private file public by link or private (now it is public by link)
 - [x] Create error page
-- [ ] Add option to convert images to gif (for discord)
+- [x] Add option to convert images to gif (for discord)
 - [x] Add option to delete a file
 - [x] Add file embed for discord
 - [x] Add image compression
