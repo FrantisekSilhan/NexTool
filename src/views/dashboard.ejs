@@ -75,11 +75,11 @@
 </script>
 
 <script>
-let filesLength = <%= files.length %>;
+let filesLength = Number("<%= files.length %>");
 
 let callback = (entries, observer) => {
   if (entries[0].isIntersecting) {
-    fetch(`/api/files?offset=${filesLength}`)
+    fetch(`/api/files?offset=${filesLength}&isOwner=true`)
       .then(response => response.json())
       .then(data => {
         let list = document.querySelector('.list');
