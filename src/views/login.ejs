@@ -5,10 +5,10 @@
 
 <form action="/login" method="POST" class="form">
   <div class="form__items">
-    <label class="form__label" for="downloadName">Username:</label>
+    <label class="form__label" for="userName">Username:</label>
     <input class="form__input" type="text" id="userName" name="userName" maxlength="<%= UserNameLen %>" value="<%= formData.userName %>" required>
 
-    <label class="form__label" for="displayName">Password:</label>
+    <label class="form__label" for="password">Password:</label>
     <input class="form__input" type="password" id="password" name="password" maxlength="<%= PasswordLen %>" required>
   </div>
 
