@@ -53,7 +53,7 @@ router.post("/", isAuthenticated, async (req, res, next) => {
     let downloadName = req.body.downloadName.replace(/\s/g, "").length > 0 ? req.body.downloadName : fileName;
     const displayName = req.body.displayName.replace(/\s/g, "").length > 0 ? req.body.displayName : downloadName;
     const index = req.body.index !== undefined && req.body.index === "on";
-    const gif = req.body.gif !== undefined;
+    const gif = req.body.gif !== undefined && req.body.gif === "on";
     const language = req.body.language !== undefined && req.body.language === "none" ? null : req.body.language;
 
     if (downloadName.length > shared.config.upload.downloadLen) {
@@ -83,7 +83,7 @@ router.post("/", isAuthenticated, async (req, res, next) => {
         // TODO: Consider adding max size or length for videos
 
         ffmpeg(name)
-          .videoFilters(["scale=320:-1:flags=lanczos", "split[s0][s1];[s0]palettegen=max_colors=256[p];[s1][p]paletteuse=dither=bayer:bayer_scale=5"])
+          .videoFilters(["scale=560:-1:flags=lanczos", "split[s0][s1];[s0]palettegen=max_colors=256[p];[s1][p]paletteuse=dither=bayer:bayer_scale=5"])
           .outputOptions(["-f", "gif"])
           .on("end", () => {
             file = {
@@ -97,6 +97,7 @@ router.post("/", isAuthenticated, async (req, res, next) => {
               shared.fs.unlinkSync(shared.path.join(shared.paths.files, fileName));
               const err = new Error("File too large");
               err.status = 400;
+              redirectBack = true;
               reject(err);
             } else {
               resolve();
@@ -109,7 +110,7 @@ router.post("/", isAuthenticated, async (req, res, next) => {
           .save(shared.path.join(shared.paths.files, fileName));
       } else if (gif && file.mimetype.startsWith("image/")) {
         await sharp(file.data)
-          .resize( 320, 320, {fit: "inside"})
+          .resize( 560, 560, {fit: "inside"})
           .gif({colors: 256, dither: 1.0})
           .toBuffer((err, buffer, info) => {
             if (err) {
@@ -127,6 +128,7 @@ router.post("/", isAuthenticated, async (req, res, next) => {
             if (file.size > shared.config.upload.maximumFileSize) {
               const err = new Error("File too large");
               err.status = 400;
+              redirectBack = true;
               reject(err);
             } else {
               shared.fs.writeFileSync(shared.path.join(shared.paths.files, fileName), buffer);
@@ -134,7 +136,10 @@ router.post("/", isAuthenticated, async (req, res, next) => {
             }
         });
       } else if (gif) {
-        reject(new Error("File is not an image or a video"));
+        const err = new Error("File is not an image or a video");
+        err.status = 400;
+        redirectBack = true;
+        reject(err);
       } else if (file.mimetype.startsWith("image/")) {
         sharp(file.data)
           .webp()
