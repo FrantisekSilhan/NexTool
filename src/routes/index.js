@@ -10,9 +10,9 @@ router.path = "/";
 router.get("/", isAuthenticated, async (_, res, next) => {
   try {
     const { db } = require(shared.files.database);
-    
+
     const files = await new Promise((resolve, reject) => {
-      db.all("SELECT fileName, displayName, fileSize, md5, mimeType FROM files WHERE indexFile = 1",
+      db.all("SELECT fileName, displayName, fileSize, md5, mimeType FROM files WHERE indexFile = 1 ORDER BY id DESC LIMIT 35",
         (err, rows) => err ? reject(err) : resolve(rows)
       );
     });
