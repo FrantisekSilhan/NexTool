@@ -80,6 +80,8 @@ router.post("/", isAuthenticated, async (req, res, next) => {
         const name = shared.path.join(shared.paths.files, fileName + ".orig");
         shared.fs.writeFileSync(name, file.data);
 
+        // TODO: Consider adding max size or length for videos
+
         ffmpeg(name)
           .videoFilters(["scale=320:-1:flags=lanczos", "split[s0][s1];[s0]palettegen=max_colors=256[p];[s1][p]paletteuse=dither=bayer:bayer_scale=5"])
           .outputOptions(["-f", "gif"])
@@ -91,7 +93,14 @@ router.post("/", isAuthenticated, async (req, res, next) => {
             };
             downloadName = downloadName.split(".")[0] + ".gif";
             shared.fs.unlinkSync(name);
-            resolve();
+            if (file.size > shared.config.upload.maximumFileSize) {
+              shared.fs.unlinkSync(shared.path.join(shared.paths.files, fileName));
+              const err = new Error("File too large");
+              err.status = 400;
+              reject(err);
+            } else {
+              resolve();
+            }
           })
           .on("error", (err) => {
             console.error(err);
@@ -99,28 +108,39 @@ router.post("/", isAuthenticated, async (req, res, next) => {
           })
           .save(shared.path.join(shared.paths.files, fileName));
       } else if (gif && file.mimetype.startsWith("image/")) {
-        await sharp(file.data).resize( 320, 320, {fit: "inside"}).gif({colors: 256, dither: 1.0}).toBuffer((err, buffer, info) => {
-          if (err) {
-            console.error(err);
-            reject(err);
-          }
+        await sharp(file.data)
+          .resize( 320, 320, {fit: "inside"})
+          .gif({colors: 256, dither: 1.0})
+          .toBuffer((err, buffer, info) => {
+            if (err) {
+              console.error(err);
+              reject(err);
+            }
 
-          file = {
-            data: buffer,
-            size: buffer.length,
-            mimetype: "image/gif"
-          };
-          downloadName = downloadName.split(".")[0] + ".gif";
-          shared.fs.writeFileSync(shared.path.join(shared.paths.files, fileName), buffer);
+            file = {
+              data: buffer,
+              size: buffer.length,
+              mimetype: "image/gif"
+            };
+            downloadName = downloadName.split(".")[0] + ".gif";
 
-          resolve();
+            if (file.size > shared.config.upload.maximumFileSize) {
+              const err = new Error("File too large");
+              err.status = 400;
+              reject(err);
+            } else {
+              shared.fs.writeFileSync(shared.path.join(shared.paths.files, fileName), buffer);
+              resolve();
+            }
         });
+      } else if (gif) {
+        reject(new Error("File is not an image or a video"));
       } else if (file.mimetype.startsWith("image/")) {
         sharp(file.data)
           .webp()
           .toBuffer((err, buffer, info) => {
-            if (err) {
-              console.error(err);
+            if (err || buffer.length > file.size) {
+              // console.error(err);
               file.mv(shared.path.join(shared.paths.files, fileName),
                   (err) => err ? reject(err) : resolve()
               );
@@ -136,8 +156,6 @@ router.post("/", isAuthenticated, async (req, res, next) => {
               resolve();
             }
           })
-      } else if (gif) {
-        reject(new Error("File is not an image"));
       } else {
         await file.mv(shared.path.join(shared.paths.files, fileName),
           (err) => err ? reject(err) : resolve()
