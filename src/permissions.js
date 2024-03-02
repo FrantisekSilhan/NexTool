@@ -6,6 +6,7 @@ const Permission = {
     NoCompression: 1n << 4n,
     DeleteFileInIndex: 1n << 5n,
     CreateInvite: 1n << 6n,
+    Admin: 1n << 7n,
 }
 
 function hasPermission(permissions, permission) {

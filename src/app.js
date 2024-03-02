@@ -25,6 +25,7 @@ const app = express();
 const cookieParser = require("cookie-parser");
 const { sessionMiddleware } = require(shared.files.middlewares);
 const csrf = require("csurf");
+const {hasPermission, Permission} = require("./permissions");
 const csrfProtection = csrf({ cookie: true });
 
 app.set("view engine", "ejs");
@@ -51,6 +52,25 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use((req, res, next) => {
+  if (req.session.userId) {
+    const { db } = require(shared.files.database);
+    db.get("SELECT permissions FROM users WHERE id = ?",
+      [req.session.userId],
+      (err, row) => {
+        if (err) {
+          next(err);
+        } else {
+          res.locals.isAdmin = hasPermission(row.permissions, Permission.Admin);
+          next();
+        }
+      }
+    );
+  } else {
+    next();
+  }
+});
+
 shared.fs.readdirSync(shared.paths.routes).forEach(file => {
   if (file.endsWith(".js")) {
     const router = require(shared.path.join(shared.paths.routes, file));
@@ -60,7 +80,7 @@ shared.fs.readdirSync(shared.paths.routes).forEach(file => {
 
 app.use((_, __, next ) => {
   const err = new Error("Not Found");
-  err.status = 404; 
+  err.status = 404;
   next(err);
 });
 
