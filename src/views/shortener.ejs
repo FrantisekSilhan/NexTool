@@ -71,6 +71,9 @@
   const url = document.getElementById("url");
   const urlLen = document.getElementById("urlLen");
 
+  useCustomUrl.value = "off";
+  useVisits.value = "off";
+
   customUrl.disabled = !useCustomUrl.checked;
   visits.disabled = !useVisits.checked;
   visits.value = 1;
@@ -78,10 +81,12 @@
 
   useCustomUrl.addEventListener("change", () => {
     customUrl.disabled = !useCustomUrl.checked;
+    useCustomUrl.value = useCustomUrl.checked ? "on" : "off";
   });
 
   useVisits.addEventListener("change", () => {
     visits.disabled = !useVisits.checked;
+    useVisits.value = useVisits.checked ? "on" : "off";
   });
 
   customUrl.addEventListener("input", () => {

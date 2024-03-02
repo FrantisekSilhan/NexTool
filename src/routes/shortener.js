@@ -42,7 +42,7 @@ router.post("/", isNotFromShortener, isAuthenticated, async (req, res, next) => 
           );
         });
 
-        if (!exists) {
+        if (exists) {
           const err = new Error("Custom URL already exists");
           err.status = 400;
           redirectBack = true;
@@ -115,7 +115,7 @@ router.post("/", isNotFromShortener, isAuthenticated, async (req, res, next) => 
   } catch (err) {
     if (redirectBack) {
       req.session.errorMessage = err.message;
-      return res.redirect("/upload");
+      return res.redirect("/shortener");
     }
 
     delete req.session.formData;
