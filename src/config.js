@@ -14,6 +14,7 @@ module.exports = {
   shortener: {
     maximumUrlLen: 1024,
     maximumCustomUrlLen: 32,
+    baseUrl: "https://xdd.moe/",
     host: "xdd.moe",
   },
   user: {

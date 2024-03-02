@@ -3,6 +3,12 @@
 
 <h1 class="title">URL Shortener</h1>
 
+<% if (shortenedUrl) { %>
+  <div class="margin--bottom">
+    <p class="success">URL Shortened <span class="mono-select-all"><%= shortenedUrl %></span></p>
+  </div>
+<% } %>
+
 <form action="/shortener" method="POST" class="form">
   <div class="form__items">
     <label class="form__label" for="url">URL:</label>

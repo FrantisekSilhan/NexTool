@@ -25,7 +25,14 @@ router.get("/", isNotFromShortener, isAuthenticated, async (req, res, next) => {
       fileSize: formatFileSize(file.fileSize)
     }));
 
-    res.render("dashboard", { userName: req.session.username, files: formattedFiles, userId });
+    const urls = await new Promise((resolve, reject) => {
+      db.all("SELECT u.id, u.key, u.url, s.visitCount, s.maxVisitCount FROM urls AS u LEFT JOIN urlStats AS s ON u.id = s.id WHERE owner = ? ORDER BY u.id DESC LIMIT 35",
+        [userId],
+        (err, rows) => err ? reject(err) : resolve(rows)
+      );
+    });
+
+    res.render("dashboard", { userName: req.session.username, files: formattedFiles, urls, shortenerBaseUrl: shared.config.shortener.baseUrl, userId });
   } catch (err) {
     next(err);
   }

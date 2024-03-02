@@ -402,6 +402,10 @@ span.hljs-string, span.hljs-attr {
   margin-top: 3px;
 }
 
+.margin--bottom {
+  margin-bottom: 1em;
+}
+
 @media (max-width: 768px) {
   :root {
     --font-r: 14px;

@@ -10,10 +10,12 @@ router.path = "/shortener";
 router.get("/", isNotFromShortener, isAuthenticated, async (req, res) => {
   const errorMessage = req.session.errorMessage;
   const formData = req.session.formData ?? {};
+  const shortenedUrl = req.session.shortenedUrl;
   delete req.session.errorMessage;
   delete req.session.formData;
+  delete req.session.shortenedUrl;
 
-  res.render("shortener", { errorMessage, formData, urlLen: shared.config.shortener.maximumUrlLen, customUrlLen: shared.config.shortener.maximumCustomUrlLen });
+  res.render("shortener", { errorMessage, formData, urlLen: shared.config.shortener.maximumUrlLen, customUrlLen: shared.config.shortener.maximumCustomUrlLen, shortenedUrl });
 });
 
 router.post("/", isNotFromShortener, isAuthenticated, async (req, res, next) => {
@@ -27,7 +29,7 @@ router.post("/", isNotFromShortener, isAuthenticated, async (req, res, next) => 
 
     const url = req.body.url;
     const useCustomUrl = req.body.useCustomUrl !== undefined && req.body.useCustomUrl === "on";
-    const customUrl = req.body.customUrl.replace("/", "");
+    const customUrl = useCustomUrl ? req.body.customUrl.replace("/", "") : null;
     const useVisits = req.body.useVisits !== undefined && req.body.useVisits === "on";
     const visits = parseInt(req.body.visits);
 
@@ -99,6 +101,17 @@ router.post("/", isNotFromShortener, isAuthenticated, async (req, res, next) => 
       );
     });
 
+    await new Promise(async (resolve, reject) => {
+      db.run("COMMIT",
+        (err) => err ? reject(err) : resolve(isTransactionActive = true)
+      );
+    });
+
+    req.session.shortenedUrl = shared.config.shortener.baseUrl + key;
+    delete req.session.formData;
+
+    res.redirect("/shortener");
+
   } catch (err) {
     if (redirectBack) {
       req.session.errorMessage = err.message;
@@ -116,6 +129,81 @@ router.post("/", isNotFromShortener, isAuthenticated, async (req, res, next) => 
     }
 
     next(err);
+  }
+});
+
+router.delete("/:key", isNotFromShortener, isAuthenticated, async (req, res, next) => {
+  const { db } = require(shared.files.database);
+
+  let isTransactionActive = false;
+
+  try {
+    const key = req.params.key;
+
+    const keyId = await new Promise((resolve, reject) => {
+      db.get("SELECT id FROM urls WHERE key = ?",
+        [key],
+        (err, row) => err ? reject(err) : resolve(row.id)
+      );
+    });
+
+    if (!keyId) {
+      const err = new Error("URL doesn't exist");
+      err.status = 400;
+      throw err;
+    }
+
+    const owner = await new Promise((resolve, reject) => {
+      db.get("SELECT owner FROM urlStats WHERE id = ?",
+        [keyId],
+        (err, row) => err ? reject(err) : resolve(row.owner)
+      );
+    });
+
+    if (owner !== req.session.userId) {
+      const err = new Error("You don't have permission to delete this URL");
+      err.status = 400;
+      throw err;
+    }
+
+    await new Promise((resolve, reject) => {
+      db.run("BEGIN TRANSACTION",
+        (err) => err ? reject(err) : resolve(isTransactionActive = true)
+      );
+    });
+
+    await new Promise((resolve, reject) => {
+      db.run("DELETE FROM urls WHERE id = ?",
+        [keyId],
+        (err) => err ? reject(err) : resolve()
+      );
+    });
+
+    await new Promise((resolve, reject) => {
+      db.run("DELETE FROM urlStats WHERE id = ?",
+        [keyId],
+        (err) => err ? reject(err) : resolve()
+      );
+    });
+
+    await new Promise((resolve, reject) => {
+      db.run("COMMIT",
+        (err) => err ? reject(err) : resolve(isTransactionActive = false)
+      );
+    });
+
+    res.sendStatus(204);
+
+  } catch (err) {
+    if (isTransactionActive) {
+      await new Promise((resolve, _) => {
+        db.run("ROLLBACK",
+          (rollbackErr) => rollbackErr ? console.error(rollbackErr) : resolve(err)
+        );
+      });
+    }
+
+    res.sendStatus(err.status || 500);
   }
 });
 
