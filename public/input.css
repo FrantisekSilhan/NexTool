@@ -1,0 +1,55 @@
+.form__input-number-wrapper input[type=number] { 
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.form__input-number-wrapper input[type=number]::-webkit-inner-spin-button,
+.form__input-number-wrapper input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none;
+}
+
+.form__input-number-wrapper input {
+  width: calc(100% - 1.5em);
+}
+
+.form__input-number-wrapper input:disabled {
+  width: 100%;
+}
+
+.form__input-number-wrapper {
+  position: relative;
+}
+
+.form__input-number {
+  display: block;
+  position: absolute;
+  font-size: inherit;
+
+
+  width: .5em;
+  height: .5em;
+  border-bottom: 2px solid hsl(var(--text));
+  border-left: 2px solid hsl(var(--text));
+
+  right: .2em;
+}
+
+.form__input-number:hover {
+  border-bottom: 2px solid hsl(var(--text) / .5);
+  border-left: 2px solid hsl(var(--text) / .5);
+}
+
+.form__input-number-up {
+  transform: rotateZ(135deg);
+  top: .2em;
+}
+
+.form__input-number-down {
+  transform: rotateZ(-45deg);
+
+  bottom: .2em;
+}
+
+.form__input:disabled ~ .form__input-number {
+  display: none;
+}

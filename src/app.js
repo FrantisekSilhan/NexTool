@@ -29,7 +29,7 @@ const csrfProtection = csrf({ cookie: true });
 
 app.set("view engine", "ejs");
 app.set("views", shared.paths.views);
-app.set("layout", shared.files.mainLayout);
+app.set("layout", shared.layouts.mainLayout);
 
 app.use(express.static(shared.paths.public));
 app.use(express.urlencoded({ extended: true }));
@@ -52,11 +52,13 @@ app.use((req, res, next) => {
 });
 
 shared.fs.readdirSync(shared.paths.routes).forEach(file => {
-  if (file.endsWith(".js")) {
+  if (file.endsWith(".js") && file !== "index.js") {
     const router = require(shared.path.join(shared.paths.routes, file));
     app.use(router.path, router);
   }
 });
+const router = require(shared.path.join(shared.paths.routes, "index.js"));
+app.use(router.path, router);
 
 app.use((_, __, next ) => {
   const err = new Error("Not Found");
@@ -64,11 +66,15 @@ app.use((_, __, next ) => {
   next(err);
 });
 
-app.use((err, _, res, __) => {
+app.use((err, req, res, _) => {
   console.error(err);
   const errorCode = (err.status !== undefined && err.status >= 500 && err.status < 600) ? 500 : err.status ?? 500;
   const errorMessage = (errorCode >= 500 && errorCode < 600) ? "Internal Server Error" : err.message ?? "Internal Server Error";
-  res.status(errorCode).render("error", { errorCode, errorMessage });
+  if (req.headers.host === shared.config.shortener.host) {
+    res.status(errorCode).render("error", { errorCode, errorMessage, layout: shared.layouts.mainLayoutNoNavbar });
+  } else {
+    res.status(errorCode).render("error", { errorCode, errorMessage });
+  }
 });
 
 app.listen(shared.config.port);

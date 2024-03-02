@@ -57,6 +57,22 @@ const initialize = () => {
     db.run(`
       INSERT INTO invites (createdBy, invite) SELECT 0, "00000000000-0000000000--00000000" WHERE NOT EXISTS (SELECT 1 FROM invites)
     `);
+    db.run(`
+      CREATE TABLE IF NOT EXISTS urls (
+        id INTEGER PRIMARY KEY,
+        key TEXT NOT NULL UNIQUE,
+        url TEXT NOT NULL
+      )
+    `);
+    db.run(`
+      CREATE TABLE IF NOT EXISTS urlStats (
+        id INTEGER PRIMARY KEY,
+        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+        visitCount INTEGER DEFAULT 0,
+        maxVisitCount INTEGER DEFAULT 0,
+        owner INTEGER NOT NULL
+      )
+    `);
   });
 };
 

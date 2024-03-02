@@ -11,6 +11,11 @@ module.exports = {
     downloadLen: 128,
     displayLen: 128,
   },
+  shortener: {
+    maximumUrlLen: 1024,
+    maximumCustomUrlLen: 32,
+    host: "shortener.localhost:6975",
+  },
   user: {
     userNameLen: 32,
     passwordLen: 64,

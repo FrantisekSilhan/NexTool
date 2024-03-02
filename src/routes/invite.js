@@ -1,13 +1,13 @@
 const shared = require("../../shared");
 const express = require("express");
 const router = express.Router();
-const { isAuthenticated } = require(shared.files.middlewares);
+const { isAuthenticated, isNotFromShortener } = require(shared.files.middlewares);
 
 const { generateInviteCode } = require(shared.files.invites);
 
 router.path = "/invite";
 
-router.get("/", isAuthenticated, async (req, res, next) => {
+router.get("/", isNotFromShortener, isAuthenticated, async (req, res, next) => {
   const { db } = require(shared.files.database);
 
   let isTransactionActive = false;
@@ -36,7 +36,7 @@ router.get("/", isAuthenticated, async (req, res, next) => {
   }
 });
 
-router.post("/", isAuthenticated, async (req, res, next) => {
+router.post("/", isNotFromShortener, isAuthenticated, async (req, res, next) => {
   const { db } = require(shared.files.database);
 
   let isTransactionActive = false;
