@@ -83,7 +83,7 @@ router.get("/:key", isAuthenticatedShortener, isFromShortener, async (req, res, 
       throw err;
     }
 
-    if (stats.maxVisitCount !== 0 && stats.visitCount >= stats.maxVisitCount) {
+    if (stats.maxVisitCount !== null && stats.visitCount >= stats.maxVisitCount) {
       await new Promise((resolve, reject) => {
         db.run("DELETE FROM urls WHERE id = ?",
           [url.id],
