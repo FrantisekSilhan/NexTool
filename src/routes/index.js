@@ -1,7 +1,7 @@
 const shared = require("../../shared");
 const express = require("express");
 const router = express.Router();
-const { isAuthenticatedShortener, isFromShortener } = require(shared.files.middlewares);
+const { isAuthenticatedShortener, isFromShortener, isNotFromShortener } = require(shared.files.middlewares);
 
 const { formatFileSize } = require(shared.files.files);
 
@@ -117,6 +117,11 @@ router.get("/:key", isAuthenticatedShortener, isFromShortener, async (req, res, 
 
     next(err);
   }
+});
+
+router.get("/robots.txt", isNotFromShortener, (_, res) => {
+  res.type("text/plain");
+  res.send("User-agent: *\nDisallow: /\nAllow: /login");
 });
 
 module.exports = router;
