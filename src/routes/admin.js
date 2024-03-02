@@ -2,7 +2,7 @@ const shared = require("../../shared");
 const express = require("express");
 const router = express.Router();
 const { isAuthenticated } = require(shared.files.middlewares);
-const {hasPermission, Permission} = require("../permissions");
+const {hasPermission, Permission, getUserPermissions, getPermissionNames} = require("../permissions");
 
 router.path = "/admin";
 
@@ -19,13 +19,23 @@ router.get("/", isAuthenticated, async (req, res, next) => {
       );
     });
 
-    if (!hasPermission(row.permissions, Permission.A)) {
+    if (!hasPermission(row.permissions, Permission.Admin)) {
       const err = new Error("You don't have permission to access the admin panel");
       err.status = 403;
       throw err;
     }
 
-    res.render("admin", { userName: req.session.username, userId });
+    const users = await new Promise((resolve, reject) => {
+      db.all("SELECT id, userName, permissions FROM users", (err, rows) => err ? reject(err) : resolve(rows));
+    });
+
+    users.forEach(user => {
+      user.permissionList = getUserPermissions(user.permissions);
+    });
+
+    const permissionList = getPermissionNames();
+
+    res.render("admin", { userName: req.session.username, permissionList, users, userId });
   } catch (err) {
     next(err);
   }

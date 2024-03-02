@@ -43,6 +43,7 @@ router.post("/", isAuthenticated, async (req, res, next) => {
     if (!hasPermission(row.permissions, Permission.Upload)) {
       const err = new Error("You don't have permission to upload files");
       err.status = 403;
+      redirectBack = true;
       throw err;
     }
 
