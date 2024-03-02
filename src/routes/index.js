@@ -64,7 +64,7 @@ router.get("/:key", isAuthenticatedShortener, isFromShortener, async (req, res, 
     });
 
     await new Promise((resolve, reject) => {
-      db.run("UPDATE stats SET timestamp = CURRENT_TIMESTAMP, visitCount = visitCount + 1 WHERE id = ?",
+      db.run("UPDATE urlStats SET timestamp = CURRENT_TIMESTAMP, visitCount = visitCount + 1 WHERE id = ?",
         [url.id],
         (err) => err ? reject(err) : resolve()
       );
