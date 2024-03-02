@@ -7,6 +7,8 @@ const fs = require("fs");
 const src = path.join(__dirname, "src");
 const views = path.join(src, "views");
 const routes = path.join(src, "routes");
+const utils = path.join(src, "utils");
+
 const paths = {
   data: path.join(__dirname, "data"),
   public: path.join(__dirname, "public"),
@@ -15,6 +17,7 @@ const paths = {
   views: views,
   routes: routes,
   layouts: path.join(views, "layouts"),
+  utils: utils,
 };
 
 
@@ -22,8 +25,9 @@ const paths = {
 files = {
   setup: path.join(paths.src, "setup"),
   database: path.join(paths.src, "db"),
-  files: path.join(paths.src, "files"),
-  invites: path.join(paths.src, "invites"),
+  files: path.join(paths.utils, "files"),
+  invites: path.join(paths.utils, "invites"),
+  shortener: path.join(paths.utils, "shortener"),
   mainLayout: path.join(paths.layouts, "main-layout"),
   middlewares: path.join(paths.src, "middlewares"),
 };
