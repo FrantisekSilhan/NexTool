@@ -1,11 +1,11 @@
 const shared = require("../../shared");
 const express = require("express");
 const router = express.Router();
-const { isAuthenticated } = require(shared.files.middlewares);
+const { isAuthenticated, isNotFromShortener } = require(shared.files.middlewares);
 
 router.path = "/logout";
 
-router.get("/", isAuthenticated, (req, res, next) => {
+router.get("/", isNotFromShortener, isAuthenticated, (req, res, next) => {
   req.session.destroy(err => {
     if (err) {
       next(err);

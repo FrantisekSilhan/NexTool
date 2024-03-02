@@ -14,6 +14,7 @@ module.exports = {
   shortener: {
     maximumUrlLen: 1024,
     maximumCustomUrlLen: 32,
+    host: "shortener.localhost:6975",
   },
   user: {
     userNameLen: 32,

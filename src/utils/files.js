@@ -1,11 +1,6 @@
-function generateRandomString(length) {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  let result = "";
-  for (let i = 0; i < length; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return result;
-}
+const shared = require("../../shared");
+
+const { randomString } = require(shared.files.sharedUtils);
 
 function getFileNameExtension(name, returnDot = false) {
   const index = name.lastIndexOf(".");
@@ -69,13 +64,20 @@ async function isFileNameUnique(db, name) {
   });
 }
 
-async function generateRandomFileName(db, extension = "") {
-  const fileNameLength = 16;
-  let fileName = generateRandomString(fileNameLength) + extension;
-  let unique = await isFileNameUnique(db, fileName);
-  while (!unique) {
-    fileName = generateRandomString(fileNameLength) + extension;
-    unique = await isFileNameUnique(db, fileName);
+async function generateRandomFileName(extension = "") {
+  const { db } = require(shared.files.database);
+  const maxTries = 5;
+  let count = 0;
+  let fileNameLength = 16;
+
+  let fileName = randomString(fileNameLength) + extension;
+  while (!await isFileNameUnique(db, fileName)) {
+    if (count > maxTries) {
+      fileNameLength++;
+      count = 0;
+    }
+    fileName = randomString(fileNameLength) + extension;
+    count++;
   }
   return fileName;
 }

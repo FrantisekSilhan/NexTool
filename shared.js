@@ -22,14 +22,21 @@ const paths = {
 
 
 // Define files
-files = {
+const files = {
   setup: path.join(paths.src, "setup"),
   database: path.join(paths.src, "db"),
   files: path.join(paths.utils, "files"),
   invites: path.join(paths.utils, "invites"),
   shortener: path.join(paths.utils, "shortener"),
-  mainLayout: path.join(paths.layouts, "main-layout"),
+  sharedUtils: path.join(paths.utils, "sharedUtils"),
   middlewares: path.join(paths.src, "middlewares"),
+};
+
+// Define layouts
+const layouts = {
+  mainLayout: path.join(paths.layouts, "main-layout"),
+  mainLayoutNoNavbar: path.join(paths.layouts, "main-layout-nonavbar"),
+  file: path.join(paths.layouts, "file"),
 };
 
 
@@ -39,5 +46,6 @@ module.exports = {
   fs: fs,
   paths: paths,
   files: files,
+  layouts: layouts,
   config: require(path.join(paths.src, "config")),
 };

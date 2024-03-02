@@ -1,12 +1,12 @@
 const shared = require("../../shared");
 const express = require("express");
 const router = express.Router();
-const { isNotAuthenticated } = require(shared.files.middlewares);
+const { isNotAuthenticated, isNotFromShortener } = require(shared.files.middlewares);
 const crypto = require("crypto");
 
 router.path = "/register";
 
-router.get("/", isNotAuthenticated, async (req, res) => {
+router.get("/", isNotFromShortener, isNotAuthenticated, async (req, res) => {
   const formData = req.session.formData ?? {};
   const errorMessage = req.session.errorMessage;
   delete req.session.formData;
@@ -15,7 +15,7 @@ router.get("/", isNotAuthenticated, async (req, res) => {
   res.render("register", { UserNameLen: shared.config.user.userNameLen, PasswordLen: shared.config.user.passwordLen, InviteCodeLen: shared.config.user.inviteCodeLen, formData, errorMessage });
 });
 
-router.post("/", isNotAuthenticated, async (req, res, next) => {
+router.post("/", isNotFromShortener, isNotAuthenticated, async (req, res, next) => {
   const { db } = require(shared.files.database);
 
   let isTransactionActive = false;

@@ -24,6 +24,18 @@ const isAuthenticated = (req, res, next) => {
   }
 };
 
+const isAuthenticatedShortener = (req, res, next) => {
+  if (req.headers.host === shared.config.shortener.host) {
+    next();
+  } else {
+    if (req.session.userId) {
+      next();
+    } else {
+      res.redirect("/login");
+    }
+  }
+};
+
 const isNotAuthenticated = (req, res, next) => {
   if (req.session.userId) {
     res.redirect("/");
@@ -32,8 +44,29 @@ const isNotAuthenticated = (req, res, next) => {
   }
 };
 
+const isNotFromShortener = (req, res, next) => {
+  if (req.headers.host === shared.config.shortener.host) {
+    res.status(404).render("error", { errorCode: 404, errorMessage: "Not Found", layout: shared.layouts.mainLayoutNoNavbar });
+  } else {
+    next();
+  }
+}
+
+const isFromShortener = (req, _, next) => {
+  if (req.headers.host === shared.config.shortener.host) {
+    next();
+  } else {
+    const err = new Error("Forbidden");
+    err.status = 403;
+    next(err);
+  }
+}
+
 module.exports = {
   sessionMiddleware,
   isAuthenticated,
+  isAuthenticatedShortener,
   isNotAuthenticated,
+  isNotFromShortener,
+  isFromShortener,
 };
