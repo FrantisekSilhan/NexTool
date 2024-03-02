@@ -4,6 +4,7 @@ const router = express.Router();
 const { isAuthenticated } = require(shared.files.middlewares);
 
 const { generateInviteCode } = require(shared.files.invites);
+const {Permission, hasPermission} = require("../permissions");
 
 router.path = "/invite";
 
@@ -42,6 +43,20 @@ router.post("/", isAuthenticated, async (req, res, next) => {
   let isTransactionActive = false;
 
   try {
+
+    const row = await new Promise((resolve, reject) => {
+      db.get("SELECT permissions FROM users WHERE id = ?",
+          [req.session.userId],
+        (err, row) => err ? reject(err) : resolve(row)
+      );
+    });
+
+    if (!hasPermission(row.permissions, Permission.CreateInvite)) {
+      const err = new Error("You don't have permission to create invites");
+      err.status = 403;
+      throw err;
+    }
+
     const userId = req.session.userId;
 
     await new Promise((resolve, reject) => {
