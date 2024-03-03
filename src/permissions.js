@@ -30,9 +30,17 @@ function getUserPermissions(permissions) {
   return userPermissions;
 }
 
+function hasHigherPermission(userPermissions, otherPermissions) {
+  if (hasPermission(userPermissions, Permission.Owner)) return false;
+  if (hasPermission(otherPermissions, Permission.Owner)) return true;
+  if (hasPermission(userPermissions, Permission.Admin)) return false;
+  return hasPermission(otherPermissions, Permission.Admin);
+}
+
 module.exports = {
   Permission,
   hasPermission,
   getUserPermissions,
   getPermissionNames,
+  hasHigherPermission,
 }

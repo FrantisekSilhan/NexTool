@@ -2,7 +2,7 @@ const shared = require("../../shared");
 const express = require("express");
 const router = express.Router();
 const { isAuthenticated } = require(shared.files.middlewares);
-const {hasPermission, Permission, getUserPermissions, getPermissionNames} = require("../permissions");
+const {hasPermission, Permission, getUserPermissions, getPermissionNames, hasHigherPermission} = require("../permissions");
 
 router.path = "/admin";
 
@@ -56,6 +56,7 @@ router.get("/users", isAuthenticated, async (req, res, next) => {
 
     users.forEach(user => {
       user.permissionList = getUserPermissions(user.permissions);
+      user.isHigher = hasHigherPermission(row.permissions, user.permissions);
     });
 
     const permissionList = getPermissionNames();
@@ -95,6 +96,12 @@ router.get("/users/:id", isAuthenticated, async (req, res, next) => {
       throw err;
     }
 
+    if (Number(req.params.id) === userId || hasHigherPermission(row.permissions, user.permissions)) {
+      const err = new Error("You can't edit this");
+      err.status = 403;
+      throw err;
+    }
+
     user.permissionList = getUserPermissions(user.permissions);
 
     res.render("admin/user/index", {userName: req.session.username, user, userId});
@@ -116,18 +123,6 @@ router.patch("/users/:id", isAuthenticated, async (req, res, next) => {
       );
     });
 
-    if (!hasPermission(row.permissions, Permission.Admin) && !hasPermission(row.permissions, Permission.Owner)) {
-      const err = new Error("You don't have permission to access the admin panel");
-      err.status = 403;
-      throw err;
-    }
-
-    if (Number(req.params.id) == userId && !hasPermission(row.permissions, Permission.Owner)) {
-      const err = new Error("You can't edit your own permissions");
-      err.status = 403;
-      throw err;
-    }
-
     const user = await new Promise((resolve, reject) => {
       db.get("SELECT id, userName, permissions FROM users WHERE id = ?", [req.params.id], (err, row) => err ? reject(err) : resolve(row));
     });
@@ -135,6 +130,12 @@ router.patch("/users/:id", isAuthenticated, async (req, res, next) => {
     if (!user) {
       const err = new Error("User not found");
       err.status = 404;
+      throw err;
+    }
+
+    if (Number(req.params.id) === userId || hasHigherPermission(row.permissions, user.permissions)) {
+      const err = new Error("You can't edit this");
+      err.status = 403;
       throw err;
     }
 
@@ -193,6 +194,12 @@ router.delete("/users/:id", isAuthenticated, async (req, res, next) => {
     if (!user) {
       const err = new Error("User not found");
       err.status = 404;
+      throw err;
+    }
+
+    if (Number(req.params.id) === userId || hasHigherPermission(row.permissions, user.permissions)) {
+      const err = new Error("You can't delete this");
+      err.status = 403;
       throw err;
     }
 
