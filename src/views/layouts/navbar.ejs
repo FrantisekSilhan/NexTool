@@ -2,6 +2,9 @@
   <a class="navbar__brand navbar__link" href="/">NexTool</a>
   <menu class="navbar__menu">
     <% if (user) { %>
+      <% if (isAdmin) { %>
+        <li class="navbar__item"><a class="navbar__link" href="/admin">Admin</a></li>
+      <% } %>
       <li class="navbar__item"><a class="navbar__link" href="/upload">Upload</a></li>
       <li class="navbar__item"><a class="navbar__link" href="/dashboard">Dashboard</a></li>
       <li class="navbar__item"><a class="navbar__link" href="/invite">Invite</a></li>

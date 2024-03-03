@@ -43,7 +43,8 @@ const initialize = () => {
         id INTEGER PRIMARY KEY,
         userName TEXT NOT NULL UNIQUE,
         password TEXT NOT NULL,
-        salt TEXT NOT NULL
+        salt TEXT NOT NULL,
+        permissions INT DEFAULT 0 NOT NULL
       )
     `);
     db.run(`
