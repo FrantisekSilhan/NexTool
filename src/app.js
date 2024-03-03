@@ -34,6 +34,7 @@ app.set("layout", shared.files.mainLayout);
 
 app.use(express.static(shared.paths.public));
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(expressLayouts);
 app.use(expressFileUpload({
   limits: { fileSize: shared.config.upload.maximumFileSize },

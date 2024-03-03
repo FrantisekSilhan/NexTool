@@ -3,42 +3,4 @@
 
 <h1 class="title">Admin panel</h1>
 
-<div class="container">
-  <div class="row">
-    <div class="col-md-12">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3 class="panel-title">Users</h3>
-        </div>
-        <div class="panel-body">
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th>Username</th>
-                <% permissionList.forEach(permission => { %>
-                  <th><%= permission %></th>
-                <% }); %>
-              </tr>
-            </thead>
-            <tbody>
-              <% users.forEach(user => { %>
-                <tr>
-                  <td><%= user.userName %></td>
-                  <% user.permissionList.forEach(permission => { %>
-                    <td><%= permission.hasPermission ? "Yes" : "No" %></td>
-                  <% }); %>
-                  <td>
-                    <a href="/admin/users/<%= user.id %>" class="btn btn-primary">Edit</a>
-                    <% if (user.permissionList.some(x => x.name === "Admin" && !x.hasPermission)) { %>
-                      <a href="/admin/users/<%= user.id %>/delete" class="btn btn-danger">Delete</a>
-                    <% } %>
-                  </td>
-                </tr>
-              <% }); %>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+<a href="/admin/users">Users</a>
