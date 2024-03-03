@@ -11,6 +11,12 @@ module.exports = {
     downloadLen: 128,
     displayLen: 128,
   },
+  shortener: {
+    maximumUrlLen: 1024,
+    maximumCustomUrlLen: 32,
+    baseUrl: "https://xdd.moe/",
+    host: "xdd.moe",
+  },
   user: {
     userNameLen: 32,
     passwordLen: 64,

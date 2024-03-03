@@ -2,24 +2,21 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta content="noindex, nofollow" name="robots">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <% if (renderMetaTags) { %>
+    <%- include("metatags.ejs") %>
+  <% } else { %>
+    <meta content="noindex, nofollow" name="robots">
+  <% } %>
   <link rel="stylesheet" href="/style.css">
   <title><%= page %> | <%= site %></title>
 </head>
 <body>
-  <%- include("navbar.ejs", { user }) %>
+  <% if (renderNavbar) { %>
+    <%- include("navbar.ejs", { user }) %>
+  <% } %>
   <main <%= mainClass %>>
     <%- body %>
   </main>
-  <script>
-    let reload = false;
-
-    if (reload) {
-      window.setTimeout( function() {
-        window.location.reload();
-      }, 1500);
-    }
-  </script>
 </body>
 </html>

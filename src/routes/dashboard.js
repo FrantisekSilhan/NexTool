@@ -1,13 +1,13 @@
 const shared = require("../../shared");
 const express = require("express");
 const router = express.Router();
-const { isAuthenticated } = require(shared.files.middlewares);
+const { isAuthenticated, isNotFromShortener } = require(shared.files.middlewares);
 
 const { formatFileSize } = require(shared.files.files);
 
 router.path = "/dashboard";
 
-router.get("/", isAuthenticated, async (req, res, next) => {
+router.get("/", isNotFromShortener, isAuthenticated, async (req, res, next) => {
   try {
     const { db } = require(shared.files.database);
 
@@ -25,7 +25,14 @@ router.get("/", isAuthenticated, async (req, res, next) => {
       fileSize: formatFileSize(file.fileSize)
     }));
 
-    res.render("dashboard", { userName: req.session.username, files: formattedFiles, userId });
+    const urls = await new Promise((resolve, reject) => {
+      db.all("SELECT u.id, u.key, u.url, s.visitCount, s.maxVisitCount FROM urls AS u LEFT JOIN urlStats AS s ON u.id = s.id WHERE owner = ? ORDER BY u.id DESC LIMIT 35",
+        [userId],
+        (err, rows) => err ? reject(err) : resolve(rows)
+      );
+    });
+
+    res.render("dashboard", { userName: req.session.username, files: formattedFiles, urls, shortenerBaseUrl: shared.config.shortener.baseUrl, userId });
   } catch (err) {
     next(err);
   }

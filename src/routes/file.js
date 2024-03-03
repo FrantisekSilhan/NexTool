@@ -1,13 +1,14 @@
 const shared = require("../../shared");
 const express = require("express");
-const { isAuthenticated } = require("../middlewares");
 const router = express.Router();
+
+const { isAuthenticated, isNotFromShortener } = require(shared.files.middlewares);
 
 const { readFileLines } = require(shared.files.files);
 
 router.path = "/f";
 
-router.get("/:file", async (req, res, next) => {
+router.get("/:file", isNotFromShortener, async (req, res, next) => {
   const { db } = require(shared.files.database);
 
   try {
@@ -42,17 +43,17 @@ router.get("/:file", async (req, res, next) => {
 
     if (fileInfo.mimeType.startsWith("text") || fileInfo.language !== null) {
       const fileContent = await readFileLines(shared.path.join(shared.paths.files, fileName), 0);
-      res.render("file", { fileName, downloadName: fileInfo.downloadName, language: fileInfo.language, mimeType: fileInfo.mimeType, fileContent, layout: shared.path.join(shared.paths.layouts, "file"), user: userId, isOwner: fileInfo.owner === userId, owner: userInfo.userName });
+      res.render("file", { fileName, downloadName: fileInfo.downloadName, language: fileInfo.language, mimeType: fileInfo.mimeType, fileContent, layout: shared.layouts.file, user: userId, isOwner: fileInfo.owner === userId, owner: userInfo.userName });
       return;
     }
 
-    res.render("file", { fileName, downloadName: fileInfo.downloadName, language: undefined, mimeType: fileInfo.mimeType, layout: shared.path.join(shared.paths.layouts, "file"), user: userId, isOwner: fileInfo.owner === userId, owner: userInfo.userName })
+    res.render("file", { fileName, downloadName: fileInfo.downloadName, language: undefined, mimeType: fileInfo.mimeType, layout: shared.layouts.file, user: userId, isOwner: fileInfo.owner === userId, owner: userInfo.userName })
   } catch (err) {
     next(err);
   }
 });
 
-router.get("/:file/:downloadName", async (req, res, next) => {
+router.get("/:file/:downloadName", isNotFromShortener, async (req, res, next) => {
   const { db } = require(shared.files.database);
 
   try {

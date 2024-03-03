@@ -6,6 +6,7 @@
 <h2 class="title title--s4">Unused Invite Codes</h2>
 
 <ul class="list">
+  <li class="list__item" style="display: none;"><p class="mono-select-all"></p></li>
   <% if (invites && invites.length > 0) { %>
     <% invites.forEach(invite => { %>
       <li class="list__item"><p class="mono-select-all"><%= invite.invite %></p></li>

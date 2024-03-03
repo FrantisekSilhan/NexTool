@@ -1,7 +1,7 @@
 const shared = require("../../shared");
 const express = require("express");
 const router = express.Router();
-const { isAuthenticated } = require(shared.files.middlewares);
+const { isAuthenticated, isNotFromShortener } = require(shared.files.middlewares);
 const crypto = require("crypto");
 
 const { generateRandomFileName } = require(shared.files.files);
@@ -11,7 +11,7 @@ const {hasPermission, Permission} = require("../permissions");
 
 router.path = "/upload";
 
-router.get("/", isAuthenticated, (req, res) => {
+router.get("/", isNotFromShortener, isAuthenticated, (req, res) => {
   const formData = req.session.formData ?? {};
   const errorMessage = req.session.errorMessage;
   delete req.session.formData;
@@ -25,7 +25,7 @@ router.get("/", isAuthenticated, (req, res) => {
   });
 });
 
-router.post("/", isAuthenticated, async (req, res, next) => {
+router.post("/", isNotFromShortener, isAuthenticated, async (req, res, next) => {
   const { db } = require(shared.files.database);
 
   let isTransactionActive = false;
@@ -65,7 +65,7 @@ router.post("/", isAuthenticated, async (req, res, next) => {
       throw err;
     }
 
-    const fileName = await generateRandomFileName(require(shared.files.database).db);
+    const fileName = await generateRandomFileName();
     let downloadName = req.body.downloadName.replace(/\s/g, "").length > 0 ? req.body.downloadName : fileName;
     const displayName = req.body.displayName.replace(/\s/g, "").length > 0 ? req.body.displayName : downloadName;
     const index = req.body.index !== undefined && req.body.index === "on";

@@ -1,0 +1,137 @@
+<% mainClass = "class=center" %>
+<% page = "Shortener" %>
+
+<h1 class="title">URL Shortener</h1>
+
+<% if (shortenedUrl) { %>
+  <div class="margin--bottom">
+    <p class="success">URL Shortened <span class="mono-select-all"><%= shortenedUrl %></span></p>
+  </div>
+<% } %>
+
+<form action="/shortener" method="POST" class="form">
+  <div class="form__items">
+    <label class="form__label" for="url">URL:</label>
+    <div id="urlLenWrapper">
+      <input class="form__input" type="url" id="url" name="url" autocomplete="off" required value="<%= formData.url %>">
+      <span id="urlLen"></span>
+    </div>
+
+    <div class="form__checkbox-wrapper">
+      <label class="form__label" for="useCustomUrl">Use Custom URL</label>
+      <input class="form__checkbox" type="checkbox" id="useCustomUrl" name="useCustomUrl" value="<%= formData.useCustomUrl %>">
+    </div>
+    <label class="form__label" for="customUrl">Custom URL:</label>
+    <input class="form__input" type="text" id="customUrl" name="customUrl" autocomplete="off" value="<%= formData.customUrl %>">
+
+    <div class="form__checkbox-wrapper">
+      <label class="form__label" for="useVisits">Remove after N visits</label>
+      <input class="form__checkbox" type="checkbox" id="useVisits" name="useVisits" value="<%= formData.useVisits %>">
+    </div>
+    <label class="form__label" for="visits">Custom URL:</label>
+    <div class="form__input-number-wrapper">
+      <input class="form__input" type="number" id="visits" name="visits" autocomplete="off" value="<%= formData.visits %>">
+      <div id="numberUp" class="form__input-number form__input-number-up"></div>
+      <div id="numberDown" class="form__input-number form__input-number-down"></div>
+    </div>
+  </div>
+
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <% if(errorMessage) { %>
+    <p class="error"><%= errorMessage %></p>
+  <% } %>
+  <button class="btn" type="submit">Shorten</button>
+</form>
+
+<style>
+  #urlLenWrapper {
+    position: relative;
+  }
+  #urlLen {
+    color: hsl(var(--error));
+    position: absolute;
+    left: -.5em;
+    top: 0;
+    bottom: 0;
+    transform: translateX(-100%);
+  }
+  @media (max-width: 768px) {
+    #urlLen {
+      right: 0;
+      left: unset;
+      transform: translateY(calc(-100% - .5em));
+    }
+  }
+</style>
+<script>
+  const useCustomUrl = document.getElementById("useCustomUrl");
+  const customUrl = document.getElementById("customUrl");
+  const useVisits = document.getElementById("useVisits");
+  const visits = document.getElementById("visits");
+  const url = document.getElementById("url");
+  const urlLen = document.getElementById("urlLen");
+
+  useCustomUrl.value = "off";
+  useVisits.value = "off";
+
+  customUrl.disabled = !useCustomUrl.checked;
+  visits.disabled = !useVisits.checked;
+  visits.value = 1;
+  customUrl.value = "/";
+
+  useCustomUrl.addEventListener("change", () => {
+    customUrl.disabled = !useCustomUrl.checked;
+    useCustomUrl.value = useCustomUrl.checked ? "on" : "off";
+  });
+
+  useVisits.addEventListener("change", () => {
+    visits.disabled = !useVisits.checked;
+    useVisits.value = useVisits.checked ? "on" : "off";
+  });
+
+  customUrl.addEventListener("input", () => {
+    customUrl.value = customUrl.value.replace(/[^a-zA-Z0-9-_]/g, "");
+    customUrl.value = customUrl.value.substring(0, "<%= customUrlLen %>");
+    customUrl.value = "/" + customUrl.value;
+  });
+
+  url.addEventListener("input", () => {
+    const len = "<%= urlLen %>" - url.value.length;
+    if (len < 128) {
+      urlLen.textContent = len;
+    } else {
+      urlLen.textContent = "";
+    }
+  });
+
+  const numberUp = document.getElementById("numberUp");
+  const numberDown = document.getElementById("numberDown");
+
+  numberUp.addEventListener("click", () => {
+    visits.stepUp();
+    if (visits.value <= 1) {
+      visits.value = 1;
+    }
+  });
+
+  numberDown.addEventListener("click", () => {
+    if (visits.value > 1) {
+      visits.stepDown();
+    }
+    if (visits.value <= 1) {
+      visits.value = 1;
+    }
+  });
+
+  visits.addEventListener("input", () => {
+    if (visits.value <= 1 && visits.value != "") {
+      visits.value = 1;
+    }
+  });
+
+  visits.addEventListener("focusout", () => {
+    if (visits.value <= 1) {
+      visits.value = 1;
+    }
+  });
+</script>

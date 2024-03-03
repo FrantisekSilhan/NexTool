@@ -1,13 +1,13 @@
 const shared = require("../../shared");
 const express = require("express");
 const router = express.Router();
-const { isAuthenticated } = require(shared.files.middlewares);
+const { isAuthenticated, isNotFromShortener } = require(shared.files.middlewares);
 
 const { formatFileSize } = require(shared.files.files);
 
 router.path = "/api";
 
-router.get("/files", isAuthenticated, async (req, res, next) => {
+router.get("/files", isNotFromShortener, isAuthenticated, async (req, res, next) => {
   try {
     const { db } = require(shared.files.database);
 
