@@ -46,7 +46,7 @@ const isNotAuthenticated = (req, res, next) => {
 
 const isNotFromShortener = (req, res, next) => {
   if (req.headers.host === shared.config.shortener.host) {
-    res.status(404).render("error", { errorCode: 404, errorMessage: "Not Found", layout: shared.layouts.mainLayoutNoNavbar });
+    res.status(404).render("error", { errorCode: 404, errorMessage: "Not Found", renderNavbar: false, renderMetaTags: false });
   } else {
     next();
   }

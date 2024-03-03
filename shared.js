@@ -35,7 +35,6 @@ const files = {
 // Define layouts
 const layouts = {
   mainLayout: path.join(paths.layouts, "main-layout"),
-  mainLayoutNoNavbar: path.join(paths.layouts, "main-layout-nonavbar"),
   file: path.join(paths.layouts, "file"),
 };
 

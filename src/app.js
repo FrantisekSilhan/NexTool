@@ -48,6 +48,8 @@ app.use((req, res, next) => {
   res.locals.site = shared.config.site;
   res.locals.siteUrl = shared.config.siteUrl;
   res.locals.csrfToken = req.csrfToken();
+  res.locals.renderNavbar = true;
+  res.locals.renderMetaTags = true;
   next();
 });
 
@@ -71,7 +73,7 @@ app.use((err, req, res, _) => {
   const errorCode = (err.status !== undefined && err.status >= 500 && err.status < 600) ? 500 : err.status ?? 500;
   const errorMessage = (errorCode >= 500 && errorCode < 600) ? "Internal Server Error" : err.message ?? "Internal Server Error";
   if (req.headers.host === shared.config.shortener.host) {
-    res.status(errorCode).render("error", { errorCode, errorMessage, layout: shared.layouts.mainLayoutNoNavbar });
+    res.status(errorCode).render("error", { errorCode, errorMessage, renderNavbar: false, renderMetaTags: false });
   } else {
     res.status(errorCode).render("error", { errorCode, errorMessage });
   }
