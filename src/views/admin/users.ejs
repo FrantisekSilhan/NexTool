@@ -28,9 +28,11 @@
                     <td><%= permission.hasPermission ? "Yes" : "No" %></td>
                   <% }); %>
                   <td>
-                    <a href="/admin/users/<%= user.id %>" class="btn btn-primary">Edit</a>
-                    <% if (user.permissionList.some(x => x.name === "Admin" && !x.hasPermission)) { %>
-                      <button id="delete" data-user="<%= user.id %>" class="btn btn-danger">Delete</button>
+                    <% if (user.id !== userId) { %>
+                      <a href="/admin/users/<%= user.id %>" class="btn btn-primary">Edit</a>
+                      <% if (user.permissionList.some(x => x.name === "Admin" && !x.hasPermission)) { %>
+                        <button id="delete" data-user="<%= user.id %>" class="btn btn-danger">Delete</button>
+                      <% } %>
                     <% } %>
                   </td>
                 </tr>

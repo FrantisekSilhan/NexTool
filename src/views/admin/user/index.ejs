@@ -20,6 +20,12 @@
 
   function updateUser() {
     successMessage.innerText = "";
+
+    if ("<%= userId %>" === "<%= user.id %>") {
+      successMessage.innerText = "You cannot change your own permissions";
+      return;
+    }
+
     const permissionsList = Array.from(document.getElementById('permissions').children).filter(child => child.tagName === 'INPUT').map(input => {
       return {
         name: input.name,
@@ -45,11 +51,11 @@
       if (res.ok) {
         successMessage.innerText = "User updated successfully";
       } else {
-        successMessage.innerText = "Error updating user";
+        successMessage.innerText = res.statusText;
       }
     }).catch(err => {
       console.error(err);
-      successMessage.innerText = "Error updating user";
+      successMessage.innerText = "An error occurred";
     });
   }
 </script>

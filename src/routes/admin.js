@@ -12,6 +12,19 @@ router.get("/", isAuthenticated, async (req, res, next) => {
 
     const userId = req.session.userId;
 
+    const row = await new Promise((resolve, reject) => {
+      db.get("SELECT permissions FROM users WHERE id = ?",
+          [userId],
+          (err, row) => err ? reject(err) : resolve(row)
+      );
+    });
+
+    if (!hasPermission(row.permissions, Permission.Admin) && !hasPermission(row.permissions, Permission.Owner)) {
+      const err = new Error("You don't have permission to access the admin panel");
+      err.status = 403;
+      throw err;
+    }
+
     res.render("admin", { userName: req.session.username, userId });
   } catch (err) {
     next(err);
@@ -31,7 +44,7 @@ router.get("/users", isAuthenticated, async (req, res, next) => {
       );
     });
 
-    if (!hasPermission(row.permissions, Permission.Admin)) {
+    if (!hasPermission(row.permissions, Permission.Admin) && !hasPermission(row.permissions, Permission.Owner)) {
       const err = new Error("You don't have permission to access the admin panel");
       err.status = 403;
       throw err;
@@ -66,7 +79,7 @@ router.get("/users/:id", isAuthenticated, async (req, res, next) => {
       );
     });
 
-    if (!hasPermission(row.permissions, Permission.Admin)) {
+    if (!hasPermission(row.permissions, Permission.Admin) && !hasPermission(row.permissions, Permission.Owner)) {
       const err = new Error("You don't have permission to access the admin panel");
       err.status = 403;
       throw err;
@@ -103,8 +116,14 @@ router.patch("/users/:id", isAuthenticated, async (req, res, next) => {
       );
     });
 
-    if (!hasPermission(row.permissions, Permission.Admin)) {
+    if (!hasPermission(row.permissions, Permission.Admin) && !hasPermission(row.permissions, Permission.Owner)) {
       const err = new Error("You don't have permission to access the admin panel");
+      err.status = 403;
+      throw err;
+    }
+
+    if (Number(req.params.id) == userId && !hasPermission(row.permissions, Permission.Owner)) {
+      const err = new Error("You can't edit your own permissions");
       err.status = 403;
       throw err;
     }
@@ -118,8 +137,6 @@ router.patch("/users/:id", isAuthenticated, async (req, res, next) => {
       err.status = 404;
       throw err;
     }
-
-    console.log(req.body);
 
     const userName = req.body.userName ?? user.userName;
     const permissions = req.body.permissions ?? user.permissions;
@@ -163,7 +180,7 @@ router.delete("/users/:id", isAuthenticated, async (req, res, next) => {
       );
     });
 
-    if (!hasPermission(row.permissions, Permission.Admin)) {
+    if (!hasPermission(row.permissions, Permission.Admin) && !hasPermission(row.permissions, Permission.Owner)) {
       const err = new Error("You don't have permission to access the admin panel");
       err.status = 403;
       throw err;
