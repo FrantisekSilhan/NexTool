@@ -12,56 +12,33 @@ router.get("/", isAuthenticated, async (req, res, next) => {
 
     const userId = req.session.userId;
 
-    const row = await new Promise((resolve, reject) => {
+    const permissions = await new Promise((resolve, reject) => {
       db.get("SELECT permissions FROM users WHERE id = ?",
           [userId],
-          (err, row) => err ? reject(err) : resolve(row)
+          (err, row) => err ? reject(err) : resolve(row.permissions)
       );
     });
 
-    if (!hasPermission(row.permissions, Permission.Admin) && !hasPermission(row.permissions, Permission.Owner)) {
-      const err = new Error("You don't have permission to access the admin panel");
-      err.status = 403;
-      throw err;
-    }
-
-    res.render("admin", { userName: req.session.username, userId });
-  } catch (err) {
-    next(err);
-  }
-});
-
-router.get("/users", isAuthenticated, async (req, res, next) => {
-  try {
-    const {db} = require(shared.files.database);
-
-    const userId = req.session.userId;
-
-    const row = await new Promise((resolve, reject) => {
-      db.get("SELECT permissions FROM users WHERE id = ?",
-          [userId],
-          (err, row) => err ? reject(err) : resolve(row)
-      );
-    });
-
-    if (!hasPermission(row.permissions, Permission.Admin) && !hasPermission(row.permissions, Permission.Owner)) {
+    if (!hasPermission(permissions, Permission.Admin) && !hasPermission(permissions, Permission.Owner)) {
       const err = new Error("You don't have permission to access the admin panel");
       err.status = 403;
       throw err;
     }
 
     const users = await new Promise((resolve, reject) => {
-      db.all("SELECT id, userName, permissions FROM users", (err, rows) => err ? reject(err) : resolve(rows));
+      db.all("SELECT id, userName, permissions FROM users",
+        (err, rows) => err ? reject(err) : resolve(rows)
+      );
     });
 
     users.forEach(user => {
       user.permissionList = getUserPermissions(user.permissions);
-      user.isHigher = hasHigherPermission(row.permissions, user.permissions);
+      user.isHigher = hasHigherPermission(permissions, user.permissions);
     });
 
     const permissionList = getPermissionNames();
 
-    res.render("admin/users", {userName: req.session.username, permissionList, users, userId});
+    res.render("admin/index", { userName: req.session.username, permissionList, users, userId });
   } catch (err) {
     next(err);
   }
@@ -87,18 +64,21 @@ router.get("/users/:id", isAuthenticated, async (req, res, next) => {
     }
 
     const user = await new Promise((resolve, reject) => {
-      db.get("SELECT id, userName, permissions FROM users WHERE id = ?", [req.params.id], (err, row) => err ? reject(err) : resolve(row));
+      db.get("SELECT id, userName, permissions FROM users WHERE id = ?",
+        [req.params.id],
+        (err, row) => err ? reject(err) : resolve(row)
+      );
     });
+    
+    if (Number(req.params.id) === userId || hasHigherPermission(row.permissions, user.permissions)) {
+      const err = new Error("You can't edit this");
+      err.status = 403;
+      throw err;
+    }
 
     if (!user) {
       const err = new Error("User not found");
       err.status = 404;
-      throw err;
-    }
-
-    if (Number(req.params.id) === userId || hasHigherPermission(row.permissions, user.permissions)) {
-      const err = new Error("You can't edit this");
-      err.status = 403;
       throw err;
     }
 
@@ -110,7 +90,7 @@ router.get("/users/:id", isAuthenticated, async (req, res, next) => {
   }
 });
 
-router.patch("/users/:id", isAuthenticated, async (req, res, next) => {
+router.patch("/users/:id", isAuthenticated, async (req, res) => {
   try {
     const {db} = require(shared.files.database);
 
@@ -124,18 +104,21 @@ router.patch("/users/:id", isAuthenticated, async (req, res, next) => {
     });
 
     const user = await new Promise((resolve, reject) => {
-      db.get("SELECT id, userName, permissions FROM users WHERE id = ?", [req.params.id], (err, row) => err ? reject(err) : resolve(row));
+      db.get("SELECT id, userName, permissions FROM users WHERE id = ?",
+        [req.params.id],
+        (err, row) => err ? reject(err) : resolve(row)
+      );
     });
-
-    if (!user) {
-      const err = new Error("User not found");
-      err.status = 404;
-      throw err;
-    }
 
     if (Number(req.params.id) === userId || hasHigherPermission(row.permissions, user.permissions)) {
       const err = new Error("You can't edit this");
       err.status = 403;
+      throw err;
+    }
+
+    if (!user) {
+      const err = new Error("User not found");
+      err.status = 404;
       throw err;
     }
 
@@ -153,42 +136,56 @@ router.patch("/users/:id", isAuthenticated, async (req, res, next) => {
     });
 
     await new Promise((resolve, reject) => {
-      db.run("UPDATE users SET permissions = ?, userName = ? WHERE id = ?", [permissions, userName, req.params.id], err => err ? reject(err) : resolve());
+      db.run("UPDATE users SET permissions = ?, userName = ? WHERE id = ?",
+        [permissions, userName, req.params.id],
+        (err) => err ? reject(err) : resolve()
+      );
     });
 
     await new Promise((resolve, reject) => {
       db.run("COMMIT",
-          (err) => err ? reject(err) : resolve(isTransactionActive = false)
+        (err) => err ? reject(err) : resolve(isTransactionActive = false)
       );
     });
 
     res.sendStatus(200)
   } catch (err) {
-    next(err);
+    if (isTransactionActive) {
+      await new Promise((resolve, _) => {
+        db.run("ROLLBACK",
+          (rollbackErr) => rollbackErr ? console.error(rollbackErr) : resolve(err)
+        );
+      });
+    }
+
+    res.sendStatus(err.status || 500);
   }
 });
 
-router.delete("/users/:id", isAuthenticated, async (req, res, next) => {
+router.delete("/users/:id", isAuthenticated, async (req, res) => {
   try {
     const {db} = require(shared.files.database);
 
     const userId = req.session.userId;
 
-    const row = await new Promise((resolve, reject) => {
+    const permissions = await new Promise((resolve, reject) => {
       db.get("SELECT permissions FROM users WHERE id = ?",
         [userId],
-        (err, row) => err ? reject(err) : resolve(row)
+        (err, row) => err ? reject(err) : resolve(row.permissions)
       );
     });
 
-    if (!hasPermission(row.permissions, Permission.Admin) && !hasPermission(row.permissions, Permission.Owner)) {
+    if (!hasPermission(permissions, Permission.Admin) && !hasPermission(permissions, Permission.Owner)) {
       const err = new Error("You don't have permission to access the admin panel");
       err.status = 403;
       throw err;
     }
 
     const user = await new Promise((resolve, reject) => {
-      db.get("SELECT id, userName, permissions FROM users WHERE id = ?", [req.params.id], (err, row) => err ? reject(err) : resolve(row));
+      db.get("SELECT id, userName, permissions FROM users WHERE id = ?",
+        [req.params.id],
+        (err, row) => err ? reject(err) : resolve(row)
+      );
     });
 
     if (!user) {
@@ -197,7 +194,7 @@ router.delete("/users/:id", isAuthenticated, async (req, res, next) => {
       throw err;
     }
 
-    if (Number(req.params.id) === userId || hasHigherPermission(row.permissions, user.permissions)) {
+    if (Number(req.params.id) === userId || hasHigherPermission(permissions, user.permissions)) {
       const err = new Error("You can't delete this");
       err.status = 403;
       throw err;
@@ -210,22 +207,36 @@ router.delete("/users/:id", isAuthenticated, async (req, res, next) => {
     });
 
     await new Promise((resolve, reject) => {
-      db.run("DELETE FROM files WHERE owner = ?", [req.params.id], err => err ? reject(err) : resolve());
+      db.run("DELETE FROM files WHERE owner = ?",
+        [req.params.id],
+        (err) => err ? reject(err) : resolve()
+      );
     });
 
     await new Promise((resolve, reject) => {
-      db.run("DELETE FROM users WHERE id = ?", [req.params.id], err => err ? reject(err) : resolve());
+      db.run("DELETE FROM users WHERE id = ?",
+        [req.params.id],
+        (err) => err ? reject(err) : resolve()
+      );
     });
 
     await new Promise((resolve, reject) => {
       db.run("COMMIT",
-          (err) => err ? reject(err) : resolve(isTransactionActive = false)
+        (err) => err ? reject(err) : resolve(isTransactionActive = false)
       );
     });
 
     res.sendStatus(200);
   } catch (err) {
-    next(err);
+    if (isTransactionActive) {
+      await new Promise((resolve, _) => {
+        db.run("ROLLBACK",
+          (rollbackErr) => rollbackErr ? console.error(rollbackErr) : resolve(err)
+        );
+      });
+    }
+
+    res.sendStatus(err.status || 500);
   }
 });
 

@@ -16,7 +16,7 @@
 </div>
 
 <script>
-  const successMessage = document.getElementById('message');
+  const successMessage = document.getElementById("message");
 
   function updateUser() {
     successMessage.innerText = "";
@@ -26,7 +26,7 @@
       return;
     }
 
-    const permissionsList = Array.from(document.getElementById('permissions').children).filter(child => child.tagName === 'INPUT').map(input => {
+    const permissionsList = Array.from(document.getElementById("permissions").children).filter(child => child.tagName === "INPUT").map(input => {
       return {
         name: input.name,
         hasPermission: input.checked

@@ -7,7 +7,7 @@ const { formatFileSize } = require(shared.files.files);
 
 router.path = "/api";
 
-router.get("/files", isNotFromShortener, isAuthenticated, async (req, res, next) => {
+router.get("/files", isNotFromShortener, isAuthenticated, async (req, res) => {
   try {
     const { db } = require(shared.files.database);
 
@@ -41,7 +41,7 @@ router.get("/files", isNotFromShortener, isAuthenticated, async (req, res, next)
 
     res.json(formattedFiles);
   } catch (err) {
-    next(err);
+    res.json({ error: err.message }).status(err.status || 500);
   }
 });
 

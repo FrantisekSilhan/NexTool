@@ -1,6 +1,6 @@
 const shared = require("../shared");
 const sqlite3 = require("sqlite3").verbose();
-// const migrationScripts = require("./migrations/01-add-language");
+// const migrationScripts = require("./migrations/02-add-permissions.js");
 
 const dbPath = shared.path.join(shared.paths.data, shared.config.dbPath);
 

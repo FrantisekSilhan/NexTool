@@ -222,14 +222,14 @@ main.center {
   margin-bottom: 1em;
 }
 
-.list__item {
+.flex-wrapper {
   display: flex;
   margin: .25em 0;
   gap: 0px;
   transition: gap .2s linear;
 }
 
-.list__item--fgap {
+.flex-wrapper--gap {
   gap: 1em;
 }
 

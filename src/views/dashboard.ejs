@@ -12,7 +12,7 @@
   <h2 class="title title--s4">Files</h2>
   <ul class="list">
     <% files.map((file, index) => { %>
-      <li class="list__item">
+      <li class="list__item flex-wrapper">
         <div class="delete-btns-wrapper">
           <a class="icon icon--action-delete-open" tabIndex="0" role="button" aria-label="Delete file">
             <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 512 512">
@@ -46,7 +46,7 @@
   <h2 class="title title--s4">Shortened URLs</h2>
   <ul class="list">
     <% urls.map((url, index) => { %>
-      <li class="list__item">
+      <li class="list__item flex-wrapper">
         <div class="delete-btns-wrapper">
           <a class="icon icon--action-delete-open" tabIndex="0" role="button" aria-label="Delete url">
             <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 512 512">
@@ -80,7 +80,7 @@
   document.querySelectorAll(".icon--action-delete-open").forEach(btn => {
     btn.addEventListener("click", () => {
       btn.nextElementSibling.classList.toggle("delete-btns--open");
-      btn.parentElement.parentElement.classList.toggle("list__item--fgap");
+      btn.parentElement.parentElement.classList.toggle("flex-wrapper--gap");
     });
   });
 
@@ -118,11 +118,12 @@
       }
     });
   });
-
 </script>
 
 <script>
 let filesLength = Number("<%= files.length %>");
+
+// TODO: Refactor this and replace observer with a button
 
 let callback = (entries, observer) => {
   if (entries[0].isIntersecting) {
@@ -135,6 +136,7 @@ let callback = (entries, observer) => {
         data.map((file, index) => {
           let li = document.createElement("li");
           li.classList.add("list__item");
+          li.classList.add("flex-wrapper");
           li.innerHTML = `<div class="delete-btns-wrapper">
     <a class="icon icon--action-delete-open" tabIndex="0" role="button" aria-label="Delete file">
       <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 512 512">
@@ -143,7 +145,7 @@ let callback = (entries, observer) => {
       </svg>
     </a>
     <div class="delete-btns">
-      <a class="icon icon--success" data-href="${file.fileName}">
+      <a class="icon icon--success" data-href="${file.fileName}" data-type="file">
         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 512 512">
           <path d="M432 64l-240 240-112-112-80 80 192 192 320-320z"></path>
         </svg>
@@ -157,6 +159,7 @@ let callback = (entries, observer) => {
   </div>
   <p><a class="link" target="_blank" href="/f/${file.fileName}">${file.displayName}</a> ${file.fileSize} ${file.mimeType} ${file.md5}</p>`
           list.appendChild(li);
+          
           if (index === data.length - 6) {
             let scroll = document.createElement("li");
             scroll.classList.add("scroll");
