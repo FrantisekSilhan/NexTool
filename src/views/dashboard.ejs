@@ -38,57 +38,7 @@
   </ul>
 </div>
 
-<script>
-  document.querySelectorAll(".icon--action-delete-open").forEach(btn => {
-    btn.addEventListener("click", () => {
-      btn.nextElementSibling.classList.toggle("delete-btns--open");
-      btn.parentElement.parentElement.classList.toggle("flex-wrapper--gap");
-    });
-  });
-
-  document.querySelectorAll(".icon--action-delete-close").forEach(btn => {
-    btn.addEventListener("click", () => {
-      btn.parentElement.classList.remove("delete-btns--open");
-    });
-  });
-
-  document.querySelectorAll(".icon--success").forEach(deleteBtn => {
-    deleteBtn.addEventListener("click", (event) => {
-      event.preventDefault();
-      if (deleteBtn.dataset.type === "file") {
-        fetch(`/f/${deleteBtn.dataset.data}`, {
-          method: "DELETE",
-          headers: {
-            "X-CSRF-Token": "<%= csrfToken %>"
-          },
-        }).then((response) => {
-          if (response.ok) {
-            deleteBtn.closest(".list__item").remove();
-          }
-        });
-      } else if (deleteBtn.dataset.type === "url") {
-        fetch(`/shortener/${deleteBtn.dataset.data}`, {
-          method: "DELETE",
-          headers: {
-            "X-CSRF-Token": "<%= csrfToken %>"
-          },
-        }).then((response) => {
-          if (response.ok) {
-            deleteBtn.closest(".list__item").remove();
-          } else {
-            const error = document.createElement("p");
-            error.classList.add("error");
-            error.innerText = "Error has occurred";
-            deleteBtn.closest(".flex-wrapper").appendChild(error);
-            setTimeout(() => {
-              error.remove();
-            }, 3000);
-          }
-        });
-      }
-    });
-  });
-</script>
+<%- include("components/deleteButtonsScript") %>
 
 <script>
 let filesLength = Number("<%= files.length %>");

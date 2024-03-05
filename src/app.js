@@ -83,6 +83,13 @@ shared.fs.readdirSync(shared.paths.routes).forEach(file => {
 const router = require(shared.path.join(shared.paths.routes, "index.js"));
 app.use(router.path, router);
 
+shared.fs.readdirSync(shared.paths.api).forEach(file => {
+  if (file.endsWith(".js")) {
+    const router = require(shared.path.join(shared.paths.api, file));
+    app.use(`/api${router.path}`, router);
+  }
+});
+
 app.use((_, __, next ) => {
   const err = new Error("Not Found");
   err.status = 404;

@@ -31,16 +31,27 @@ function getUserPermissions(permissions) {
 }
 
 function hasHigherPermission(userPermissions, otherPermissions) {
-  if (hasPermission(userPermissions, Permission.Owner)) return false;
-  if (hasPermission(otherPermissions, Permission.Owner)) return true;
-  if (hasPermission(userPermissions, Permission.Admin)) return false;
-  return hasPermission(otherPermissions, Permission.Admin);
+  return getHighestPermission(userPermissions) > getHighestPermission(otherPermissions);
 }
 
+function getHighestPermission(userPermissions) {
+  userPermissions = BigInt(userPermissions);
+
+  let highestPermissionValue = 0n;
+
+  for (const value of Object.values(Permission)) {
+      if ((userPermissions & value) === value && value > highestPermissionValue) {
+          highestPermissionValue = value;
+      }
+  }
+
+  return highestPermissionValue;
+}
 module.exports = {
   Permission,
   hasPermission,
   getUserPermissions,
   getPermissionNames,
   hasHigherPermission,
+  getHighestPermission,
 }

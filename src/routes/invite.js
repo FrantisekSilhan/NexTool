@@ -11,7 +11,8 @@ router.path = "/invite";
 router.get("/", isNotFromShortener, isAuthenticated, async (req, res, next) => {
   const { db } = require(shared.files.database);
 
-  let isTransactionActive = false;
+  const errorMessage = req.session.errorMessage;
+  delete req.session.errorMessage;
 
   try {
     const userId = req.session.userId;
@@ -23,16 +24,8 @@ router.get("/", isNotFromShortener, isAuthenticated, async (req, res, next) => {
       );
     });
 
-    res.render("invite", { invites });
+    res.render("invite", { invites, errorMessage });
   } catch (err) {
-    if (isTransactionActive) {
-      await new Promise((resolve, _) => {
-        db.run("ROLLBACK",
-          (rollbackErr) => rollbackErr ? console.error(rollbackErr) : resolve(err)
-        );
-      });
-    }
-
     next(err);
   }
 });
@@ -40,6 +33,7 @@ router.get("/", isNotFromShortener, isAuthenticated, async (req, res, next) => {
 router.post("/", isNotFromShortener, isAuthenticated, async (req, res, next) => {
   const { db } = require(shared.files.database);
 
+  let redirectBack = false;
   let isTransactionActive = false;
 
   try {
@@ -54,6 +48,7 @@ router.post("/", isNotFromShortener, isAuthenticated, async (req, res, next) => 
     if (!hasPermission(row.permissions, Permission.CreateInvite)) {
       const err = new Error("You don't have permission to create invites");
       err.status = 403;
+      redirectBack = true;
       throw err;
     }
 
@@ -87,6 +82,11 @@ router.post("/", isNotFromShortener, isAuthenticated, async (req, res, next) => 
           (rollbackErr) => rollbackErr ? console.error(rollbackErr) : resolve(err)
         );
       });
+    }
+
+    if (redirectBack) {
+      req.session.errorMessage = err.message;
+      return res.redirect("/invite");
     }
 
     next(err);

@@ -85,7 +85,7 @@
   language.value = lang === "" ? "none" : lang;
 
   language.addEventListener("change", () => {
-    fetch(`/f/<%= fileName %>?language=${language.value}`, {
+    fetch(`/api/files/<%= fileName %>?language=${language.value}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -100,7 +100,7 @@
   const deleteBtnOpen = document.getElementById("delete-btn-open");
   const deleteBtnClose = document.getElementById("delete-btn-close");
   deleteBtn.addEventListener("click", () => {
-    fetch(`/f/<%= fileName %>`, {
+    fetch(`/api/files/<%= fileName %>`, {
       method: "DELETE",
       headers: {
         "X-CSRF-Token": "<%= csrfToken %>"

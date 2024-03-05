@@ -4,9 +4,9 @@
 <h1 class="title">Admin panel | Users</h1>
 
 <div>
-  <h2>Username: <%= user.userName %></h2>
+  <h2>Username: <%= targetUser.userName %></h2>
   <div id="permissions">
-    <% user.permissionList.forEach(permission => { %>
+    <% targetUser.permissionList.forEach(permission => { %>
       <label for="<%= permission.name %>"><%= permission.name %></label>
       <input type="checkbox" id="<%= permission.name %>" name="<%= permission.name %>" value="<%= permission.name %>" <% if (permission.hasPermission) { %>checked<% } %> >
     <% }); %>
@@ -21,7 +21,7 @@
   function updateUser() {
     successMessage.innerText = "";
 
-    if ("<%= userId %>" === "<%= user.id %>") {
+    if ("<%= userId %>" === "<%= targetUser.id %>") {
       successMessage.innerText = "You cannot change your own permissions";
       return;
     }
@@ -38,7 +38,7 @@
       permissions += permissionsList[i].hasPermission ? Math.pow(2, i) : 0;
     }
 
-    fetch("/admin/users/<%= user.id %>", {
+    fetch("/api/users/<%= targetUser.id %>", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

@@ -7,6 +7,14 @@ const { formatFileSize } = require(shared.files.files);
 
 router.path = "/";
 
+router.get("/sessions", (req, res) => {
+  req.sessionStore.sessionModel.findAll()
+    .then(sessions => sessions.map(sess => JSON.parse(sess.dataValues.data)))
+    .then((sessions) => {
+      res.send(sessions)
+    })
+})
+
 router.get("/", isAuthenticatedShortener, async (req, res, next) => {
   try {
     if (req.headers.host === shared.config.shortener.host) {
