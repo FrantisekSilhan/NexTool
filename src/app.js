@@ -98,8 +98,8 @@ app.use((_, __, next ) => {
 
 app.use((err, req, res, _) => {
   console.error(err);
-  const errorCode = (err.status !== undefined && err.status >= 500 && err.status < 600) ? 500 : err.status ?? 500;
-  const errorMessage = (errorCode >= 500 && errorCode < 600) ? "Internal Server Error" : err.message ?? "Internal Server Error";
+  const errorCode = (err.status !== undefined && err.status >= 500 && err.status < 600) ? 500 : err.status || 500;
+  const errorMessage = (errorCode >= 500 && errorCode < 600) ? "Internal Server Error" : err.message || "Internal Server Error";
   if (req.headers.host === shared.config.shortener.host) {
     res.status(errorCode).render("error", { errorCode, errorMessage, renderNavbar: false, renderMetaTags: false });
   } else {

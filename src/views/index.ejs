@@ -20,7 +20,7 @@ let filesLength = Number("<%= files.length %>");
 let callback = (entries, observer) => {
   if (entries[0].isIntersecting) {
     fetch(`/api/files?offset=${filesLength}&isOwner=false`)
-      .then(response => response.json())
+      .then(res => res.json())
       .then(data => {
         let list = document.querySelector(".list");
         filesLength += data.length;

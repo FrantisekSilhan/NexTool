@@ -51,7 +51,11 @@
       if (res.ok) {
         successMessage.innerText = "User updated successfully";
       } else {
-        successMessage.innerText = res.statusText;
+        res.json().then(response => {
+          const errorMessage = response.error || "An error occurred";
+          successMessage.classList.add("error");
+          successMessage.innerText = errorMessage;
+        });
       }
     }).catch(err => {
       console.error(err);

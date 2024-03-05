@@ -41,7 +41,10 @@ router.get("/", isNotFromShortener, isAuthenticated, async (req, res) => {
 
     res.json(formattedFiles);
   } catch (err) {
-    res.json({ error: err.message }).status(err.status || 500);
+    const errorCode = (err.status !== undefined && err.status >= 500 && err.status < 600) ? 500 : err.status || 500;
+    const errorMessage = (errorCode >= 500 && errorCode < 600) ? "Internal Server Error" : err.message || "Internal Server Error";
+
+    res.status(errorCode).json({ error: errorMessage });
   }
 });
 
@@ -101,7 +104,10 @@ router.delete("/:file", isAuthenticated, async (req, res) => {
       });
     }
     
-    res.sendStatus(err.status || 500);
+    const errorCode = (err.status !== undefined && err.status >= 500 && err.status < 600) ? 500 : err.status || 500;
+    const errorMessage = (errorCode >= 500 && errorCode < 600) ? "Internal Server Error" : err.message || "Internal Server Error";
+
+    res.status(errorCode).json({ error: errorMessage });
   }
 });
 
@@ -169,7 +175,10 @@ router.patch("/:file", isAuthenticated, async (req, res) => {
 
     res.sendStatus(204);
   } catch (err) {
-    res.sendStatus(err.status || 500);
+    const errorCode = (err.status !== undefined && err.status >= 500 && err.status < 600) ? 500 : err.status || 500;
+    const errorMessage = (errorCode >= 500 && errorCode < 600) ? "Internal Server Error" : err.message || "Internal Server Error";
+
+    res.status(errorCode).json({ error: errorMessage });
   }
 });
 

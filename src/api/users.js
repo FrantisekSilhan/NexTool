@@ -81,9 +81,11 @@ router.patch("/:id", isAuthenticated, isAdminOrHigher, async (req, res) => {
         );
       });
     }
-    console.error(err);
 
-    res.sendStatus(err.status || 500);
+    const errorCode = (err.status !== undefined && err.status >= 500 && err.status < 600) ? 500 : err.status || 500;
+    const errorMessage = (errorCode >= 500 && errorCode < 600) ? "Internal Server Error" : err.message || "Internal Server Error";
+
+    res.status(errorCode).json({ error: errorMessage });
   }
 });
 
@@ -157,7 +159,10 @@ router.delete("/:id", isAuthenticated, isAdminOrHigher, async (req, res) => {
       });
     }
 
-    res.sendStatus(err.status || 500);
+    const errorCode = (err.status !== undefined && err.status >= 500 && err.status < 600) ? 500 : err.status || 500;
+    const errorMessage = (errorCode >= 500 && errorCode < 600) ? "Internal Server Error" : err.message || "Internal Server Error";
+
+    res.status(errorCode).json({ error: errorMessage });
   }
 });
 

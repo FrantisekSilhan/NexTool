@@ -23,17 +23,25 @@
             headers: {
               "X-CSRF-TOKEN": "<%= csrfToken %>"
             }
-          }).then((response) => {
-            if (response.ok) {
-              deleteBtn.closest(".table__row").remove();
+          }).then((res) => {
+            if (res.ok) {
+              if (deleteBtn.closest(".table__row") === null) {
+                window.location.href = "/dashboard";
+              } else {
+                deleteBtn.closest(".table__row").remove();
+              }
             } else {
-              const error = document.createElement("p");
-              error.classList.add("error");
-              error.innerText = "Error has occurred";
-              deleteBtn.closest(".flex-wrapper").appendChild(error);
-              setTimeout(() => {
-                error.remove();
-              }, 3000);
+              res.json().then(response => {
+                const errorMessage = response.error || "An error occurred";
+
+                const error = document.createElement("p");
+                error.classList.add("error");
+                error.innerText = errorMessage;
+                deleteBtn.closest(".flex-wrapper").appendChild(error);
+                setTimeout(() => {
+                  error.remove();
+                }, 3000);
+              });
             }
           });
           break;
@@ -44,9 +52,21 @@
             headers: {
               "X-CSRF-Token": "<%= csrfToken %>"
             },
-          }).then((response) => {
-            if (response.ok) {
-              deleteBtn.closest(".list__item").remove();
+          }).then((res) => {
+            if (res.ok) {
+              deleteBtn.closest(".flex-wrapper").remove();
+            } else {
+              res.json().then(response => {
+                const errorMessage = response.error || "An error occurred";
+
+                const error = document.createElement("p");
+                error.classList.add("error");
+                error.innerText = errorMessage;
+                deleteBtn.closest(".flex-wrapper").appendChild(error);
+                setTimeout(() => {
+                  error.remove();
+                }, 3000);
+              });
             }
           });
           break;
@@ -57,17 +77,21 @@
             headers: {
               "X-CSRF-Token": "<%= csrfToken %>"
             },
-          }).then((response) => {
-            if (response.ok) {
+          }).then((res) => {
+            if (res.ok) {
               deleteBtn.closest(".list__item").remove();
             } else {
-              const error = document.createElement("p");
-              error.classList.add("error");
-              error.innerText = "Error has occurred";
-              deleteBtn.closest(".flex-wrapper").appendChild(error);
-              setTimeout(() => {
-                error.remove();
-              }, 3000);
+              res.json().then(response => {
+                const errorMessage = response.error || "An error occurred";
+
+                const error = document.createElement("p");
+                error.classList.add("error");
+                error.innerText = errorMessage;
+                deleteBtn.closest(".flex-wrapper").appendChild(error);
+                setTimeout(() => {
+                  error.remove();
+                }, 3000);
+              });
             }
           });
           break;
