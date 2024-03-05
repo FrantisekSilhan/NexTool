@@ -4,7 +4,7 @@ const router = express.Router();
 const { isAuthenticated, isNotFromShortener } = require(shared.files.middlewares);
 
 const { generateInviteCode } = require(shared.files.invites);
-const {Permission, hasPermission} = require("../permissions");
+const {Permission, hasPermission} = require(shared.files.permissions);
 
 router.path = "/invite";
 

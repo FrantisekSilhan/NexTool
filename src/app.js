@@ -25,7 +25,7 @@ const app = express();
 const cookieParser = require("cookie-parser");
 const { sessionMiddleware } = require(shared.files.middlewares);
 const csrf = require("csurf");
-const {hasPermission, Permission} = require("./permissions");
+const { hasPermission, Permission } = require(shared.files.permissions);
 const csrfProtection = csrf({ cookie: true });
 
 app.set("view engine", "ejs");

@@ -7,7 +7,7 @@ const crypto = require("crypto");
 const { generateRandomFileName } = require(shared.files.files);
 const sharp = require("sharp");
 const ffmpeg = require("fluent-ffmpeg");
-const {hasPermission, Permission} = require("../permissions");
+const {hasPermission, Permission} = require(shared.files.permissions);
 
 router.path = "/upload";
 

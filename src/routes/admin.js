@@ -2,7 +2,7 @@ const shared = require("../../shared");
 const express = require("express");
 const router = express.Router();
 const { isAuthenticated } = require(shared.files.middlewares);
-const {hasPermission, Permission, getUserPermissions, getPermissionNames, hasHigherPermission} = require("../permissions");
+const {hasPermission, Permission, getUserPermissions, getPermissionNames, hasHigherPermission} = require(shared.files.permissions);
 
 router.path = "/admin";
 

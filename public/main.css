@@ -225,8 +225,12 @@ main.center {
 .flex-wrapper {
   display: flex;
   margin: .25em 0;
-  gap: 0px;
+  align-items: center;
   transition: gap .2s linear;
+}
+
+.flex-wrapper .error {
+  margin: 0;
 }
 
 .flex-wrapper--gap {
@@ -268,6 +272,9 @@ main.center {
   max-height: 100%;
   box-sizing: border-box;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .file-wrapper .title {

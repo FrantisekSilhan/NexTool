@@ -1,4 +1,4 @@
-const shared = require("../shared");
+const shared = require("../../shared");
 const Permission = {
   Upload: 1n << 0n,
   IncludeIndex: 1n << 1n,
