@@ -340,6 +340,7 @@ span.hljs-string, span.hljs-attr {
   top: var(--navbar-height);
   left: 0;
   position: absolute;
+  z-index: 100;
 }
 
 .navbar__menu {
@@ -364,6 +365,24 @@ span.hljs-string, span.hljs-attr {
 
 .navbar__link:hover, .navbar__link:focus-visible {
   background-color: hsl(var(--secondary) / .15);
+}
+
+.navbar__hamburger {
+  width: var(--navbar-height);
+  height: var(--navbar-height);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.navbar__hamburger__line {
+  display: block;
+  width: 75%;
+  height: 2px;
+  margin: 5px 0;
+  background-color: hsl(var(--accent));
+  transition: transform .2s ease-in-out;
 }
 
 .mono-select-all {
@@ -437,6 +456,78 @@ span.hljs-string, span.hljs-attr {
     min-height: unset;
     transform: none;
     margin: 0;
+  }
+
+  .navbar {
+    flex-direction: column;
+    background-color: hsl(var(--background));
+    height: auto;
+    max-height: var(--navbar-height);
+    transition: max-height .2s ease-in-out;
+    position: fixed;
+    left: 0;
+    right: 0;
+  }
+
+  main {
+    padding-top: calc(var(--navbar-height) + 2px);
+  }
+  
+  .navbar__menu {
+    flex-direction: column;
+    width: 100%;
+    transform: translateY(-100%);
+    transition: all .2s ease-in-out;
+    position: absolute;
+    top: var(--navbar-height);
+    z-index: 99;
+    background-color: hsl(var(--background));
+  }
+
+  .navbar__link {
+    padding: 0;
+    justify-content: center;
+  }
+
+  .navbar__brand {
+    padding: 0 1em;
+  }
+
+  .navbar__item {
+    text-align: center;
+  }
+
+  .navbar__hamburger {
+    display: flex;
+    overflow: hidden;
+  }
+
+  .navbar__top {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    background-color: hsl(var(--background));
+    z-index: 100;
+  }
+
+  .navbar--open .navbar__menu {
+    transform: translateY(2px);
+  }
+
+  .navbar--open {
+    max-height: 100vh;
+  }
+
+  .navbar--open .navbar__hamburger__line:nth-child(1) {
+    transform: translateY(calc(var(--navbar-height) / 4)) rotate(135deg);
+  }
+  
+  .navbar--open .navbar__hamburger__line:nth-child(2) {
+    transform: translate(150%);
+  }
+  
+  .navbar--open .navbar__hamburger__line:nth-child(3) {
+    transform: translateY(calc(var(--navbar-height) / -4)) rotate(-135deg);
   }
 }
 

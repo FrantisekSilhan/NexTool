@@ -1,5 +1,12 @@
 <nav class="navbar">
-  <a class="navbar__brand navbar__link" href="/">NexTool</a>
+  <div class="navbar__top">
+    <a class="navbar__brand navbar__link" href="/">NexTool</a>
+    <div id="hamburger" class="navbar__hamburger" tabindex="0" role="button" aria-label="Toggle navbar menu">
+      <span class="navbar__hamburger__line"></span>
+      <span class="navbar__hamburger__line"></span>
+      <span class="navbar__hamburger__line"></span>
+    </div>
+  </div>
   <menu class="navbar__menu">
     <% if (user) { %>
       <% if (isAdmin) { %>
@@ -16,3 +23,12 @@
     <% } %>
   </menu>
 </nav>
+
+<script>
+  const hamburger = document.getElementById("hamburger");
+  const menu = document.querySelector(".navbar");
+
+  hamburger.addEventListener("click", () => {
+    menu.classList.toggle("navbar--open");
+  });
+</script>

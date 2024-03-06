@@ -44,7 +44,7 @@
 </form>
 
 <style>
-  #urlLenWrapper {
+  .relative {
     position: relative;
   }
   #urlLen {
@@ -70,6 +70,7 @@
   const visits = document.getElementById("visits");
   const url = document.getElementById("url");
   const urlLen = document.getElementById("urlLen");
+  const urlLenWrapper = document.getElementById("urlLenWrapper");
 
   useCustomUrl.value = "off";
   useVisits.value = "off";
@@ -98,8 +99,10 @@
   url.addEventListener("input", () => {
     const len = "<%= urlLen %>" - url.value.length;
     if (len < 128) {
+      urlLenWrapper.classList.add("relative");
       urlLen.textContent = len;
     } else {
+      urlLenWrapper.classList.remove("relative");
       urlLen.textContent = "";
     }
   });
