@@ -20,7 +20,7 @@ The project is a web application built using Node.js and Express framework. It p
 - [x] Add file embed for discord
 - [x] Add image compression
 - [x] Add syntax highlighting
-- [ ] Add responsive navbar style for mobile
+- [x] Add responsive navbar style for mobile
 - [ ] Add files filter (mimeType, file name, size, ...)
 
 ## Getting Started

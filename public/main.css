@@ -351,6 +351,11 @@ span.hljs-string, span.hljs-attr {
   list-style: none;
   margin: 0;
   padding: 0;
+  border-left: 1px solid hsl(var(--secondary) / .5);
+}
+
+.navbar__brand {
+  border-right: 1px solid hsl(var(--secondary) / .5);
 }
 
 .navbar__link {
@@ -432,6 +437,10 @@ span.hljs-string, span.hljs-attr {
   margin-bottom: 1em;
 }
 
+*[role="button"] {
+  cursor: pointer;
+}
+
 @media (max-width: 768px) {
   :root {
     --font-r: 14px;
@@ -461,12 +470,14 @@ span.hljs-string, span.hljs-attr {
   .navbar {
     flex-direction: column;
     background-color: hsl(var(--background));
-    height: auto;
+    height: 100vh;
     max-height: var(--navbar-height);
     transition: max-height .2s ease-in-out;
     position: fixed;
     left: 0;
     right: 0;
+    position: absolute;
+    z-index: 100;
   }
 
   main {
@@ -487,6 +498,7 @@ span.hljs-string, span.hljs-attr {
   .navbar__link {
     padding: 0;
     justify-content: center;
+    background-color: hsl(var(--background));
   }
 
   .navbar__brand {
@@ -495,6 +507,8 @@ span.hljs-string, span.hljs-attr {
 
   .navbar__item {
     text-align: center;
+    border: none;
+    border-bottom: 1px solid hsl(var(--secondary) / .5);
   }
 
   .navbar__hamburger {

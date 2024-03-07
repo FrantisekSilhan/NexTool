@@ -17,22 +17,22 @@
       <span id="urlLen"></span>
     </div>
 
+    <label class="form__label" for="customUrl">Custom URL:</label>
+    <input class="form__input" type="text" id="customUrl" name="customUrl" autocomplete="off" value="<%= formData.customUrl %>">
     <div class="form__checkbox-wrapper">
       <label class="form__label" for="useCustomUrl">Use Custom URL</label>
       <input class="form__checkbox" type="checkbox" id="useCustomUrl" name="useCustomUrl" value="<%= formData.useCustomUrl %>">
     </div>
-    <label class="form__label" for="customUrl">Custom URL:</label>
-    <input class="form__input" type="text" id="customUrl" name="customUrl" autocomplete="off" value="<%= formData.customUrl %>">
 
-    <div class="form__checkbox-wrapper">
-      <label class="form__label" for="useVisits">Remove after N visits</label>
-      <input class="form__checkbox" type="checkbox" id="useVisits" name="useVisits" value="<%= formData.useVisits %>">
-    </div>
     <label class="form__label" for="visits">Custom URL:</label>
     <div class="form__input-number-wrapper">
       <input class="form__input" type="number" id="visits" name="visits" autocomplete="off" value="<%= formData.visits %>">
       <div id="numberUp" class="form__input-number form__input-number-up"></div>
       <div id="numberDown" class="form__input-number form__input-number-down"></div>
+    </div>
+    <div class="form__checkbox-wrapper">
+      <label class="form__label" for="useVisits">Remove after N visits</label>
+      <input class="form__checkbox" type="checkbox" id="useVisits" name="useVisits" value="<%= formData.useVisits %>">
     </div>
   </div>
 
@@ -44,7 +44,7 @@
 </form>
 
 <style>
-  .relative {
+  #urlLenWrapper {
     position: relative;
   }
   #urlLen {
@@ -70,7 +70,6 @@
   const visits = document.getElementById("visits");
   const url = document.getElementById("url");
   const urlLen = document.getElementById("urlLen");
-  const urlLenWrapper = document.getElementById("urlLenWrapper");
 
   useCustomUrl.value = "off";
   useVisits.value = "off";
@@ -99,10 +98,8 @@
   url.addEventListener("input", () => {
     const len = "<%= urlLen %>" - url.value.length;
     if (len < 128) {
-      urlLenWrapper.classList.add("relative");
       urlLen.textContent = len;
     } else {
-      urlLenWrapper.classList.remove("relative");
       urlLen.textContent = "";
     }
   });
