@@ -10,7 +10,7 @@
     </a>
     <h1 class="title title--s4"><%= downloadName %></h1>
     <% if (isOwner) { %>
-      <div class="flex-wrapper flex-wrapper--gap">
+      <div class="flex-wrapper">
         <%- include("components/deleteButtons", { data: fileName, type: "file" }) %>
       </div>
     <% } %>

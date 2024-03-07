@@ -2,7 +2,9 @@
   document.querySelectorAll(".icon--action-delete-open").forEach(btn => {
     btn.addEventListener("click", () => {
       btn.nextElementSibling.classList.toggle("delete-btns--open");
-      btn.parentElement.parentElement.classList.toggle("flex-wrapper--gap");
+      if (!btn.parentElement.parentElement.classList.contains("flex-wrapper--no-gap")) {
+        btn.parentElement.parentElement.classList.toggle("flex-wrapper--gap");
+      }
     });
   });
 

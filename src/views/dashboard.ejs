@@ -12,7 +12,7 @@
   <h2 class="title title--s4">Files</h2>
   <ul class="list">
     <% files.map((file, index) => { %>
-      <li class="list__item flex-wrapper">
+      <li class="list__item flex-wrapper flex-wrapper--no-gap">
         <%- include("components/deleteButtons", { data: file.fileName, type: "file" }) %>
         <p><a class="link" target="_blank" href="/f/<%= file.fileName %>"><%= file.displayName %></a> <%= file.fileSize %> <%= file.mimeType %> <%= file.md5 %></p>
       </li>
@@ -27,7 +27,7 @@
   <h2 class="title title--s4">Shortened URLs</h2>
   <ul class="list">
     <% urls.map((url, index) => { %>
-      <li class="list__item flex-wrapper">
+      <li class="list__item flex-wrapper flex-wrapper--no-gap">
         <%- include("components/deleteButtons", { data: url.key, type: "url" }) %>
         <p><a class="link" target="_blank" href="<%= shortenerBaseUrl %><%= url.key %>"><%= url.key %></a> <span><%= url.url %></span> Visits: <%= url.visitCount %> MaxVisits: <%= url.maxVisitCount ?? "no limit" %></p>
       </li>

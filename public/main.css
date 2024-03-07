@@ -410,6 +410,10 @@ span.hljs-string, span.hljs-attr {
   transition: width .2s ease-in-out;
 }
 
+.flex-wrapper--no-gap .delete-btns, .flex-wrapper--no-gap .delete-btns-wrapper {
+  gap: 0;
+}
+
 .delete-btns {
   width: 0px;
 }
