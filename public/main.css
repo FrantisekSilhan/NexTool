@@ -366,6 +366,7 @@ span.hljs-string, span.hljs-attr {
   padding: 0 1em;
   height: var(--navbar-height);
   text-decoration: none;
+  outline: none;
 }
 
 .navbar__link:hover, .navbar__link:focus-visible {
@@ -379,6 +380,12 @@ span.hljs-string, span.hljs-attr {
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  border-left: 1px solid hsl(var(--secondary) / .5);
+}
+
+.navbar__hamburger:hover, .navbar__hamburger:focus-visible {
+  background-color: hsl(var(--secondary) / .15);
+  outline: none;
 }
 
 .navbar__hamburger__line {
@@ -478,6 +485,10 @@ span.hljs-string, span.hljs-attr {
     right: 0;
     position: absolute;
     z-index: 100;
+  }
+
+  .navbar__menu--disabled {
+    display: none;
   }
 
   main {
