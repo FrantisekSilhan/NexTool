@@ -56,9 +56,9 @@
     language.appendChild(option);
   });
 
-
-  file.addEventListener("change", function () {
-    var fileName = this.files[0].name;
+  file.addEventListener("change", () => {
+    if (file.files.length === 0) return;
+    const fileName = file.files[0].name;
     document.getElementById("fileName").textContent = fileName ?? "No file selected.";
     document.getElementById("downloadName").value = fileName;
 
@@ -71,7 +71,8 @@
     }
   });
 
-  btn.addEventListener("click", () => {
+  btn.addEventListener("click", (e) => {
+    e.preventDefault();
     file.click();
   });
   btn.addEventListener("keydown", (e) => {
