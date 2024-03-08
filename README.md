@@ -43,7 +43,7 @@ cd NexTool
 npm install
 ```
 
-3. Configure the application as needed, including setting up database connections and environment variables: Rename `env.example` to `.env`. Also check `~/shared.js` and `~/src/config.js`.
+3. Configure the application as needed, including setting up database connections and environment variables: Rename `.env.example` to `.env`. Also check `~/shared.js` and `~/src/config.js`.
 
 4. Run the application:
 
