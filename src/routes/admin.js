@@ -61,7 +61,7 @@ router.get("/", isAuthenticated, isAdminOrHigher, async (req, res, next) => {
             }
             files[userId].files[fileName] = {
               displayName: displayName,
-              fileSize: fileSize,
+              fileSize: formatFileSize(fileSize),
               md5: md5,
               mimeType: mimeType
             };
