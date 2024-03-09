@@ -49,7 +49,7 @@ router.get("/", isNotFromShortener, isAuthenticated, async (req, res) => {
   }
 });
 
-router.delete("/:file", isAuthenticated, async (req, res) => {
+router.delete("/:file", isNotFromShortener, isAuthenticated, async (req, res) => {
   const { db } = require(shared.files.database);
 
   let isTransactionActive = false;
@@ -146,7 +146,7 @@ router.delete("/:file", isAuthenticated, async (req, res) => {
   }
 });
 
-router.patch("/:file", isAuthenticated, async (req, res) => {
+router.patch("/:file", isNotFromShortener, isAuthenticated, async (req, res) => {
   const { db } = require(shared.files.database);
 
   try {

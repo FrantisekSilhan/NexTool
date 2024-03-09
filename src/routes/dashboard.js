@@ -31,7 +31,19 @@ router.get("/", isNotFromShortener, isAuthenticated, async (req, res, next) => {
       );
     });
 
-    res.render("dashboard", { userName: req.session.username, files, urls, shortenerBaseUrl: shared.config.shortener.baseUrl, userId });
+    const invites = await new Promise((resolve, reject) => {
+      db.all(`
+        SELECT i.id, i.invite, i.usedBy, u.username AS usedByUserName
+        FROM invites as i
+        JOIN users u ON i.usedBy = u.id
+        WHERE createdBy = ?
+      `,
+        [userId],
+        (err, rows) => err ? reject(err) : resolve(rows)
+      );
+    });
+
+    res.render("dashboard", { userName: req.session.username, files, urls, shortenerBaseUrl: shared.config.shortener.baseUrl, userId, invites });
   } catch (err) {
     next(err);
   }

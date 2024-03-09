@@ -81,7 +81,32 @@
             },
           }).then((res) => {
             if (res.ok) {
-              deleteBtn.closest(".list__item").remove();
+              deleteBtn.closest(".flex-wrapper").remove();
+            } else {
+              res.json().then(response => {
+                const errorMessage = response.error || "An error occurred";
+
+                const error = document.createElement("p");
+                error.classList.add("error");
+                error.innerText = errorMessage;
+                deleteBtn.closest(".flex-wrapper").appendChild(error);
+                setTimeout(() => {
+                  error.remove();
+                }, 3000);
+              });
+            }
+          });
+          break;
+
+        case "invite":
+          fetch(`/api/invites/${deleteBtn.dataset.data}`, {
+            method: "DELETE",
+            headers: {
+              "X-CSRF-Token": "<%= csrfToken %>"
+            },
+          }).then((res) => {
+            if (res.ok) {
+              deleteBtn.closest(".flex-wrapper").remove();
             } else {
               res.json().then(response => {
                 const errorMessage = response.error || "An error occurred";

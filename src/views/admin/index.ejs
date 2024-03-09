@@ -41,7 +41,7 @@
 <div class="section">
   <h2 class="title title--s4">Files</h2>
   <% for (const userId in files) { %>
-    <h3 class="title title--s5"><%= files[userId].userName %> (<%= userId %>)</h3>
+    <h3 class="title title--s5"><%= files[userId].userName %> (uid: <%= userId %>)</h3>
     
     <ul class="list">
       <% for (const fileName in files[userId].files) { %>
@@ -58,7 +58,7 @@
 <div class="section">
   <h2 class="title title--s4">Shortened URLs</h2>
   <% for (const userId in urls) { %>
-    <h3 class="title title--s5"><%= urls[userId].userName %> (<%= userId %>)</h3>
+    <h3 class="title title--s5"><%= urls[userId].userName %> (uid: <%= userId %>)</h3>
     
     <ul class="list">
       <% for (const id in urls[userId].urls) { %>
@@ -70,6 +70,23 @@
       <% } %>
     </ul>
 <% } %>
+</div>
+
+<div class="section">
+  <h2 class="title title--s4">Invite Codes</h2>
+  <% for (const userId in invites) { %>
+    <h3 class="title title--s5"><%= invites[userId].userName %> (uid: <%= userId %>)</h3>
+    
+    <ul class="list">
+      <% for (const id in invites[userId].invites) { %>
+        <% const invite = invites[userId].invites[id] %>
+        <li class="list__item flex-wrapper flex-wrapper--no-gap">
+          <%- include("../components/deleteButtons", { data: id, type: "invite" }) %>
+          <p><span class="mono-select-all"><%= invite.invite %></span> <%= invite.usedByUserName === null ? "Unused" : invite.usedByUserName %> (uid: <%= invite.usedBy === null ? "Null" : invite.usedBy %>)</p>
+        </li>
+      <% } %>
+    </ul>
+  <% } %>
 </div>
 
 <%- include("../components/deleteButtonsScript") %>

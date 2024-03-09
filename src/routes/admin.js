@@ -1,13 +1,13 @@
 const shared = require("../../shared");
 const express = require("express");
 const router = express.Router();
-const { isAuthenticated, isAdminOrHigher } = require(shared.files.middlewares);
+const { isNotFromShortener, isAuthenticated, isAdminOrHigher } = require(shared.files.middlewares);
 const { getUserPermissions, getPermissionNames, hasHigherPermission } = require(shared.files.permissions);
 const { formatFileSize } = require(shared.files.files);
 
 router.path = "/admin";
 
-router.get("/", isAuthenticated, isAdminOrHigher, async (req, res, next) => {
+router.get("/", isNotFromShortener, isAuthenticated, isAdminOrHigher, async (req, res, next) => {
   try {
     const { db } = require(shared.files.database);
 
@@ -44,7 +44,7 @@ router.get("/", isAuthenticated, isAdminOrHigher, async (req, res, next) => {
         ) AS subquery ON f.owner = subquery.owner
         WHERE subquery.file_count > 0
         ORDER BY f.owner, f.id DESC
-        LIMIT 7 * 5
+        LIMIT 7
       `,
         (err, rows) => {
         if (err) {
@@ -84,7 +84,8 @@ router.get("/", isAuthenticated, isAdminOrHigher, async (req, res, next) => {
           LIMIT 7
         ) AS subquery ON s.owner = subquery.owner
         WHERE subquery.url_count > 0
-        LIMIT 7 * 5
+        ORDER by s.owner, u.id DESC
+        LIMIT 7
       `,
         (err, rows) => {
         if (err) {
@@ -111,15 +112,53 @@ router.get("/", isAuthenticated, isAdminOrHigher, async (req, res, next) => {
       });
     });
 
+    const invites = await new Promise((resolve, reject) => {
+      db.all(`
+        SELECT i.id, i.createdBy, i.invite, i.usedBy, u.userName, u2.userName AS usedByUserName
+        FROM invites AS i
+        JOIN users u ON i.createdBy = u.id
+        LEFT JOIN users u2 ON i.usedBy = u2.id
+        JOIN (
+          SELECT createdBy, COUNT(*) as invite_count
+          FROM invites
+          GROUP BY createdBy
+        ) AS subquery ON i.createdBy = subquery.createdBy
+        WHERE subquery.invite_count > 0
+        ORDER by i.createdBy, i.id DESC
+      `,
+       (err, rows) => {
+        if (err) {
+          reject(err);
+        } else {
+          const invites = {};
+          rows.forEach(inviteRow => {
+            const { id, createdBy, invite, usedBy, userName, usedByUserName } = inviteRow;
+            if (!invites[createdBy]) {
+              invites[createdBy] = {
+                userName: userName,
+                invites: {}
+              };
+            }
+            invites[createdBy].invites[id] = {
+              invite: invite,
+              usedBy: usedBy,
+              usedByUserName: usedByUserName
+            };
+          });
+          resolve(invites);
+        }
+       });
+    });
+
     const permissionList = getPermissionNames();
 
-    res.render("admin/index", { userName: req.session.username, permissionList, users, userId, files, urls, shortenerBaseUrl: shared.config.shortener.baseUrl });
+    res.render("admin/index", { userName: req.session.username, permissionList, users, userId, files, urls, shortenerBaseUrl: shared.config.shortener.baseUrl, invites });
   } catch (err) {
     next(err);
   }
 });
 
-router.get("/users/:id", isAuthenticated, isAdminOrHigher, async (req, res, next) => {
+router.get("/users/:id", isNotFromShortener, isAuthenticated, isAdminOrHigher, async (req, res, next) => {
   try {
     const {db} = require(shared.files.database);
 

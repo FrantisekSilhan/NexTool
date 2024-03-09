@@ -1,12 +1,12 @@
 const shared = require("../../shared");
 const express = require("express");
 const router = express.Router();
-const { isAuthenticated, isAdminOrHigher } = require(shared.files.middlewares);
+const { isNotFromShortener, isAuthenticated, isAdminOrHigher } = require(shared.files.middlewares);
 const { hasHigherPermission, getHighestPermission } = require(shared.files.permissions);
 
 router.path = "/users";
 
-router.patch("/:id", isAuthenticated, isAdminOrHigher, async (req, res) => {
+router.patch("/:id", isNotFromShortener, isAuthenticated, isAdminOrHigher, async (req, res) => {
   const {db} = require(shared.files.database);
 
   let isTransactionActive = false;
@@ -97,7 +97,7 @@ router.patch("/:id", isAuthenticated, isAdminOrHigher, async (req, res) => {
   }
 });
 
-router.delete("/:id", isAuthenticated, isAdminOrHigher, async (req, res) => {
+router.delete("/:id", isNotFromShortener, isAuthenticated, isAdminOrHigher, async (req, res) => {
   const {db} = require(shared.files.database);
 
   let isTransactionActive = false;

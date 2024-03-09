@@ -38,6 +38,25 @@
   </ul>
 </div>
 
+<div class="section">
+  <h2 class="title title--s4">Unused Invite Codes</h2>
+  <ul class="list">
+    <li class="list__item flex-wrapper flex-wrapper--no-gap" style="display: none;"><p class="mono-select-all"></p></li>
+    <% if (invites && invites.length > 0) { %>
+      <% invites.map((invite, index) => { %>
+        <li class="list__item flex-wrapper flex-wrapper--no-gap">
+          <%- include("components/deleteButtons", { data: invite.id, type: "invite" }) %>
+          <p><span class="mono-select-all"><%= invite.invite %></span> <%= invite.usedByUserName === null ? "Unused" : invite.usedByUserName %> (uid: <%= invite.usedBy === null ? "Null" : invite.usedBy %>)</p>
+        </li>
+      <% }) %>
+    <% } else { %>
+      <li class="list__item">
+        <p>No invite codes</p>
+      </li>
+    <% } %>
+  </ul>
+</div>
+
 <%- include("components/deleteButtonsScript") %>
 
 <script>
