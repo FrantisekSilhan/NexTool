@@ -1,6 +1,6 @@
 const migration = `
 ALTER TABLE users
-ADD COLUMN permissions INT DEFAULT 0 NOT NULL;
+ADD COLUMN permissions INT DEFAULT 5 NOT NULL;
 `;
 
 const rollback = `
