@@ -3,6 +3,7 @@ const express = require("express");
 const router = express.Router();
 const { isAuthenticated, isAdminOrHigher } = require(shared.files.middlewares);
 const { getUserPermissions, getPermissionNames, hasHigherPermission } = require(shared.files.permissions);
+const { formatFileSize } = require(shared.files.files);
 
 router.path = "/admin";
 
@@ -20,7 +21,7 @@ router.get("/", isAuthenticated, isAdminOrHigher, async (req, res, next) => {
     });
 
     const users = await new Promise((resolve, reject) => {
-      db.all("SELECT id, userName, permissions FROM users",
+      db.all("SELECT id, userName, permissions FROM users LIMIT 35",
         (err, rows) => err ? reject(err) : resolve(rows)
       );
     });
@@ -30,9 +31,49 @@ router.get("/", isAuthenticated, isAdminOrHigher, async (req, res, next) => {
       user.isHigher = !hasHigherPermission(modifierUser.permissions, user.permissions);
     });
 
+    const files = await new Promise((resolve, reject) => {
+      db.all(`
+        SELECT u.userName, f.owner AS userId, f.fileName, f.displayName, f.fileSize, f.md5, f.mimeType 
+        FROM files f
+        JOIN users u ON f.owner = u.id
+        JOIN (
+          SELECT owner, COUNT(*) as file_count
+          FROM files
+          GROUP BY owner
+          LIMIT 7
+        ) AS subquery ON f.owner = subquery.owner
+        WHERE subquery.file_count > 0
+        ORDER BY f.owner, f.id DESC
+        LIMIT 7 * 5
+      `, (err, rows) => {
+          if (err) {
+            reject(err);
+          } else {
+            const files = {};
+            rows.forEach(file => {
+              const { userId, userName, fileName, displayName, fileSize, md5, mimeType } = file;
+              if (!files[userId]) {
+                files[userId] = {
+                  userName: userName,
+                    files: {}
+                };
+              }
+              files[userId].files[fileName] = {
+                displayName: displayName,
+                fileSize: fileSize,
+                md5: md5,
+                mimeType: mimeType
+              };
+            });
+            console.log(files);
+            resolve(files);
+        }
+      });
+  });
+
     const permissionList = getPermissionNames();
 
-    res.render("admin/index", { userName: req.session.username, permissionList, users, userId });
+    res.render("admin/index", { userName: req.session.username, permissionList, users, userId, files });
   } catch (err) {
     next(err);
   }

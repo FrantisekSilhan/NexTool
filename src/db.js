@@ -44,7 +44,7 @@ const initialize = () => {
         userName TEXT NOT NULL UNIQUE,
         password TEXT NOT NULL,
         salt TEXT NOT NULL,
-        permissions INT DEFAULT 0 NOT NULL
+        permissions INT DEFAULT 5 NOT NULL
       )
     `);
     db.run(`

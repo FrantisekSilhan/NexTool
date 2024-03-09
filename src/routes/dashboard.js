@@ -20,10 +20,9 @@ router.get("/", isNotFromShortener, isAuthenticated, async (req, res, next) => {
       );
     });
 
-    const formattedFiles = files.map(file => ({
-      ...file,
-      fileSize: formatFileSize(file.fileSize)
-    }));
+    files.forEach(file => {
+      file.fileSize = formatFileSize(file.fileSize);
+    });
 
     const urls = await new Promise((resolve, reject) => {
       db.all("SELECT u.id, u.key, u.url, s.visitCount, s.maxVisitCount FROM urls AS u LEFT JOIN urlStats AS s ON u.id = s.id WHERE owner = ? ORDER BY u.id DESC LIMIT 35",
@@ -32,7 +31,7 @@ router.get("/", isNotFromShortener, isAuthenticated, async (req, res, next) => {
       );
     });
 
-    res.render("dashboard", { userName: req.session.username, files: formattedFiles, urls, shortenerBaseUrl: shared.config.shortener.baseUrl, userId });
+    res.render("dashboard", { userName: req.session.username, files, urls, shortenerBaseUrl: shared.config.shortener.baseUrl, userId });
   } catch (err) {
     next(err);
   }
