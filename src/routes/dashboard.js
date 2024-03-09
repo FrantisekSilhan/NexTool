@@ -35,8 +35,8 @@ router.get("/", isNotFromShortener, isAuthenticated, async (req, res, next) => {
       db.all(`
         SELECT i.id, i.invite, i.usedBy, u.username AS usedByUserName
         FROM invites as i
-        JOIN users u ON i.usedBy = u.id
-        WHERE createdBy = ? AND usedBy IS NULL
+        LEFT JOIN users u ON i.usedBy = u.id
+        WHERE createdBy = ?
       `,
         [userId],
         (err, rows) => err ? reject(err) : resolve(rows)

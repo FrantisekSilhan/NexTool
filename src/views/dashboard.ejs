@@ -46,7 +46,7 @@
       <% invites.map((invite, index) => { %>
         <li class="list__item flex-wrapper flex-wrapper--no-gap">
           <%- include("components/deleteButtons", { data: invite.id, type: "invite" }) %>
-          <p><span class="mono-select-all"><%= invite.invite %></span> <%= invite.usedByUserName === null ? "Unused" : invite.usedByUserName %> (uid: <%= invite.usedBy === null ? "Null" : invite.usedBy %>)</p>
+          <p><span class="mono-select-all"><%= invite.invite %></span> <%= invite.usedByUserName === null ? (invite.usedBy === null ? "Unused" : "Deleted") : invite.usedByUserName %> (uid: <%= invite.usedBy === null ? "Null" : invite.usedBy %>)</p>
         </li>
       <% }) %>
     <% } else { %>
