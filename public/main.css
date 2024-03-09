@@ -487,7 +487,6 @@ span.hljs-string, span.hljs-attr {
     position: fixed;
     left: 0;
     right: 0;
-    position: absolute;
     z-index: 100;
   }
 
