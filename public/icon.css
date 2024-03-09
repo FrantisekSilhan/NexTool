@@ -36,3 +36,14 @@
 .icon__path {
   fill: inherit;
 }
+
+.list__item .icon svg {
+  width: 1em;
+  height: 1em;
+}
+
+.list__item .icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

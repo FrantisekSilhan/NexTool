@@ -1,0 +1,75 @@
+<% mainClass = "" %>
+<% page = userName %>
+
+<h1 class="title">Admin panel</h1>
+
+<div class="section">
+  <h2 class="title title--s4">Users</h2>
+  <table class="table">
+    <thead class="table__head">
+      <tr class="table__row">
+        <th class="table__header">Username</th>
+        <% permissionList.forEach(permission => { %>
+          <th class="table__header"><%= permission %></th>
+        <% }); %>
+        <th class="table__header"></th>
+      </tr>
+    </thead>
+    <tbody class="table__body">
+      <% users.forEach(user => { %>
+        <tr class="table__row">
+          <td class="table__data"><%= user.userName %></td>
+          <% user.permissionList.forEach(permission => { %>
+            <td class="table__data"><%= permission.hasPermission ? "Yes" : "No" %></td>
+          <% }); %>
+          <% if (user.id !== userId && !user.isHigher) { %>
+            <td class="table__data">
+              <div class="flex-wrapper">
+                <%- include("../components/deleteButtons", { data: user.id, type: "user" }) %>
+                <a class="btn btn-primary" href="/admin/users/<%= user.id %>">Edit</a>
+              </div>
+            </td>
+          <% } else { %>
+            <td class="table__data"></td>
+          <% } %>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</div>
+
+<div class="section">
+  <h2 class="title title--s4">Files</h2>
+  <% for (const userId in files) { %>
+    <h3 class="title title--s5"><%= files[userId].userName %> (<%= userId %>)</h3>
+    
+    <ul class="list">
+      <% for (const fileName in files[userId].files) { %>
+        <% const file = files[userId].files[fileName] %>
+        <li class="list__item flex-wrapper flex-wrapper--no-gap">
+          <%- include("../components/deleteButtons", { data: fileName, type: "file" }) %>
+          <p><a class="link" target="_blank" href="/f/<%= fileName %>"><%= file.displayName %></a> <%= file.fileSize %> <%= file.mimeType %> <%= file.md5 %></p>
+        </li>
+      <% } %>
+    </ul>
+<% } %>
+</div>
+
+<div class="section">
+  <h2 class="title title--s4">Shortened URLs</h2>
+  <% for (const userId in urls) { %>
+    <h3 class="title title--s5"><%= urls[userId].userName %> (<%= userId %>)</h3>
+    
+    <ul class="list">
+      <% for (const id in urls[userId].urls) { %>
+        <% const url = urls[userId].urls[id] %>
+        <li class="list__item flex-wrapper flex-wrapper--no-gap">
+          <%- include("../components/deleteButtons", { data: url.key, type: "url" }) %>
+          <p><a class="link" target="_blank" href="<%= shortenerBaseUrl %><%= url.key %>"><%= url.key %></a> <span><%= url.url %></span> Visits: <%= url.visitCount %> MaxVisits: <%= url.maxVisitCount ?? "no limit" %></p>
+        </li>
+      <% } %>
+    </ul>
+<% } %>
+</div>
+
+<%- include("../components/deleteButtonsScript") %>

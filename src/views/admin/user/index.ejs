@@ -1,0 +1,65 @@
+<% mainClass = "" %>
+<% page = userName %>
+
+<h1 class="title">Admin panel | Users</h1>
+
+<div>
+  <h2>Username: <%= targetUser.userName %></h2>
+  <div id="permissions">
+    <% targetUser.permissionList.forEach(permission => { %>
+      <label for="<%= permission.name %>"><%= permission.name %></label>
+      <input type="checkbox" id="<%= permission.name %>" name="<%= permission.name %>" value="<%= permission.name %>" <% if (permission.hasPermission) { %>checked<% } %> >
+    <% }); %>
+  </div>
+  <button onclick="updateUser()">Update</button>
+  <p id="message"></p>
+</div>
+
+<script>
+  const successMessage = document.getElementById("message");
+
+  function updateUser() {
+    successMessage.innerText = "";
+
+    if ("<%= userId %>" === "<%= targetUser.id %>") {
+      successMessage.innerText = "You cannot change your own permissions";
+      return;
+    }
+
+    const permissionsList = Array.from(document.getElementById("permissions").children).filter(child => child.tagName === "INPUT").map(input => {
+      return {
+        name: input.name,
+        hasPermission: input.checked
+      }
+    });
+
+    let permissions = 0;
+    for (let i = 0; i < permissionsList.length; i++) {
+      permissions += permissionsList[i].hasPermission ? Math.pow(2, i) : 0;
+    }
+
+    fetch("/api/users/<%= targetUser.id %>", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": "<%= csrfToken %>",
+      },
+      body: JSON.stringify({
+        permissions: permissions
+      })
+    }).then(res => {
+      if (res.ok) {
+        successMessage.innerText = "User updated successfully";
+      } else {
+        res.json().then(response => {
+          const errorMessage = response.error || "An error occurred";
+          successMessage.classList.add("error");
+          successMessage.innerText = errorMessage;
+        });
+      }
+    }).catch(err => {
+      console.error(err);
+      successMessage.innerText = "An error occurred";
+    });
+  }
+</script>

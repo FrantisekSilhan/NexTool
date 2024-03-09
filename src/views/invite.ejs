@@ -21,5 +21,8 @@
 
 <form action="/invite" method="POST" class="form">
   <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <% if(errorMessage) { %>
+    <p class="error"><%= errorMessage %></p>
+  <% } %>
   <button class="btn" type="submit">Create</button>
 </form>

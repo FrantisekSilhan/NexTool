@@ -25,6 +25,7 @@ const app = express();
 const cookieParser = require("cookie-parser");
 const { sessionMiddleware } = require(shared.files.middlewares);
 const csrf = require("csurf");
+const { hasPermission, Permission } = require(shared.files.permissions);
 const csrfProtection = csrf({ cookie: true });
 
 app.set("view engine", "ejs");
@@ -33,6 +34,7 @@ app.set("layout", shared.layouts.mainLayout);
 
 app.use(express.static(shared.paths.public));
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(expressLayouts);
 app.use(expressFileUpload({
   limits: { fileSize: shared.config.upload.maximumFileSize },
@@ -53,6 +55,25 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use((req, res, next) => {
+  if (req.session.userId) {
+    const { db } = require(shared.files.database);
+    db.get("SELECT permissions FROM users WHERE id = ?",
+      [req.session.userId],
+      (err, row) => {
+        if (err) {
+          next(err);
+        } else {
+          res.locals.isAdmin = hasPermission(row.permissions, Permission.Admin);
+          next();
+        }
+      }
+    );
+  } else {
+    next();
+  }
+});
+
 shared.fs.readdirSync(shared.paths.routes).forEach(file => {
   if (file.endsWith(".js") && file !== "index.js") {
     const router = require(shared.path.join(shared.paths.routes, file));
@@ -62,16 +83,23 @@ shared.fs.readdirSync(shared.paths.routes).forEach(file => {
 const router = require(shared.path.join(shared.paths.routes, "index.js"));
 app.use(router.path, router);
 
+shared.fs.readdirSync(shared.paths.api).forEach(file => {
+  if (file.endsWith(".js")) {
+    const router = require(shared.path.join(shared.paths.api, file));
+    app.use(`/api${router.path}`, router);
+  }
+});
+
 app.use((_, __, next ) => {
   const err = new Error("Not Found");
-  err.status = 404; 
+  err.status = 404;
   next(err);
 });
 
 app.use((err, req, res, _) => {
   console.error(err);
-  const errorCode = (err.status !== undefined && err.status >= 500 && err.status < 600) ? 500 : err.status ?? 500;
-  const errorMessage = (errorCode >= 500 && errorCode < 600) ? "Internal Server Error" : err.message ?? "Internal Server Error";
+  const errorCode = (err.status !== undefined && err.status >= 500 && err.status < 600) ? 500 : err.status || 500;
+  const errorMessage = (errorCode >= 500 && errorCode < 600) ? "Internal Server Error" : err.message || "Internal Server Error";
   if (req.headers.host === shared.config.shortener.host) {
     res.status(errorCode).render("error", { errorCode, errorMessage, renderNavbar: false, renderMetaTags: false });
   } else {

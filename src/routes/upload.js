@@ -7,7 +7,7 @@ const crypto = require("crypto");
 const { generateRandomFileName } = require(shared.files.files);
 const sharp = require("sharp");
 const ffmpeg = require("fluent-ffmpeg");
-const stream = require("stream");
+const {hasPermission, Permission} = require(shared.files.permissions);
 
 router.path = "/upload";
 
@@ -32,6 +32,21 @@ router.post("/", isNotFromShortener, isAuthenticated, async (req, res, next) => 
   let redirectBack = false;
 
   try {
+
+    const row = await new Promise((resolve, reject) => {
+      db.get("SELECT permissions FROM users WHERE id = ?",
+        [req.session.userId],
+        (err, row) => err ? reject(err) : resolve(row)
+      );
+    });
+
+    if (!hasPermission(row.permissions, Permission.Upload)) {
+      const err = new Error("You don't have permission to upload files");
+      err.status = 403;
+      redirectBack = true;
+      throw err;
+    }
+
     req.session.formData = { downloadName: req.body.downloadName, displayName: req.body.displayName };
 
     if (!req.files || !req.files.file) {
@@ -57,6 +72,13 @@ router.post("/", isNotFromShortener, isAuthenticated, async (req, res, next) => 
     const gif = req.body.gif !== undefined && req.body.gif === "on";
     const language = req.body.language !== undefined && req.body.language === "none" ? null : req.body.language;
 
+    if (index && !hasPermission(row.permissions, Permission.IncludeIndex)) {
+      const err = new Error("You don't have permission to include files in the index");
+      err.status = 403;
+      redirectBack = true;
+      throw err;
+    }
+
     if (downloadName.length > shared.config.upload.downloadLen) {
       const err = new Error("Download name too long");
       err.status = 400;
@@ -72,6 +94,14 @@ router.post("/", isNotFromShortener, isAuthenticated, async (req, res, next) => 
 
     await new Promise(async (resolve, reject) => {
       if (gif && file.mimetype.startsWith("video/")) {
+        if (!hasPermission(row.permissions, Permission.ConvertGIFVideo)) {
+          const err = new Error("You don't have permission to convert videos to GIFs");
+          err.status = 402;
+          redirectBack = true;
+          reject(err);
+          return;
+        }
+
         if (file.size > shared.config.upload.maximumVideoConvertSize) {
           const err = new Error("File too large");
           err.status = 400;
@@ -131,6 +161,14 @@ router.post("/", isNotFromShortener, isAuthenticated, async (req, res, next) => 
           }
         });
       } else if (gif && file.mimetype.startsWith("image/")) {
+        if (!hasPermission(row.permissions, Permission.ConvertGIFImage)) {
+          const err = new Error("You don't have permission to convert images to GIFs");
+          err.status = 403;
+          redirectBack = true;
+          reject(err);
+          return;
+        }
+
         await sharp(file.data)
           .resize( 560, 560, {fit: "inside"})
           .gif({colors: 256, dither: 1.0})
@@ -162,6 +200,10 @@ router.post("/", isNotFromShortener, isAuthenticated, async (req, res, next) => 
         err.status = 400;
         redirectBack = true;
         reject(err);
+      } else if (hasPermission(row.permissions, Permission.NoCompression)) {
+        await file.mv(shared.path.join(shared.paths.files, fileName),
+          (err) => err ? reject(err) : resolve()
+        );
       } else if (file.mimetype.startsWith("image/")) {
         sharp(file.data)
           .webp()

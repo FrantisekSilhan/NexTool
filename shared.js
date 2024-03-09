@@ -18,6 +18,7 @@ const paths = {
   routes: routes,
   layouts: path.join(views, "layouts"),
   utils: utils,
+  api: path.join(src, "api"),
 };
 
 
@@ -28,6 +29,7 @@ const files = {
   files: path.join(paths.utils, "files"),
   invites: path.join(paths.utils, "invites"),
   shortener: path.join(paths.utils, "shortener"),
+  permissions: path.join(paths.utils, "permissions"),
   sharedUtils: path.join(paths.utils, "sharedUtils"),
   middlewares: path.join(paths.src, "middlewares"),
 };

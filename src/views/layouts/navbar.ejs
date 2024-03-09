@@ -1,7 +1,17 @@
 <nav class="navbar">
-  <a class="navbar__brand navbar__link" href="/">NexTool</a>
+  <div class="navbar__top">
+    <a class="navbar__brand navbar__link" href="/">NexTool</a>
+    <div id="hamburger" class="navbar__hamburger" tabindex="0" role="button" aria-label="Toggle navbar menu">
+      <span class="navbar__hamburger__line"></span>
+      <span class="navbar__hamburger__line"></span>
+      <span class="navbar__hamburger__line"></span>
+    </div>
+  </div>
   <menu class="navbar__menu">
     <% if (user) { %>
+      <% if (isAdmin) { %>
+        <li class="navbar__item"><a class="navbar__link" href="/admin">Admin</a></li>
+      <% } %>
       <li class="navbar__item"><a class="navbar__link" href="/shortener">Shortener</a></li>
       <li class="navbar__item"><a class="navbar__link" href="/upload">Upload</a></li>
       <li class="navbar__item"><a class="navbar__link" href="/dashboard">Dashboard</a></li>
@@ -13,3 +23,40 @@
     <% } %>
   </menu>
 </nav>
+
+<script>
+  const hamburger = document.getElementById("hamburger");
+  const navbar = document.querySelector(".navbar");
+  const menu = document.querySelector(".navbar__menu");
+  if (!navbar.classList.contains("navbar--open")) {
+      menu.classList.add(".navbar__menu--disabled");
+  }
+
+  hamburger.addEventListener("click", () => {
+    if (navbar.classList.contains("navbar--open")) {
+      setTimeout(() => {
+        menu.classList.add(".navbar__menu--disabled");
+      }, 200);
+    } else {
+      menu.classList.remove(".navbar__menu--disabled");
+    }
+    setTimeout(() => {
+      navbar.classList.toggle("navbar--open");
+    }, 10);
+  });
+
+  hamburger.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      if (navbar.classList.contains("navbar--open")) {
+        setTimeout(() => {
+          menu.classList.add(".navbar__menu--disabled");
+        }, 200);
+      } else {
+        menu.classList.remove(".navbar__menu--disabled");
+      }
+      setTimeout(() => {
+        navbar.classList.toggle("navbar--open");
+      }, 10);
+    }
+  });
+</script>

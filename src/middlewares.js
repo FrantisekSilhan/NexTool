@@ -3,6 +3,8 @@ const session = require("express-session");
 const SQLiteStore = require("connect-sqlite3")(session);
 require("dotenv").config();
 
+const { Permission, hasPermission } = require(shared.files.permissions);
+
 const sessionMiddleware = session({
   store: new SQLiteStore({
     db: `data/${shared.config.sessionDbPath}`,
@@ -62,6 +64,30 @@ const isFromShortener = (req, _, next) => {
   }
 }
 
+const isAdminOrHigher = async (req, _, next) => {
+  const { db } = require(shared.files.database);
+  const isHigher = await new Promise((resolve, reject) => {
+    db.get("SELECT permissions FROM users WHERE id = ?",
+      [req.session.userId],
+      (err, row) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(hasPermission(row.permissions, Permission.Admin) || hasPermission(row.permissions, Permission.Owner));
+        }
+      }
+    );
+  });
+
+  if (isHigher) {
+    next();
+  } else {
+    const err = new Error("You have to be an admin or higher to access this page");
+    err.status = 403;
+    next(err);
+  }
+};
+
 module.exports = {
   sessionMiddleware,
   isAuthenticated,
@@ -69,4 +95,5 @@ module.exports = {
   isNotAuthenticated,
   isNotFromShortener,
   isFromShortener,
+  isAdminOrHigher,
 };
