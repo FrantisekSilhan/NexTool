@@ -22,7 +22,7 @@
           <% user.permissionList.forEach(permission => { %>
             <td class="table__data"><%= permission.hasPermission ? "Yes" : "No" %></td>
           <% }); %>
-          <% if (user.id !== userId && !user.isHigher) { %>
+          <% if (!user.isHigher) { %>
             <td class="table__data">
               <div class="flex-wrapper">
                 <%- include("../components/deleteButtons", { data: user.id, type: "user" }) %>

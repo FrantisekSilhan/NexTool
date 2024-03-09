@@ -28,7 +28,7 @@ router.get("/", isAuthenticated, isAdminOrHigher, async (req, res, next) => {
 
     users.forEach(user => {
       user.permissionList = getUserPermissions(user.permissions);
-      user.isHigher = !hasHigherPermission(modifierUser.permissions, user.permissions);
+      user.isHigher = user.id === userId ? false : !hasHigherPermission(modifierUser.permissions, user.permissions);
     });
 
     const files = await new Promise((resolve, reject) => {
@@ -138,16 +138,16 @@ router.get("/users/:id", isAuthenticated, isAdminOrHigher, async (req, res, next
         (err, row) => err ? reject(err) : resolve(row)
       );
     });
-    
-    if (Number(req.params.id) === userId || !hasHigherPermission(modifierUser.permissions, targetUser.permissions)) {
-      const err = new Error("You can't edit this");
-      err.status = 403;
-      throw err;
-    }
 
     if (!targetUser) {
       const err = new Error("User not found");
       err.status = 404;
+      throw err;
+    }
+    
+    if (Number(req.params.id) !== userId && !hasHigherPermission(modifierUser.permissions, targetUser.permissions)) {
+      const err = new Error("You can't edit this");
+      err.status = 403;
       throw err;
     }
 

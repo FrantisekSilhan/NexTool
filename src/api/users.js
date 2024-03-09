@@ -2,7 +2,7 @@ const shared = require("../../shared");
 const express = require("express");
 const router = express.Router();
 const { isAuthenticated, isAdminOrHigher } = require(shared.files.middlewares);
-const { hasHigherPermission } = require(shared.files.permissions);
+const { hasHigherPermission, getHighestPermission } = require(shared.files.permissions);
 
 router.path = "/users";
 
@@ -28,29 +28,37 @@ router.patch("/:id", isAuthenticated, isAdminOrHigher, async (req, res) => {
       );
     });
 
-    if (Number(req.params.id) === userId || !hasHigherPermission(modifierUser.permissions, targetUser.permissions)) {
-      const err = new Error("You can't edit this");
-      err.status = 403;
-      throw err;
-    }
-
     if (!targetUser) {
       const err = new Error("User not found");
       err.status = 404;
       throw err;
     }
 
+    if (targetUser.id !== userId && !hasHigherPermission(modifierUser.permissions, targetUser.permissions)) {
+      const err = new Error("You can't edit this");
+      err.status = 403;
+      throw err;
+    }
+
     const newUserName = req.body.userName ?? targetUser.userName;
     const newPermissions = req.body.permissions ?? targetUser.permissions;
-    if (newUserName === targetUser.userName && modifierUser.permissions === targetUser.permissions) {
+    if ((newUserName === targetUser.userName && modifierUser.permissions === targetUser.permissions) && targetUser.id !== userId) {
       res.sendStatus(304);
       return;
     }
 
-    if (!hasHigherPermission(modifierUser.permissions, newPermissions)) {
-      const err = new Error("You can't set higher permissions than your own");
-      err.status = 403;
-      throw err;
+    if (targetUser.id === userId) {
+      if (getHighestPermission(modifierUser.permissions) !== getHighestPermission(newPermissions)) {
+        const err = new Error("You can't change your own highest permission level");
+        err.status = 403;
+        throw err;
+      }
+    } else {
+      if (!hasHigherPermission(modifierUser.permissions, newPermissions)) {
+        const err = new Error("You can't set higher permissions than your own");
+        err.status = 403;
+        throw err;
+      }
     }
 
     await new Promise((resolve, reject) => {
