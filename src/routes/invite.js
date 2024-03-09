@@ -37,10 +37,11 @@ router.post("/", isNotFromShortener, isAuthenticated, async (req, res, next) => 
   let isTransactionActive = false;
 
   try {
+    const userId = req.session.userId;
 
     const row = await new Promise((resolve, reject) => {
       db.get("SELECT permissions FROM users WHERE id = ?",
-          [req.session.userId],
+          [userId],
         (err, row) => err ? reject(err) : resolve(row)
       );
     });
@@ -52,7 +53,19 @@ router.post("/", isNotFromShortener, isAuthenticated, async (req, res, next) => 
       throw err;
     }
 
-    const userId = req.session.userId;
+    const invites = await new Promise((resolve, reject) => {
+      db.all("SELECT * FROM invites WHERE createdBy = ? AND usedBy IS NULL",
+        [userId],
+        (err, row) => err ? reject(err) : resolve(row)
+      );
+    });
+
+    if (invites.length >= shared.config.invites.maxPerUser) {
+      const err = new Error("You have reached the maximum number of unused invites you can create");
+      err.status = 403;
+      redirectBack = true;
+      throw err;
+    }
 
     await new Promise((resolve, reject) => {
       db.run("BEGIN TRANSACTION",

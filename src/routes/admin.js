@@ -44,7 +44,7 @@ router.get("/", isNotFromShortener, isAuthenticated, isAdminOrHigher, async (req
         ) AS subquery ON f.owner = subquery.owner
         WHERE subquery.file_count > 0
         ORDER BY f.owner, f.id DESC
-        LIMIT 7
+        LIMIT 7 * 5
       `,
         (err, rows) => {
         if (err) {
@@ -85,7 +85,7 @@ router.get("/", isNotFromShortener, isAuthenticated, isAdminOrHigher, async (req
         ) AS subquery ON s.owner = subquery.owner
         WHERE subquery.url_count > 0
         ORDER by s.owner, u.id DESC
-        LIMIT 7
+        LIMIT 7 * 5
       `,
         (err, rows) => {
         if (err) {

@@ -21,5 +21,8 @@ module.exports = {
     userNameLen: 32,
     passwordLen: 64,
     inviteCodeLen: 32,
-  }
+  },
+  invites: {
+    maxPerUser: 3,
+  },
 };
