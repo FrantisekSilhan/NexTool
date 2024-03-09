@@ -4,6 +4,7 @@ const router = express.Router();
 const { isAuthenticated, isNotFromShortener } = require(shared.files.middlewares);
 
 const { formatFileSize } = require(shared.files.files);
+const { Permission, hasPermission, hasHigherPermission } = require(shared.files.permissions);
 
 router.path = "/files";
 
@@ -57,17 +58,51 @@ router.delete("/:file", isAuthenticated, async (req, res) => {
     const fileName = req.params.file;
     const userId = req.session.userId;
 
+    const modifierUser = await new Promise((resolve, reject) => {
+      db.get("SELECT permissions FROM users WHERE id = ?",
+        [userId],
+        (err, row) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(row);
+          }
+        }
+      );
+    });
+
     const fileInfo = await new Promise((resolve, reject) => {
-      db.get("SELECT id FROM files WHERE fileName = ? AND owner = ?",
-        [fileName, userId],
+      db.get("SELECT id, owner FROM files WHERE fileName = ?",
+        [fileName],
         (err, row) => err ? reject(err) : resolve(row)
       );
     });
 
     if (!fileInfo) {
-      const err = new Error("File doesn't exist or you don't have permission to delete it");
+      const err = new Error("File doesn't exist");
       err.status = 400;
       throw err;
+    }
+
+    if (fileInfo.owner !== userId) {
+      const targetUser = await new Promise((resolve, reject) => {
+        db.get("SELECT permissions FROM users WHERE id = ?",
+          [fileInfo.owner],
+          (err, row) => err ? reject(err) : resolve(row)
+        );
+      });
+
+      if (!targetUser) {
+        const err = new Error("Owner not found");
+        err.status = 500;
+        throw err;
+      }
+
+      if (!(hasPermission(modifierUser.permissions, Permission.Admin) || hasPermission(modifierUser.permissions, Permission.Owner)) || !hasHigherPermission(modifierUser.permissions, targetUser.permissions)) {
+        const err = new Error("You don't have permission to delete this file");
+        err.status = 403;
+        throw err;
+      }
     }
 
     await new Promise((resolve, reject) => {

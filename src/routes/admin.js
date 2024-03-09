@@ -45,35 +45,75 @@ router.get("/", isAuthenticated, isAdminOrHigher, async (req, res, next) => {
         WHERE subquery.file_count > 0
         ORDER BY f.owner, f.id DESC
         LIMIT 7 * 5
-      `, (err, rows) => {
-          if (err) {
-            reject(err);
-          } else {
-            const files = {};
-            rows.forEach(file => {
-              const { userId, userName, fileName, displayName, fileSize, md5, mimeType } = file;
-              if (!files[userId]) {
-                files[userId] = {
-                  userName: userName,
-                    files: {}
-                };
-              }
-              files[userId].files[fileName] = {
-                displayName: displayName,
-                fileSize: fileSize,
-                md5: md5,
-                mimeType: mimeType
+      `,
+        (err, rows) => {
+        if (err) {
+          reject(err);
+        } else {
+          const files = {};
+          rows.forEach(fileRow => {
+            const { userId, userName, fileName, displayName, fileSize, md5, mimeType } = fileRow;
+            if (!files[userId]) {
+              files[userId] = {
+                userName: userName,
+                  files: {}
               };
-            });
-            console.log(files);
-            resolve(files);
+            }
+            files[userId].files[fileName] = {
+              displayName: displayName,
+              fileSize: fileSize,
+              md5: md5,
+              mimeType: mimeType
+            };
+          });
+          resolve(files);
         }
       });
-  });
+    });
+
+    const urls = await new Promise((resolve, reject) => {
+      db.all(`
+        SELECT us.userName, u.id, u.key, u.url, s.visitCount, s.maxVisitCount, s.owner AS userId
+        FROM urls AS u
+        JOIN urlStats s ON u.id = s.id
+        JOIN users us ON s.owner = us.id
+        JOIN (
+          SELECT owner, COUNT(*) as url_count
+          FROM urlStats
+          GROUP BY owner
+          LIMIT 7
+        ) AS subquery ON s.owner = subquery.owner
+        WHERE subquery.url_count > 0
+        LIMIT 7 * 5
+      `,
+        (err, rows) => {
+        if (err) {
+          reject(err);
+        } else {
+          const urls = {};
+          rows.forEach(urlRow => {
+            const { userName, userId, id, key, url, visitCount, maxVisitCount } = urlRow;
+            if (!urls[userId]) {
+              urls[userId] = {
+                userName: userName,
+                urls: {}
+              };
+            }
+            urls[userId].urls[id] = {
+              key: key,
+              url: url,
+              visitCount: visitCount,
+              maxVisitCount: maxVisitCount
+            };
+          });
+          resolve(urls);
+        }
+      });
+    });
 
     const permissionList = getPermissionNames();
 
-    res.render("admin/index", { userName: req.session.username, permissionList, users, userId, files });
+    res.render("admin/index", { userName: req.session.username, permissionList, users, userId, files, urls, shortenerBaseUrl: shared.config.shortener.baseUrl });
   } catch (err) {
     next(err);
   }

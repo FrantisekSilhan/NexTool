@@ -3,6 +3,8 @@ const express = require("express");
 const router = express.Router();
 const { isAuthenticated, isNotFromShortener } = require(shared.files.middlewares);
 
+const { Permission, hasPermission, hasHigherPermission } = require(shared.files.permissions);
+
 router.path = "/urls";
 
 router.delete("/:key", isNotFromShortener, isAuthenticated, async (req, res) => {
@@ -12,6 +14,7 @@ router.delete("/:key", isNotFromShortener, isAuthenticated, async (req, res) => 
 
   try {
     const key = req.params.key;
+    const userId = req.session.userId;
 
     const keyId = await new Promise((resolve, reject) => {
       db.get("SELECT id FROM urls WHERE key = ?",
@@ -26,6 +29,13 @@ router.delete("/:key", isNotFromShortener, isAuthenticated, async (req, res) => 
       throw err;
     }
 
+    const modifierUser = await new Promise((resolve, reject) => {
+      db.get("SELECT permissions FROM users WHERE id = ?",
+        [userId],
+        (err, row) => err ? reject(err) : resolve(row)
+      );
+    });
+
     const owner = await new Promise((resolve, reject) => {
       db.get("SELECT owner FROM urlStats WHERE id = ?",
         [keyId],
@@ -33,10 +43,25 @@ router.delete("/:key", isNotFromShortener, isAuthenticated, async (req, res) => 
       );
     });
 
-    if (owner !== req.session.userId) {
-      const err = new Error("You don't have permission to delete this URL");
-      err.status = 400;
-      throw err;
+    if (owner !== userId) {
+      const targetUser = await new Promise((resolve, reject) => {
+        db.get("SELECT permissions FROM users WHERE id = ?",
+          [owner],
+          (err, row) => err ? reject(err) : resolve(row)
+        );
+      });
+
+      if (!targetUser) {
+        const err = new Error("Owner not found");
+        err.status = 500;
+        throw err;
+      }
+
+      if (!(hasPermission(modifierUser.permissions, Permission.Admin) || hasPermission(modifierUser.permissions, Permission.Owner)) || !hasHigherPermission(modifierUser.permissions, targetUser.permissions)) {
+        const err = new Error("You don't have permission to delete this URL");
+        err.status = 403;
+        throw err;
+      }
     }
 
     await new Promise((resolve, reject) => {
