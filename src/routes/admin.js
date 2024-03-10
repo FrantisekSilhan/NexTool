@@ -33,18 +33,19 @@ router.get("/", isNotFromShortener, isAuthenticated, isAdminOrHigher, async (req
 
     const files = await new Promise((resolve, reject) => {
       db.all(`
-        SELECT u.userName, f.owner AS userId, f.fileName, f.displayName, f.fileSize, f.md5, f.mimeType 
-        FROM files f
-        JOIN users u ON f.owner = u.id
-        JOIN (
-          SELECT owner, COUNT(*) as file_count
+        SELECT u.id AS userId, u.userName, f.fileName, f.displayName, f.fileSize, f.md5, f.mimeType
+        FROM users u
+        INNER JOIN (
+          SELECT *, ROW_NUMBER() OVER(PARTITION BY owner ORDER BY id DESC) AS file_rank
           FROM files
-          GROUP BY owner
-          LIMIT 7
-        ) AS subquery ON f.owner = subquery.owner
-        WHERE subquery.file_count > 0
-        ORDER BY f.owner, f.id DESC
-        LIMIT 7 * 5
+        ) f ON u.id = f.owner
+        WHERE u.id IN (
+          SELECT DISTINCT owner
+          FROM files
+        )
+        AND f.file_rank <= 7
+        ORDER BY u.id ASC, f.id DESC
+        LIMIT 35
       `,
         (err, rows) => {
         if (err) {
@@ -73,19 +74,21 @@ router.get("/", isNotFromShortener, isAuthenticated, isAdminOrHigher, async (req
 
     const urls = await new Promise((resolve, reject) => {
       db.all(`
-        SELECT us.userName, u.id, u.key, u.url, s.visitCount, s.maxVisitCount, s.owner AS userId
-        FROM urls AS u
-        JOIN urlStats s ON u.id = s.id
-        JOIN users us ON s.owner = us.id
-        JOIN (
-          SELECT owner, COUNT(*) as url_count
+        SELECT urls.id, u.userName, urls.key, urls.url, us.visitCount, us.maxVisitCount, us.owner AS userId
+        FROM users u
+        INNER JOIN (
+          SELECT us1.*, ROW_NUMBER() OVER(PARTITION BY owner ORDER BY us1.id DESC) AS url_rank
+          FROM urlStats us1
+          INNER JOIN urls ON us1.id = urls.id
+        ) us ON u.id = us.owner
+        INNER JOIN urls ON us.id = urls.id
+        WHERE u.id IN (
+          SELECT DISTINCT owner
           FROM urlStats
-          GROUP BY owner
-          LIMIT 7
-        ) AS subquery ON s.owner = subquery.owner
-        WHERE subquery.url_count > 0
-        ORDER by s.owner, u.id DESC
-        LIMIT 7 * 5
+        )
+        AND us.url_rank <= 7
+        ORDER BY u.id ASC, us.id DESC
+        LIMIT 35
       `,
         (err, rows) => {
         if (err) {
@@ -114,17 +117,16 @@ router.get("/", isNotFromShortener, isAuthenticated, isAdminOrHigher, async (req
 
     const invites = await new Promise((resolve, reject) => {
       db.all(`
-        SELECT i.id, i.createdBy, i.invite, i.usedBy, u.userName, u2.userName AS usedByUserName
-        FROM invites AS i
-        JOIN users u ON i.createdBy = u.id
+        SELECT i.id, i.createdBy, i.invite, i.usedBy, u1.userName, u2.userName AS usedByUserName
+        FROM (
+          SELECT *, ROW_NUMBER() OVER(PARTITION BY createdBy ORDER BY id DESC) AS invite_rank
+            FROM invites
+        ) i
+        INNER JOIN users u1 ON i.createdBy = u1.id
         LEFT JOIN users u2 ON i.usedBy = u2.id
-        JOIN (
-          SELECT createdBy, COUNT(*) as invite_count
-          FROM invites
-          GROUP BY createdBy
-        ) AS subquery ON i.createdBy = subquery.createdBy
-        WHERE subquery.invite_count > 0
-        ORDER by i.createdBy, i.id DESC
+        WHERE i.invite_rank <= 7
+        ORDER BY i.createdBy ASC, i.id DESC
+        LIMIT 35
       `,
        (err, rows) => {
         if (err) {
