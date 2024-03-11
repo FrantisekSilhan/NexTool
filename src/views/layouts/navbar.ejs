@@ -29,16 +29,16 @@
   const navbar = document.querySelector(".navbar");
   const menu = document.querySelector(".navbar__menu");
   if (!navbar.classList.contains("navbar--open")) {
-      menu.classList.add(".navbar__menu--disabled");
+      menu.classList.add("navbar__menu--disabled");
   }
 
   hamburger.addEventListener("click", () => {
     if (navbar.classList.contains("navbar--open")) {
       setTimeout(() => {
-        menu.classList.add(".navbar__menu--disabled");
+        menu.classList.add("navbar__menu--disabled");
       }, 200);
     } else {
-      menu.classList.remove(".navbar__menu--disabled");
+      menu.classList.remove("navbar__menu--disabled");
     }
     setTimeout(() => {
       navbar.classList.toggle("navbar--open");
@@ -49,10 +49,10 @@
     if (e.key === "Enter") {
       if (navbar.classList.contains("navbar--open")) {
         setTimeout(() => {
-          menu.classList.add(".navbar__menu--disabled");
+          menu.classList.add("navbar__menu--disabled");
         }, 200);
       } else {
-        menu.classList.remove(".navbar__menu--disabled");
+        menu.classList.remove("navbar__menu--disabled");
       }
       setTimeout(() => {
         navbar.classList.toggle("navbar--open");
