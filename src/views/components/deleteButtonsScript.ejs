@@ -27,11 +27,7 @@
             }
           }).then((res) => {
             if (res.ok) {
-              if (deleteBtn.closest(".table__row") === null) {
-                window.location.href = "/dashboard";
-              } else {
-                deleteBtn.closest(".table__row").remove();
-              }
+              deleteBtn.closest(".table__row").remove();
             } else {
               res.json().then(response => {
                 const errorMessage = response.error || "An error occurred";
@@ -56,7 +52,11 @@
             },
           }).then((res) => {
             if (res.ok) {
-              deleteBtn.closest(".flex-wrapper").remove();
+              if (deleteBtn.closest(".list__item") === null) {
+                window.location.href = "/dashboard";
+              } else {
+                deleteBtn.closest(".list__item").remove();
+              }
             } else {
               res.json().then(response => {
                 const errorMessage = response.error || "An error occurred";
