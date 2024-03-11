@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbo",
     "build": "next build",
-    "start": "next start",
+    "start": "next dev --turbo",
+    "startbuild": "next start",
     "lint": "next lint"
   },
   "dependencies": {
