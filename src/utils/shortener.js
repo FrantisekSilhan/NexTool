@@ -4,7 +4,7 @@ const { randomString } = require(shared.files.sharedUtils);
 
 function isValidUrl(str) {
   const pattern = /^(http|https):\/\/[\w\-]+(\.[\w\-]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?$/;
-  return pattern.test(str) && !str.includes(shared.config.siteUrl);
+  return pattern.test(str) && !str.includes(`://${shared.shortener.host}`);
 }
 
 function isValidShortCode(str) {
