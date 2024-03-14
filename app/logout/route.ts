@@ -1,14 +1,10 @@
 import {Logout} from "@/app/lib/authentication";
+import {redirect, RedirectType} from "next/navigation";
 
 export const dynamic = 'force-dynamic';
 
-export async function GET(request: Request) {
+export async function GET(_: Request) {
   await Logout();
 
-  return {
-    status: 302,
-    headers: {
-      location: "/login"
-    }
-  };
+  redirect("/login");
 }

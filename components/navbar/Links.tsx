@@ -14,7 +14,7 @@ export default async function Links() {
   }
 
   return (
-    <menu className="navbar__menu">
+    <>
       { hasAdmin && <NavBarLink name={"Admin"} link={"/admin"}/> }
       {authenticated && <>
           <NavBarLink name={"Shortener"} link={"/shortener"}/>
@@ -27,6 +27,6 @@ export default async function Links() {
           <NavBarLink name={"Sign up"} link={"/register"}/>
         </>
       }
-    </menu>
+      </>
   )
 }
