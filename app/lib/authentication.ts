@@ -110,3 +110,37 @@ export async function register(_currentState: unknown, formData: FormData): Prom
 
   return redirect("/login");
 }
+
+export async function isAuthenticated() {
+  console.log("Checking if user is authenticated...");
+
+  const sessionId = cookies().get("session_id")?.value;
+
+  if (!sessionId) {
+    console.log("User is not authenticated");
+    return false;
+  }
+
+  const session = await prisma.session.findFirst({
+    where: {
+      id: sessionId,
+    }
+  });
+  if (!session) {
+    console.log("User is not authenticated");
+    return false;
+  }
+
+  if (session.expires < new Date()) {
+    console.log("Session has expired");
+    prisma.session.delete({
+      where: {
+        id: sessionId
+      }
+    });
+    return false;
+  }
+
+  console.log("User is authenticated");
+  return true;
+}
