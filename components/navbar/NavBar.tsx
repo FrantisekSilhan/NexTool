@@ -1,7 +1,7 @@
 'use client'
 
 import {MutableRefObject, useCallback, useRef} from "react";
-import NavBarLink from "@/components/navbar/Link";
+import NavBarLink from "@/components/navbar/NavBarLink";
 
 export default function NavBar() {
   const navbar = useRef() as MutableRefObject<HTMLDivElement>

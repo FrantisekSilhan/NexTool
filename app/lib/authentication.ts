@@ -3,6 +3,8 @@
 import crypto from "crypto";
 import prisma from "@/lib/prisma";
 import {redirect} from "next/navigation";
+import {CreateSession} from "@/app/lib/session";
+import {cookies} from "next/headers";
 
 export async function authenticate(_currentState: unknown, formData: FormData): Promise<string> {
   console.log("Authenticating user...");
@@ -18,7 +20,31 @@ export async function authenticate(_currentState: unknown, formData: FormData): 
     return "Password is required";
   }
 
-  return "";
+  const user = await prisma.user.findUnique({
+    where: {
+      userName: username
+    }
+  });
+  if (!user) {
+    return "User not found";
+  }
+
+  const passwordHash = crypto.pbkdf2Sync(password, user.salt, 1000, 64, "sha512").toString("hex");
+
+  if (passwordHash !== user.password) {
+    return "Password is incorrect";
+  }
+
+  cookies().set({
+    name: "session_id",
+    value: await CreateSession(user.id),
+    maxAge: 60*60*24*30,
+    path: "/",
+    secure: true,
+    httpOnly: true,
+  });
+
+  return redirect("/")
 }
 
 export async function register(_currentState: unknown, formData: FormData): Promise<string> {
@@ -82,5 +108,5 @@ export async function register(_currentState: unknown, formData: FormData): Prom
     }
   });
 
-  return redirect("/dashboard");
+  return redirect("/login");
 }

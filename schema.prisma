@@ -8,46 +8,51 @@ datasource db {
 }
 
 model File {
-  id Int @id @default(autoincrement())
-  filename String @unique
-  displayName String
+  id           Int      @id @default(autoincrement())
+  filename     String   @unique
+  displayName  String
   downloadName String
-  indexFile Boolean
-
-  fileSize Int
-  md5 String
-  mimeType String
-  language String?
-
-  addedAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  indexFile    Boolean
+  fileSize     Int
+  md5          String
+  mimeType     String
+  language     String?
+  addedAt      DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 model User {
-  id Int @id @default(autoincrement())
-  userName String @unique
-  password String
-  salt String
-  permissions Int @default(5)
+  id          Int    @id @default(autoincrement())
+  userName    String @unique
+  password    String
+  salt        String
+  permissions Int    @default(5)
 }
 
 model Invite {
-  id Int @id @default(autoincrement())
+  id        Int    @id @default(autoincrement())
   createdBy Int
-  invite String @unique
-  usedBy Int?
+  invite    String @unique
+  usedBy    Int?
 }
 
 model Url {
-  id Int @id @default(autoincrement())
+  id  Int    @id @default(autoincrement())
   key String @unique
   url String
 }
 
 model UrlStats {
-  id Int @id @default(autoincrement())
-  visitCount Int @default(0)
-  maxVisits Int @default(0)
-  timestamp DateTime @default(now())
-  owner Int
+  id         Int      @id @default(autoincrement())
+  visitCount Int      @default(0)
+  maxVisits  Int      @default(0)
+  timestamp  DateTime @default(now())
+  owner      Int
+}
+
+model Session {
+  id        String   @id
+  userId    Int
+  expires   DateTime
+  createdAt DateTime @default(now())
 }
