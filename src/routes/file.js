@@ -16,7 +16,7 @@ router.get("/:file", isNotFromShortener, async (req, res, next) => {
     const userId = req.session.userId;
 
     const fileInfo = await new Promise((resolve, reject) => {
-      db.get("SELECT downloadName, mimeType, language, owner FROM files WHERE fileName = ?",
+      db.get("SELECT downloadName, mimeType, language, owner, displayName FROM files WHERE fileName = ?",
         [fileName],
         (err, row) => err ? reject(err) : resolve(row)
       );
