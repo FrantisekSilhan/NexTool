@@ -16,7 +16,8 @@ export default async function Invite() {
 
   const invites = await prisma.invite.findMany({
     where: {
-      createdBy: user.id
+      createdBy: user.id,
+      usedBy: null
     }
   });
 
