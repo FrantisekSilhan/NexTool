@@ -5,6 +5,7 @@ import prisma from "@/lib/prisma";
 import {redirect} from "next/navigation";
 import {CreateSession} from "@/app/lib/session";
 import {cookies} from "next/headers";
+import {User} from "@prisma/client";
 
 export async function authenticate(_currentState: unknown, formData: FormData): Promise<string> {
   console.log("Authenticating user...");
@@ -111,14 +112,43 @@ export async function register(_currentState: unknown, formData: FormData): Prom
   return redirect("/login");
 }
 
-export async function isAuthenticated() {
+export async function Logout() {
+  console.log("Logging out user...");
+
+  const sessionId = cookies().get("session_id")?.value;
+
+  if (!sessionId) {
+    console.log("User is not authenticated");
+    return redirect("/login");
+  }
+
+  await prisma.session.delete({
+    where: {
+      id: sessionId
+    }
+  });
+
+  cookies().delete("session_id");
+
+  return redirect("/login");
+}
+
+type Authenticated = {
+  authenticated: boolean;
+  user: User | null;
+}
+
+export async function isAuthenticated(): Promise<Authenticated> {
   console.log("Checking if user is authenticated...");
 
   const sessionId = cookies().get("session_id")?.value;
 
   if (!sessionId) {
     console.log("User is not authenticated");
-    return false;
+    return {
+      authenticated: false,
+      user: null
+    };
   }
 
   const session = await prisma.session.findFirst({
@@ -128,19 +158,41 @@ export async function isAuthenticated() {
   });
   if (!session) {
     console.log("User is not authenticated");
-    return false;
+    return {
+      authenticated: false,
+      user: null
+    };
   }
 
   if (session.expires < new Date()) {
     console.log("Session has expired");
-    prisma.session.delete({
+    await prisma.session.delete({
       where: {
         id: sessionId
       }
     });
-    return false;
+    return {
+      authenticated: false,
+      user: null
+    };
   }
 
+  const user = await prisma.user.findUnique({
+    where: {
+      id: session.userId
+    }
+  });
+
   console.log("User is authenticated");
-  return true;
+  return {
+    authenticated: true,
+    user: user
+  };
+}
+
+export async function checkAuthentication() {
+  const { authenticated } = await isAuthenticated();
+  if (!authenticated) {
+    return redirect("/login");
+  }
 }

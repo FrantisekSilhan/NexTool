@@ -26,7 +26,7 @@ model User {
   userName    String @unique
   password    String
   salt        String
-  permissions Int    @default(5)
+  permissions BigInt    @default(5)
 }
 
 model Invite {

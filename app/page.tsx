@@ -1,7 +1,10 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use server'
 
-export default function Home() {
+import {checkAuthentication} from "@/app/lib/authentication";
+
+export default async function Home() {
+  await checkAuthentication();
+
   return (
     <>
       <p>asfkhasf</p>
