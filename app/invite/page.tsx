@@ -1,7 +1,7 @@
 'use server'
 
-import {checkAuthentication, isAuthenticated} from "@/app/lib/authentication";
-import CreateInviteForm from "@/components/invite/CreateInviteForm";
+import {checkAuthentication, isAuthenticated} from "@/lib/authentication";
+import InviteForm from "@/components/invite/InviteForm";
 import prisma from "@/lib/prisma";
 import crypto from "crypto";
 import {redirect} from "next/navigation";
@@ -33,7 +33,7 @@ export default async function Invite() {
         {invites.length === 0 && <li className="list__item"><p>No invite codes</p></li>}
       </ul>
 
-      <CreateInviteForm />
+      <InviteForm />
     </>
   );
 }

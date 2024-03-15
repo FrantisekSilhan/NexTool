@@ -6,7 +6,7 @@ import {func} from "prop-types";
 import {useEffect} from "react";
 import {useRouter} from "next/navigation";
 
-export default function CreateInviteForm() {
+export default function InviteForm() {
   const [errorMessage, dispatch] = useFormState(CreateInvite, undefined);
   const router = useRouter();
 
@@ -18,7 +18,7 @@ export default function CreateInviteForm() {
 
   return (
     <form action={dispatch}>
-      <button className={"btn"} type={"submit"}>Create</button>
+      <CreateButton />
       <p className={"error"}>{errorMessage}</p>
     </form>
   )

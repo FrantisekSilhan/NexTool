@@ -1,4 +1,4 @@
-import {Logout} from "@/app/lib/authentication";
+import {Logout} from "@/lib/authentication";
 import {redirect, RedirectType} from "next/navigation";
 
 export const dynamic = 'force-dynamic';

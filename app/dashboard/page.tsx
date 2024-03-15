@@ -1,6 +1,6 @@
 'use server'
 
-import {checkAuthentication, isAuthenticated} from "@/app/lib/authentication";
+import {checkAuthentication, isAuthenticated} from "@/lib/authentication";
 import Link from "next/link";
 import prisma from "@/lib/prisma";
 

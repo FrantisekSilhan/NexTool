@@ -3,7 +3,7 @@
 import crypto from "crypto";
 import prisma from "@/lib/prisma";
 import {redirect} from "next/navigation";
-import {CreateSession} from "@/app/lib/session";
+import {CreateSession} from "@/lib/session";
 import {cookies} from "next/headers";
 import {User} from "@prisma/client";
 

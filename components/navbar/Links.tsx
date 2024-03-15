@@ -1,8 +1,8 @@
 'use server'
 
 import NavBarLink from "@/components/navbar/NavBarLink";
-import {isAuthenticated} from "@/app/lib/authentication";
-import {isAdmin} from "@/app/lib/permissions";
+import {isAuthenticated} from "@/lib/authentication";
+import {isAdmin} from "@/lib/permissions";
 
 export default async function Links() {
   const { authenticated, user } = await isAuthenticated();

@@ -1,6 +1,6 @@
 'use client'
 
-import {register} from "@/app/lib/authentication";
+import {register} from "@/lib/authentication";
 import {useFormState, useFormStatus} from "react-dom";
 
 export default function Register() {
