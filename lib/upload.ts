@@ -6,6 +6,9 @@ import crypto from "crypto";
 import prisma from "@/lib/prisma";
 import {checkAuthentication} from "@/lib/authentication";
 import {fileTypeFromBlob, fileTypeFromBuffer} from "file-type";
+import sharp from "sharp";
+import {run} from "ffmpeg-helper";
+import ffmpeg from "fluent-ffmpeg";
 
 export default async function UploadFile(_currentState: unknown, formData: FormData): Promise<string> {
   console.log("Uploading file...");
@@ -41,21 +44,80 @@ export default async function UploadFile(_currentState: unknown, formData: FormD
 
   const fileBuffer = Buffer.from(await file.arrayBuffer());
 
-  fs.mkdirSync(path.dirname(process.env.SAVE_PATH), {recursive: true});
+  fs.mkdirSync(path.join(process.env.SAVE_PATH), {recursive: true});
 
   const savePath = path.join(process.env.SAVE_PATH, fileName);
 
   console.log("Saving file to", savePath);
 
-  fs.writeFile(savePath, fileBuffer, (err) => {
-    if (err) {
-      console.error("Error writing file", err);
-      return "Error writing file";
-    }
-  });
-
-  const md5 = crypto.createHash("md5").update(fileBuffer).digest("hex");
   const type = await fileTypeFromBuffer(fileBuffer);
+  let mimeType = type ? type.mime.toString() : "application/octet-stream";
+
+  if (mimeType.startsWith("image/")) {
+    const image = sharp(fileBuffer);
+    if (convertToGif) {
+      console.log("Converting image to GIF");
+      await image.resize(560, 560, {fit: "inside"}).gif().toFile(savePath);
+    } else {
+      console.log("Converting to WebP");
+      await image.webp({quality: 75}).toFile(savePath);
+    }
+  } else if (mimeType.startsWith("video/") && convertToGif) {
+    console.log("Converting video to GIF");
+    await fs.promises.writeFile(savePath + ".orig", fileBuffer).catch((err) => {
+      console.error("Error saving original file", err);
+      throw "Error saving original file";
+    });
+
+    let isWidthLonger = false;
+    await new Promise((resolve, reject) => {
+      ffmpeg.ffprobe(savePath + ".orig", (err, metadata) => {
+        if (err || !metadata) {
+          reject(err);
+        }
+        isWidthLonger = (metadata.streams[0].width ?? 0) > (metadata.streams[0].height ?? 0);
+        resolve(null);
+      });
+    }).catch((err) => {
+      console.error("Error getting metadata", err);
+      throw err;
+    });
+
+    console.log("Creating GIF");
+
+    await new Promise(async (resolve, reject) => {
+      await run(`-i ${savePath}.orig -vf "scale=${isWidthLonger ? "560:-1" : "-1:560"}:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=256[p];[s1][p]paletteuse=dither=bayer:bayer_scale=5" -f gif ${savePath}`)
+        .catch((err) => {
+          console.error("Error creating GIF", err);
+          reject(err);
+        });
+      resolve(null);
+    }).catch((err) => {
+      console.error("Error creating GIF", err);
+      throw "Error creating GIF";
+    });
+
+    await fs.promises.unlink(savePath + ".orig").catch((err) => {
+      console.error("Error deleting original file", err);
+    });
+  } else {
+    console.log("Saving file")
+    await fs.promises.writeFile(savePath, fileBuffer).catch((err) => {
+      console.error("Error saving file", err);
+      throw "Error saving file";
+    });
+  }
+
+  console.log("File saved");
+
+  const fileStat = fs.statSync(savePath);
+  const newFileBuffer = fs.readFileSync(savePath);
+
+  let md5 = crypto.createHash("md5").update(newFileBuffer).digest("hex");
+  const newType = await fileTypeFromBuffer(newFileBuffer);
+  mimeType = newType ? newType.mime.toString() : "application/octet-stream";
+
+  console.log("Creating file record");
 
   await prisma.file.create({
     data: {
@@ -63,9 +125,9 @@ export default async function UploadFile(_currentState: unknown, formData: FormD
       downloadName: downloadName,
       displayName: displayName,
       indexFile: includeInIndex,
-      fileSize: file.size,
+      fileSize: fileStat.size,
       md5: md5,
-      mimeType: type ? type.mime.toString() : "application/octet-stream",
+      mimeType: mimeType,
       language: language ? language.toString() : null,
     }
   });
