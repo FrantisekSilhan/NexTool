@@ -4,13 +4,18 @@ import path from "node:path";
 import * as fs from "fs";
 import crypto from "crypto";
 import prisma from "@/lib/prisma";
-import {checkAuthentication} from "@/lib/authentication";
+import {checkAuthentication, isAuthenticated} from "@/lib/authentication";
 import {fileTypeFromBlob, fileTypeFromBuffer} from "file-type";
 import sharp from "sharp";
 import {run} from "ffmpeg-helper";
 import ffmpeg from "fluent-ffmpeg";
 
 export default async function UploadFile(_currentState: unknown, formData: FormData): Promise<string> {
+  const {authenticated, user} = await isAuthenticated();
+  if (!authenticated || !user) {
+    return "User is not authenticated";
+  }
+
   console.log("Uploading file...");
 
   // TODO: Check if user is authenticated and has permissions
@@ -129,6 +134,7 @@ export default async function UploadFile(_currentState: unknown, formData: FormD
       md5: md5,
       mimeType: mimeType,
       language: language ? language.toString() : null,
+      owner: user.id
     }
   });
 

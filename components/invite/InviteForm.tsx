@@ -28,6 +28,6 @@ function CreateButton() {
   const {pending} = useFormStatus();
 
   return (
-    <button aria-disabled={pending} className={"btn"} type={"submit"}>Create</button>
+    <button className={"btn"} type={"submit"} disabled={pending}>Create</button>
   )
 }

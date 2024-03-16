@@ -16,6 +16,7 @@ model File {
   fileSize     Int
   md5          String
   mimeType     String
+  owner        Int
   language     String?
   addedAt      DateTime @default(now())
   updatedAt    DateTime @updatedAt

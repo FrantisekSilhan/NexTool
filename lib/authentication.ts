@@ -6,10 +6,10 @@ import {redirect} from "next/navigation";
 import {CreateSession} from "@/lib/session";
 import {cookies} from "next/headers";
 import {User} from "@prisma/client";
+import {sendStatusCode} from "next/dist/server/api-utils";
 
 export async function authenticate(_currentState: unknown, formData: FormData): Promise<string> {
   console.log("Authenticating user...");
-  console.log("Form data:", formData);
 
   const username = formData.get('username');
   const password = formData.get('password');
