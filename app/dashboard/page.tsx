@@ -3,6 +3,7 @@
 import {checkAuthentication, isAuthenticated} from "@/lib/authentication";
 import Link from "next/link";
 import prisma from "@/lib/prisma";
+import File from "@/components/File";
 
 export default async function Dashboard() {
   await checkAuthentication();
@@ -11,6 +12,12 @@ export default async function Dashboard() {
   if (!user) {
     return "Not authenticated";
   }
+
+  const files = await prisma.file.findMany({
+    where: {
+      owner: user.id,
+    }
+  });
 
   const invites = await prisma.invite.findMany({
     where: {
@@ -23,15 +30,16 @@ export default async function Dashboard() {
       <h1 className="title">Dashboard</h1>
       <div className="section">
         <h2 className="title title--s4">Account</h2>
-        <p className="text">Username: {user.userName} (uid: {user.id}) <Link className="link" href={"/logout"}>Sign out</Link></p>
+        <p className="text">Username: {user.userName} (uid: {user.id}) <Link className="link" href={"/logout"}>Sign
+          out</Link></p>
       </div>
 
       <div className="section">
         <h2 className="title title--s4">Files</h2>
         <ul className="list">
-          {/*<li className="list__item flex-wrapper flex-wrapper--no-gap">*/}
-          {/*<p><a className="link" target="_blank" href="/f/"></a></p>*/}
-          {/*</li>*/}
+          {files.map(file => (
+            <File file={file} key={file.id} />
+          ))}
           <li className="scroll"></li>
         </ul>
       </div>
