@@ -10,6 +10,9 @@ const nextConfig = {
     },
     env: {
         FLUENTFFMPEG_COV: false
+    },
+    images: {
+        formats: ['image/avif', 'image/webp'],
     }
 };
 

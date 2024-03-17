@@ -1,6 +1,6 @@
 'use client'
 
-import {CreateInvite} from "@/app/invite/page";
+import {CreateInvite} from "@/app/(navbar)/invite/page";
 import {useFormState, useFormStatus} from "react-dom";
 import {func} from "prop-types";
 import {useEffect} from "react";

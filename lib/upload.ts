@@ -21,7 +21,7 @@ export default async function UploadFile(_currentState: unknown, formData: FormD
   // TODO: Check if user is authenticated and has permissions
 
   const file = formData.get('file');
-  const downloadName = formData.get('downloadName');
+  let downloadName = formData.get('downloadName');
   const displayName = formData.get('displayName');
   const language = formData.get('languageSelect');
   const convertToGif = formData.get('gif') === "on";
@@ -63,6 +63,7 @@ export default async function UploadFile(_currentState: unknown, formData: FormD
     if (convertToGif) {
       console.log("Converting image to GIF");
       await image.resize(560, 560, {fit: "inside"}).gif().toFile(savePath);
+      downloadName = downloadName.replace(/\.[^/.]+$/, ".gif");
     } else {
       console.log("Converting to WebP");
       await image.webp({quality: 75}).toFile(savePath);
@@ -105,6 +106,8 @@ export default async function UploadFile(_currentState: unknown, formData: FormD
     await fs.promises.unlink(savePath + ".orig").catch((err) => {
       console.error("Error deleting original file", err);
     });
+
+    downloadName = downloadName.replace(/\.[^/.]+$/, ".gif");
   } else {
     console.log("Saving file")
     await fs.promises.writeFile(savePath, fileBuffer).catch((err) => {
