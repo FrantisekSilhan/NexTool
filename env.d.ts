@@ -5,5 +5,8 @@ namespace NodeJS {
     NEXT_PUBLIC_MAXIMUM_DISPLAY_NAME_LENGTH: number;
     SAVE_PATH: string;
     FILE_NAME_LENGTH: number;
+    SHORTENER_KEY_LENGTH: number;
+    SHORTENER_MAXIMUM_URL_LENGTH: number;
+    SHORTENER_MAXIMUM_CUSTOM_LENGTH: number;
   }
 }
