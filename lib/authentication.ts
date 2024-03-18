@@ -23,22 +23,22 @@ export async function authenticate(_currentState: unknown, formData: FormData): 
 
   const user = await prisma.user.findUnique({
     where: {
-      userName: username
+      Username: username
     }
   });
   if (!user) {
     return "User not found";
   }
 
-  const passwordHash = crypto.pbkdf2Sync(password, user.salt, 1000, 64, "sha512").toString("hex");
+  const passwordHash = crypto.pbkdf2Sync(password, user.Salt, 1000, 64, "sha512").toString("hex");
 
-  if (passwordHash !== user.password) {
+  if (passwordHash !== user.Password) {
     return "Password is incorrect";
   }
 
   cookies().set({
     name: "session_id",
-    value: await CreateSession(user.id),
+    value: await CreateSession(user.Id),
     maxAge: 60*60*24*30,
     path: "/",
     secure: true,
@@ -70,7 +70,7 @@ export async function register(_currentState: unknown, formData: FormData): Prom
 
   const user = await prisma.user.findUnique({
     where: {
-      userName: username
+      Username: username
     }
   });
   if (user) {
@@ -79,8 +79,8 @@ export async function register(_currentState: unknown, formData: FormData): Prom
 
   const inviteCode = await prisma.invite.findUnique({
     where: {
-      invite: invite,
-      usedBy: null
+      Invite: invite,
+      UsedBy: null
     }
   });
   if (!inviteCode) {
@@ -92,19 +92,19 @@ export async function register(_currentState: unknown, formData: FormData): Prom
 
   const createdUser = await prisma.user.create({
     data: {
-      userName: username,
-      password: passwordHash,
-      salt: salt
+      Username: username,
+      Password: passwordHash,
+      Salt: salt
     }
   });
 
   await prisma.invite.update({
     where: {
-      invite: invite
+      Invite: invite
     },
     data: {
-      usedBy: {
-        set: createdUser.id
+      UsedBy: {
+        set: createdUser.Id
       }
     }
   });
@@ -124,7 +124,7 @@ export async function Logout() {
 
   await prisma.session.delete({
     where: {
-      id: sessionId
+      Id: sessionId
     }
   });
 
@@ -153,7 +153,7 @@ export async function isAuthenticated(): Promise<Authenticated> {
 
   const session = await prisma.session.findFirst({
     where: {
-      id: sessionId,
+      Id: sessionId,
     }
   });
   if (!session) {
@@ -164,11 +164,11 @@ export async function isAuthenticated(): Promise<Authenticated> {
     };
   }
 
-  if (session.expires < new Date()) {
+  if (session.Expires < new Date()) {
     console.log("Session has expired");
     await prisma.session.delete({
       where: {
-        id: sessionId
+        Id: sessionId
       }
     });
     return {
@@ -179,7 +179,7 @@ export async function isAuthenticated(): Promise<Authenticated> {
 
   const user = await prisma.user.findUnique({
     where: {
-      id: session.userId
+      Id: session.UserId
     }
   });
 

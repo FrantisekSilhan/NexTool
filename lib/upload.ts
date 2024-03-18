@@ -129,22 +129,22 @@ export default async function UploadFile(_currentState: unknown, formData: FormD
 
   await prisma.file.create({
     data: {
-      filename: fileName,
-      downloadName: downloadName,
-      displayName: displayName,
-      indexFile: includeInIndex,
-      fileSize: fileStat.size,
-      md5: md5,
-      mimeType: mimeType,
-      language: language ? language.toString() : null,
-      owner: user.id
+      Filename: fileName,
+      DownloadName: downloadName,
+      DisplayName: displayName,
+      IndexFile: includeInIndex,
+      FileSize: fileStat.size,
+      MD5: md5,
+      MimeType: mimeType,
+      Language: language ? language.toString() : null,
+      OwnerId: user.Id
     }
   });
 
   return "File uploaded";
 }
 
-function RandomString(length: number) {
+export async function RandomString(length: number) {
   const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
   let result = "";
   for (let i = 0; i < length; i++) {
@@ -155,10 +155,10 @@ function RandomString(length: number) {
 
 async function GenerateFileName() {
   while (true) {
-    const name = RandomString(process.env.FILE_NAME_LENGTH);
+    const name = await RandomString(process.env.FILE_NAME_LENGTH);
     const exists = await prisma.file.findFirst({
       where: {
-        filename: name
+        Filename: name
       }
     });
     if (!exists) {

@@ -16,8 +16,8 @@ export async function GET(req: NextApiRequest, { params }: { params: { id: strin
   };
   const file = await prisma.file.findUnique({
     where: {
-      filename: params.id,
-      downloadName: params.downloadName
+      Filename: params.id,
+      DownloadName: params.downloadName
     }
   });
   if (!file) {
@@ -25,12 +25,12 @@ export async function GET(req: NextApiRequest, { params }: { params: { id: strin
   }
 
 
-  const fileData = fs.readFileSync(path.join(process.env.SAVE_PATH, file.filename));
+  const fileData = fs.readFileSync(path.join(process.env.SAVE_PATH, file.Filename));
 
   return new NextResponse(fileData, {
     headers: {
-      "Content-Disposition": `attachment; filename="${file.downloadName}"`,
-      "Content-Type": file.mimeType
+      "Content-Disposition": `attachment; filename="${file.DownloadName}"`,
+      "Content-Type": file.MimeType
     }
   });
 }

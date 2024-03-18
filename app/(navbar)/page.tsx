@@ -9,7 +9,7 @@ export default async function Home() {
 
   const files = await prisma.file.findMany({
     where: {
-      indexFile: true,
+      IndexFile: true,
     }
   });
 
@@ -18,7 +18,7 @@ export default async function Home() {
       <h1 className="title">Files</h1>
       <ul>
         {files.map(file => (
-          <File file={file} key={file.id} />
+          <File file={file} key={file.Id} />
         ))}
       </ul>
     </>

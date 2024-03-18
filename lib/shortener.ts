@@ -18,6 +18,9 @@ export default async function Shorten(_currentState: unknown, formData: FormData
   if (!url) {
     return "URL is required";
   }
+  if (url.length > process.env.SHORTENER_MAXIMUM_URL_LENGTH) {
+    return "URL is too long";
+  }
   if (useCustomUrl && !customUrl) {
     return "Custom URL is required";
   }
@@ -25,20 +28,31 @@ export default async function Shorten(_currentState: unknown, formData: FormData
     return "Visits is required";
   }
 
-  const key = useCustomUrl ? customUrl : await RandomString(process.env.SHORTENER_KEY_LENGTH);
+  const key = useCustomUrl && customUrl.length <= process.env.SHORTENER_MAXIMUM_CUSTOM_LENGTH ? customUrl : await RandomString(process.env.SHORTENER_KEY_LENGTH);
 
   const urlRow = await prisma.url.create({
     data: {
-      key: key,
-      url: url,
+      Key: key,
+      Url: url,
+      OwnerId: user.Id
     }
+  }).catch(e => {
+    console.log(e);
+    return "Error creating URL";
   });
+  if (typeof urlRow === "string") {
+    return "Error creating URL";
+  }
   await prisma.urlStats.create({
     data: {
-      id: urlRow.id,
-      visitCount: 0,
-      maxVisits: useVisits ? parseInt(visits) : 0,
-      owner: user.id
+      Id: urlRow.Id,
+      VisitCount: 0,
+      MaxVisits: useVisits ? parseInt(visits) : 0,
     }
-  })
+  }).catch(e => {
+    console.log(e);
+    return "Error creating URL";
+  });
+
+  return `URL shortened to ${process.env.NEXT_PUBLIC_BASE_URL}/${key}`;
 }

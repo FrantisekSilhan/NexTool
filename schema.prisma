@@ -7,53 +7,61 @@ datasource db {
   url      = "file:./app.db"
 }
 
-model File {
-  id           Int      @id @default(autoincrement())
-  filename     String   @unique
-  displayName  String
-  downloadName String
-  indexFile    Boolean
-  fileSize     Int
-  md5          String
-  mimeType     String
-  owner        Int
-  language     String?
-  addedAt      DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-}
-
 model User {
-  id          Int    @id @default(autoincrement())
-  userName    String @unique
-  password    String
-  salt        String
-  permissions BigInt    @default(5)
+  Id          Int      @id @default(autoincrement())
+  Username    String   @unique
+  Password    String
+  Salt        String
+  Permissions BigInt   @default(5)
+  CreatedAt   DateTime @default(now())
+  UpdatedAt   DateTime @updatedAt
+  Urls        Url[]
+  Files       File[]
+  Invites     Invite[]
 }
 
 model Invite {
-  id        Int    @id @default(autoincrement())
-  createdBy Int
-  invite    String @unique
-  usedBy    Int?
+  Id        Int    @id @default(autoincrement())
+  Invite    String @unique
+  UsedBy    Int?
+  Creator   User?  @relation(fields: [CreatorId], references: [Id])
+  CreatorId Int?
+}
+
+model File {
+  Id           Int      @id @default(autoincrement())
+  Filename     String   @unique
+  DisplayName  String
+  DownloadName String
+  IndexFile    Boolean
+  FileSize     Int
+  MD5          String
+  MimeType     String
+  Language     String?
+  AddedAt      DateTime @default(now())
+  UpdatedAt    DateTime @updatedAt
+  Owner        User?    @relation(fields: [OwnerId], references: [Id])
+  OwnerId      Int?
 }
 
 model Url {
-  id  Int    @id @default(autoincrement())
-  key String @unique
-  url String
+  Id      Int    @id @default(autoincrement())
+  Key     String @unique
+  Url     String
+  Owner   User   @relation(fields: [OwnerId], references: [Id])
+  OwnerId Int
 }
 
 model UrlStats {
-  id         Int      @id @default(autoincrement())
-  visitCount Int      @default(0)
-  maxVisits  Int      @default(0)
-  timestamp  DateTime @default(now())
-  owner      Int
+  Id         Int      @id
+  VisitCount Int      @default(0)
+  MaxVisits  Int      @default(0)
+  Timestamp  DateTime @default(now())
 }
 
 model Session {
-  id        String   @id
-  userId    Int
-  expires   DateTime
-  createdAt DateTime @default(now())
+  Id        String   @id
+  UserId    Int
+  Expires   DateTime
+  CreatedAt DateTime @default(now())
 }

@@ -16,8 +16,8 @@ export default async function Invite() {
 
   const invites = await prisma.invite.findMany({
     where: {
-      createdBy: user.id,
-      usedBy: null
+      CreatorId: user.Id,
+      UsedBy: null
     }
   });
 
@@ -28,7 +28,7 @@ export default async function Invite() {
       <ul className="list">
         <li className="list__item" style={{display: "none"}}><p className="mono-select-all"></p></li>
         {invites.map(invite => (
-          <li key={invite.id} className="list__item"><p className={"mono-select-all"}>{invite.invite}</p></li>
+          <li key={invite.Id} className="list__item"><p className={"mono-select-all"}>{invite.Invite}</p></li>
         ))}
         {invites.length === 0 && <li className="list__item"><p>No invite codes</p></li>}
       </ul>
@@ -57,8 +57,8 @@ export async function CreateInvite() {
 
   await prisma.invite.create({
     data: {
-      invite: GenerateInviteCode(user.id),
-      createdBy: user.id
+      Invite: GenerateInviteCode(user.Id),
+      CreatorId: user.Id
     }
   });
 

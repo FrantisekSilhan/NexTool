@@ -9,7 +9,7 @@ export async function CreateSession(user: number) {
 
   const oldSession = await prisma.session.findFirst({
     where: {
-      userId: user
+      UserId: user
     }
   });
 
@@ -17,7 +17,7 @@ export async function CreateSession(user: number) {
     console.log("Deleting old session", oldSession);
     await prisma.session.delete({
       where: {
-        id: oldSession.id
+        Id: oldSession.Id
       }
     })
   }
@@ -28,9 +28,9 @@ export async function CreateSession(user: number) {
 
   await prisma.session.create({
     data: {
-      id: id,
-      userId: user,
-      expires: new Date(Date.now() + 1000*60*60*24*30)
+      Id: id,
+      UserId: user,
+      Expires: new Date(Date.now() + 1000*60*60*24*30)
     }
   });
 
@@ -42,9 +42,9 @@ export async function CheckSession(session: string, userId: number) {
 
   const s = await prisma.session.findFirst({
     where: {
-      id: session,
-      userId: userId,
-      expires: {
+      Id: session,
+      UserId: userId,
+      Expires: {
         gt: new Date()
       }
     }

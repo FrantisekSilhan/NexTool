@@ -12,7 +12,7 @@ export default function ShortenerForm() {
 
   return (
     <>
-      <form className={"form"}>
+      <form action={dispatch} className={"form"}>
         <div className="form__items">
           <label className="form__label" htmlFor="url">URL:</label>
           <div id="urlLenWrapper">

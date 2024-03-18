@@ -10,7 +10,7 @@ export default async function Links() {
   let hasAdmin = false;
 
   if (authenticated && user) {
-    hasAdmin = await isAdmin(user.permissions);
+    hasAdmin = await isAdmin(user.Permissions);
   }
 
   return (
