@@ -52,7 +52,7 @@ router.delete("/:key", isNotFromShortener, isAuthenticated, async (req, res) => 
       });
 
       if (!targetUser) {
-        const err = new Error("Owner not found");
+        const err = new Error("Owner Not Found");
         err.status = 500;
         throw err;
       }

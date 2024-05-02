@@ -54,7 +54,7 @@ router.post("/", isNotFromShortener, isNotAuthenticated, async (req, res, next) 
     });
 
     if (!user) {
-      const err = new Error("Username not found");
+      const err = new Error("Username Not Found");
       err.status = 400;
       redirectBack = true;
       throw err;

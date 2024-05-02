@@ -18,7 +18,7 @@ router.get("/sessions", (req, res) => {
 router.get("/", isAuthenticatedShortener, async (req, res, next) => {
   try {
     if (req.headers.host === shared.config.shortener.host) {
-      const err = new Error("Not found");
+      const err = new Error("Not Found");
       err.status = 404;
       next(err);
     } else {
@@ -58,7 +58,7 @@ router.get("/:key", isAuthenticatedShortener, isFromShortener, async (req, res, 
     });
 
     if (!url) {
-      const err = new Error("Not found");
+      const err = new Error("Not Found");
       err.status = 404;
       throw err;
     }
@@ -86,7 +86,7 @@ router.get("/:key", isAuthenticatedShortener, isFromShortener, async (req, res, 
     });
 
     if (!stats) {
-      const err = new Error("Stats not found");
+      const err = new Error("Stats Not Found");
       err.status = 500;
       throw err;
     }

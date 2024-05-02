@@ -60,7 +60,7 @@ router.post("/", isNotFromShortener, isNotAuthenticated, async (req, res, next) 
     
     const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()-_+=]).{8,}$/g
     if (!regex.test(password)) {
-      const err = new Error(`Password must pass this regex: ${regex}`);
+      const err = new Error(`Password must match this regex: ${regex}`);
       err.status = 400;
       redirectBack = true;
       throw err;

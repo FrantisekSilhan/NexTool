@@ -29,7 +29,7 @@ router.patch("/:id", isNotFromShortener, isAuthenticated, isAdminOrHigher, async
     });
 
     if (!targetUser) {
-      const err = new Error("User not found");
+      const err = new Error("User Not Found");
       err.status = 404;
       throw err;
     }
@@ -120,7 +120,7 @@ router.delete("/:id", isNotFromShortener, isAuthenticated, isAdminOrHigher, asyn
     });
 
     if (!targetUser) {
-      const err = new Error("User not found");
+      const err = new Error("User Not Found");
       err.status = 404;
       throw err;
     }

@@ -93,7 +93,7 @@ router.delete("/:file", isNotFromShortener, isAuthenticated, async (req, res) =>
       });
 
       if (!targetUser) {
-        const err = new Error("Owner not found");
+        const err = new Error("Owner Not Found");
         err.status = 500;
         throw err;
       }
@@ -191,7 +191,7 @@ router.patch("/:file", isNotFromShortener, isAuthenticated, async (req, res) => 
     });
     
     if (!fileInfo) {
-      const err = new Error("File not found or you don't have permission to edit it");
+      const err = new Error("File Not Found or you don't have permission to edit it");
       err.status = 404;
       throw err;
     }

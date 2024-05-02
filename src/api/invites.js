@@ -58,7 +58,7 @@ router.delete("/:id", isNotFromShortener, isAuthenticated, async (req, res) => {
       });
 
       if (!targetUser) {
-        const err = new Error("TargetUser not found");
+        const err = new Error("TargetUser Not Found");
         err.status = 500;
         throw err;
       }

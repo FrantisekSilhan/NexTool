@@ -23,7 +23,7 @@ router.get("/:file", isNotFromShortener, async (req, res, next) => {
     });
 
     if (!fileInfo) {
-      const err = new Error("File not found");
+      const err = new Error("File Not Found");
       err.status = 404;
       throw err;
     }
@@ -36,7 +36,7 @@ router.get("/:file", isNotFromShortener, async (req, res, next) => {
     })
 
     if (!userInfo) {
-      const err = new Error("User not found");
+      const err = new Error("User Not Found");
       err.status = 500;
       throw err;
     }
@@ -68,7 +68,7 @@ router.get("/:file/:downloadName", isNotFromShortener, async (req, res, next) =>
     });
 
     if (!fileInfo) {
-      const err = new Error("File not found");
+      const err = new Error("File Not Found");
       err.status = 404;
       throw err;
     }

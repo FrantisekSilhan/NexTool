@@ -181,7 +181,7 @@ router.get("/users/:id", isNotFromShortener, isAuthenticated, isAdminOrHigher, a
     });
 
     if (!targetUser) {
-      const err = new Error("User not found");
+      const err = new Error("User Not Found");
       err.status = 404;
       throw err;
     }
