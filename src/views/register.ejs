@@ -23,3 +23,8 @@
 </form>
 
 <p>Already have an account? <a class="link" href="/login">Sign in</a></p>
+
+<script>
+  const invite = new Proxy(new URLSearchParams(window.location.search),{get: (searchParams, prop) => searchParams.get(prop)}).invite;
+  if (invite) document.getElementById("inviteCode").value = invite;
+</script>
