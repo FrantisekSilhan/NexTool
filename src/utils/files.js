@@ -1,5 +1,3 @@
-const shared = require("../../shared");
-
 const { randomString } = require(shared.files.sharedUtils);
 
 function getFileNameExtension(name, returnDot = false) {

@@ -1,4 +1,3 @@
-const shared = require("../../shared");
 const express = require("express");
 const router = express.Router();
 const { isAuthenticatedShortener, isFromShortener, isNotFromShortener } = require(shared.files.middlewares);

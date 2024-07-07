@@ -13,11 +13,11 @@ const paths = {
   data: path.join(__dirname, "data"),
   public: path.join(__dirname, "public"),
   files: path.join(__dirname, "files"),
-  src: src,
-  views: views,
-  routes: routes,
+  src,
+  views,
+  routes,
   layouts: path.join(views, "layouts"),
-  utils: utils,
+  utils,
   api: path.join(src, "api"),
 };
 
@@ -43,10 +43,10 @@ const layouts = {
 
 // Export shared module
 module.exports = {
-  path: path,
-  fs: fs,
-  paths: paths,
-  files: files,
-  layouts: layouts,
+  path,
+  fs,
+  paths,
+  files,
+  layouts,
   config: require(path.join(paths.src, "config")),
 };

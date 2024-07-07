@@ -15,7 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const shared = require("../shared");
+global.shared = require("../shared");
+
 require(shared.files.setup);
 const express = require("express");
 const expressLayouts = require("express-ejs-layouts");

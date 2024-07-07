@@ -1,4 +1,3 @@
-const shared = require("../shared");
 const sqlite3 = require("sqlite3").verbose();
 // const migrationScripts = require("./migrations/02-add-permissions.js");
 
